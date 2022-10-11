@@ -1,18 +1,9 @@
 const router = require('express').Router()
 const User = require('../models/userModel')
+const { registerUser, loginUser } = require('../controllers/userController')
 
-router.post('/', async (request, response) => {
-  const { name, email, password } = request.body
-
-  const newUser = new User({ name, email, password })
-
-  try {
-    await newUser.save()
-    response.status(201).json(newUser)
-  } catch (error) {
-    response.status(400).json({ error: error.message })
-  }
-})
+router.post('/', registerUser)
+router.post('/login', loginUser)
 
 router.get('/', async (request, response) => {
   const users = await User.find({})
