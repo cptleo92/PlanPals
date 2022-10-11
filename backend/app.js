@@ -11,11 +11,16 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
+// test route for jest config
 if (process.env.NODE_ENV === 'test') {
   app.get('/test', (req, res) => {
     res.json({ 'message': 'testing' })
   })
 }
+
+// routes
+app.use('/api/users', require('./routes/userRoutes'))
+
 
 app.use(middleware.requestLogger)
 app.use(middleware.unknownEndpoint)
