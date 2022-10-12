@@ -11,7 +11,6 @@ const groupSchema = mongoose.Schema(
       type: String,
       trim: true,
       required: true,
-      unique: true,
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,

@@ -104,7 +104,6 @@ describe('user login', () => {
 
 
 afterAll(done => {
-  // Closing the DB connection allows Jest to exit successfully.
   mongoose.connection.close()
   done()
 })
