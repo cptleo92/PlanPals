@@ -64,10 +64,12 @@ describe('user creation', () => {
       password: 'password'
     }
 
-    await api
+    const response = await api
       .post('/api/users')
       .send(newUser)
       .expect(201)
+
+    expect(response.body.token).toBeTruthy()
 
     const allUsers = await User.find({})
     expect(allUsers.length).toEqual(startingUsers.length + 1)
