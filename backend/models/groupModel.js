@@ -20,7 +20,7 @@ const groupSchema = mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User'
       }
     ],
     // hangouts: [
@@ -31,7 +31,7 @@ const groupSchema = mongoose.Schema(
     // ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

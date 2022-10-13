@@ -22,7 +22,8 @@ const userSchema = mongoose.Schema(
     groups: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Group'
+        ref: 'Group',
+        autopopulate: true
       }
     ]
   },
@@ -30,5 +31,7 @@ const userSchema = mongoose.Schema(
     timestamps: true,
   }
 )
+
+userSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('User', userSchema)

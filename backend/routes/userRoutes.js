@@ -5,6 +5,7 @@ const User = require('../models/userModel')
 router.post('/', registerUser)
 router.post('/login', loginUser)
 
+// remove this in prod
 router.get('/', async (request, response) => {
   const allUsers = await User.find({})
   response.json(allUsers)
