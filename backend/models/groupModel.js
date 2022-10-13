@@ -35,4 +35,15 @@ const groupSchema = mongoose.Schema(
   }
 )
 
+function autopopulateMembers() {
+  this.populate('members', {
+    name: 1,
+    email: 1
+  })
+}
+
+groupSchema.pre('find', autopopulateMembers)
+groupSchema.pre('findOne', autopopulateMembers)
+groupSchema.pre('findById', autopopulateMembers)
+
 module.exports = mongoose.model('Group', groupSchema)

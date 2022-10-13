@@ -7,7 +7,7 @@ const User = require('../models/userModel')
 const Group = require('../models/groupModel')
 
 const seedDb = require('./seed_db/seed.json')
-const { seedUsers, loginTestUser, logDb } = require('./seed_db/test_helpers')
+const { seedUsers, loginTestUser } = require('./seed_db/test_helpers')
 
 const testUsers = Object.values(seedDb.testUsers)
 const testGroups = Object.values(seedDb.testGroups)
@@ -37,7 +37,7 @@ describe('creating a new group', () => {
 
   test('creation fails if group is invalid', async () => {
     const invalidGroup = {
-      title: 'Random title'
+      title: 'Random title',
     }
 
     const response = await api
@@ -144,7 +144,6 @@ describe('leaving a group', () => {
     expect(testGroup.members.length).toEqual(1)
     testUser = await User.findOne({ name: testUsers[1].name })
     expect(testUser.groups.length).toEqual(startingGroupsLength + 1)
-    // console.log(testUser.groups)
 
     // leaving the group
     await api
@@ -155,12 +154,11 @@ describe('leaving a group', () => {
     testGroup = await Group.findOne({ title: testGroups[1].title })
     expect(testGroup.members.length).toEqual(0)
     testUser = await User.findOne({ name: testUsers[1].name })
-    // console.log(testUser.groups)
     expect(testUser.groups.length).toEqual(startingGroupsLength)
   })
 })
 
-afterAll(done => {
+afterAll((done) => {
   mongoose.connection.close()
   done()
 })
