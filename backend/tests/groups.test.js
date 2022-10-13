@@ -7,7 +7,7 @@ const User = require('../models/userModel')
 const Group = require('../models/groupModel')
 
 const seedDb = require('./seed_db/seed.json')
-const { seedUsers, loginTestUser } = require('./seed_db/test_helpers')
+const { seedUsers, loginTestUser, logDb } = require('./seed_db/test_helpers')
 
 const testUsers = Object.values(seedDb.testUsers)
 const testGroups = Object.values(seedDb.testGroups)
@@ -155,6 +155,40 @@ describe('leaving a group', () => {
     expect(testGroup.members.length).toEqual(0)
     testUser = await User.findOne({ name: testUsers[1].name })
     expect(testUser.groups.length).toEqual(startingGroupsLength)
+  })
+
+  test('kicking someone out of a group', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+    let testUser = await User.findById(testGroup.members[0])
+
+    const body = {
+      userId: testUser.id,
+      groupId: testGroup.id
+    }
+
+    // first, make sure non-admin can't kick
+    // sign in user 3
+    let token3 = await loginTestUser(testUsers[2])
+
+    const response = await api
+      .post('/api/groups/kick')
+      .set('Authorization', `Bearer ${token3}`)
+      .send(body)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only admin can remove a user from the group')
+
+    await api
+      .post('/api/groups/kick')
+      .set('Authorization', `Bearer ${token}`)
+      .send(body)
+      .expect(204)
+
+    // double check user and group
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(0)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testUser.groups.length).toEqual(0)
   })
 })
 

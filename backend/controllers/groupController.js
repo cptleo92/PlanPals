@@ -113,9 +113,34 @@ const leaveGroup = async (request, response) => {
   }
 }
 
+const kickFromGroup = async (request, response) => {
+  const { userId, groupId } = request.body
+
+  const kickThisUser = await User.findById(userId)
+  const kickFromThisGroup = await Group.findById(groupId)
+
+  // only group's admin can kick
+  if (request.user.id !== kickFromThisGroup.admin.toString()) {
+    return response.status(401).json({ error: 'only admin can remove a user from the group' })
+  }
+
+  try {
+    kickThisUser.groups = kickThisUser.groups.filter(group => group.id !== groupId)
+    await kickThisUser.save()
+
+    kickFromThisGroup.members = kickFromThisGroup.members.filter(member => member.toString() !== userId)
+    await kickFromThisGroup.save()
+
+    response.status(204).end()
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   getMyGroups,
   createGroup,
   joinGroup,
   leaveGroup,
+  kickFromGroup
 }
