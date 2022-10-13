@@ -25,6 +25,12 @@ const userSchema = mongoose.Schema(
         ref: 'Group',
         autopopulate: true
       }
+    ],
+    hangouts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hangout',
+      }
     ]
   },
   {
