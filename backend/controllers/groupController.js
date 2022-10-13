@@ -95,8 +95,8 @@ const leaveGroup = async (request, response) => {
 
   try {
     currentUser.groups = currentUser.groups.filter((grp) => {
-      // console.log(grp, group)
-      grp.id !== group.id
+      // console.log(typeof grp.id)
+      return grp.id !== group.id
     })
 
     await currentUser.save()

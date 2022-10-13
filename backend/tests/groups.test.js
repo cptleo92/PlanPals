@@ -7,7 +7,7 @@ const User = require('../models/userModel')
 const Group = require('../models/groupModel')
 
 const seedDb = require('./seed_db/seed.json')
-const { seedUsers, loginTestUser } = require('./seed_db/test_helpers')
+const { seedUsers, loginTestUser, logDb } = require('./seed_db/test_helpers')
 
 const testUsers = Object.values(seedDb.testUsers)
 const testGroups = Object.values(seedDb.testGroups)
@@ -109,6 +109,54 @@ describe('joining a group', () => {
 
     const updatedTestUser = await User.findOne({ name: newUser.name })
     expect(updatedTestUser.groups.length).toEqual(1)
+  })
+})
+
+describe('leaving a group', () => {
+  test('fails if admin tries to leave', async () => {
+    const testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    // token should refer to user who created groups in earlier test
+    const response = await api
+      .delete(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    expect(response.body.error).toEqual('admin cannot leave the group')
+  })
+
+  test('succesfully leaving a group updates models correctly', async () => {
+    // this group should have no members yet
+    let testGroup = await Group.findOne({ title: testGroups[1].title })
+
+    // this user should not be admin of any groups
+    let testUser = await User.findOne({ name: testUsers[1].name })
+    let token2 = await loginTestUser(testUsers[1])
+    const startingGroupsLength = testUser.groups.length
+
+    // first, join the group
+    await api
+      .post(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(200)
+
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(1)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testUser.groups.length).toEqual(startingGroupsLength + 1)
+    // console.log(testUser.groups)
+
+    // leaving the group
+    await api
+      .delete(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(204)
+
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(0)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    // console.log(testUser.groups)
+    expect(testUser.groups.length).toEqual(startingGroupsLength)
   })
 })
 
