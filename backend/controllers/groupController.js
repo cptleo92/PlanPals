@@ -52,12 +52,6 @@ const joinGroup = async (request, response) => {
     let usersGroups = currentUser.groups.map(grp => grp.id)
     let groupMembers = groupToJoin.members.map(mem => mem.toString())
 
-    // groups.forEach(g => console.log('Group: ', g))
-    // members.forEach(m => console.log('Member: ', m))
-    // console.log('-------------')
-    // console.log(groups, '//', members)
-    // console.log(groups.includes(currentUser.id), '//', members.includes(currentUser.id))
-
     return usersGroups.includes(groupId) || groupMembers.includes(currentUser.id)
   }
 
@@ -65,20 +59,57 @@ const joinGroup = async (request, response) => {
     return response.status(400).json({ error: 'You are already in this group!' })
   }
 
-  currentUser.groups.push(groupId)
-  await currentUser.save()
+  try {
+    currentUser.groups.push(groupId)
+    await currentUser.save()
 
-  groupToJoin.members.push(currentUser.id)
-  await groupToJoin.save()
+    groupToJoin.members.push(currentUser.id)
+    await groupToJoin.save()
 
-  response.json(groupToJoin)
+    response.json(groupToJoin)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
 }
 
-const removeFromGroup = () => {}
+const leaveGroup = async (request, response) => {
+  // admin can't leave group
+  const group = await Group.findById(request.params.id)
+
+  if (!group) {
+    return response.status(404).json({ error: 'group not found' })
+  }
+
+  if (group.admin.toString() === request.user.id) {
+    return response.status(400).json({ error: 'admin cannot leave the group' })
+  }
+
+  const currentUser = await User.findById(request.user.id)
+
+  try {
+    currentUser.groups = currentUser.groups.filter(grp => {
+      // console.log(grp, group)
+      grp.id !== group.id
+    })
+
+    await currentUser.save()
+
+    group.members = group.members.filter(member => {
+      // console.log(member.toString())
+      return member.toString() !== currentUser.id
+    })
+    await group.save()
+
+    response.status(204).end()
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+
+}
 
 module.exports = {
   getMyGroups,
   createGroup,
   joinGroup,
-  removeFromGroup,
+  leaveGroup,
 }

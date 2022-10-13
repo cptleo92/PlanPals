@@ -3,7 +3,7 @@ const {
   getMyGroups,
   createGroup,
   joinGroup,
-  removeFromGroup,
+  leaveGroup,
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
 const Group = require('../models/groupModel')
@@ -14,6 +14,11 @@ router.use(auth)
 // get all groups that current user is part of
 router.get('/', getMyGroups)
 
+router.get('/:id', async (request, response) => {
+  const group = await Group.findById(request.params.id)
+  response.json(group)
+})
+
 // create a new group
 router.post('/', createGroup)
 
@@ -21,10 +26,7 @@ router.post('/', createGroup)
 router.post('/:id', joinGroup)
 
 // leave a group
-router.delete('/:user_id/:group_id', removeFromGroup)
-
-// if admin, remove a user from a group
-// removeFromGroup should be able to handle kicking users
+router.delete('/:id', leaveGroup)
 
 // remove this in prod
 router.get('/all', async (request, response) => {
