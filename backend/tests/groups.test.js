@@ -54,11 +54,6 @@ beforeEach(async () => {
 })
 
 describe('creating a new group', () => {
-  // const request = {
-  //   headers: {
-  //     authorization: ''
-  //   }
-  // }
 
   test('creation fails if logged out', async () => {
     const response = await api
@@ -109,7 +104,13 @@ describe('creating a new group', () => {
       expect(group.admin).toEqual(currentUser._id)
       expect(group.members.length).toEqual(1)
     }
+
+    expect(currentUser.groups.length).toEqual(testGroups.length)
   })
+
+  // test('user has group added to own model', async () => {
+  //   const currentUser = await User.findOne({ name: testUsers[0].name })
+  // })
 })
 
 afterAll(done => {

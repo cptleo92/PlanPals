@@ -1,4 +1,5 @@
 const Group = require('../models/groupModel')
+const User = require('../models/userModel')
 
 const getMyGroups = () => {}
 
@@ -11,21 +12,27 @@ const createGroup = async (request, response) => {
 
   // don't allow user to have duplicate group titles
 
+  const currentUser = await User.findById(request.user.id)
+
   const newGroup = new Group({
     title,
     description,
-    admin: request.user.id,
-    members: [request.user.id]
+    admin: currentUser.id,
+    members: [currentUser.id]
   })
 
   try {
     await newGroup.save()
+
+    currentUser.groups.push(newGroup.id)
+    await currentUser.save()
+
     response.status(201).json({
       _id: newGroup.id,
       title: newGroup.title,
       description: newGroup.description,
-      admin: request.user.id,
-      members: [request.user.id]
+      admin: currentUser.id,
+      members: [currentUser.id]
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
