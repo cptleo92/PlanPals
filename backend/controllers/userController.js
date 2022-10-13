@@ -3,6 +3,12 @@ const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 
+const getUser = async (request, response) => {
+  const user = await User.findById(request.params.id)
+  if (!user) return response.status(404).json({ error: 'user not found' })
+  response.json(user).select('-password')
+}
+
 const registerUser = async (request, response) => {
   const { name, email, password } = request.body
 
@@ -75,4 +81,4 @@ const generateToken = (id) => {
   )
 }
 
-module.exports = { registerUser, loginUser }
+module.exports = { registerUser, loginUser, getUser }
