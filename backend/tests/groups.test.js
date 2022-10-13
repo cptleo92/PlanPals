@@ -71,7 +71,7 @@ describe('creating a new group', () => {
     expect(group).toHaveProperty('title')
     expect(group).toHaveProperty('description')
     expect(group.admin).toEqual(currentUser._id)
-    expect(group.members.length).toEqual(1)
+    expect(group.members.length).toEqual(0)
 
     // making sure the new groups were added to the user
     expect(currentUser.groups.length).toEqual(testGroups.length)
@@ -84,7 +84,7 @@ describe('joining a group', () => {
     testGroup = await Group.findOne({ title: testGroups[0].title })
   })
 
-  test('cannot join a group twice', async () => {
+  test('cannot join a group twice (applies to admin too technically)', async () => {
     const response = await api
       .post(`/api/groups/${testGroup.id}`)
       .set('Authorization', `Bearer ${token}`)
