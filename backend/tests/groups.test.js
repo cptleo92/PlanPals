@@ -84,7 +84,7 @@ describe('joining a group', () => {
     testGroup = await Group.findOne({ title: testGroups[0].title })
   })
 
-  test('cannot join a group twice (applies to admin too technically)', async () => {
+  test('cannot join a group twice', async () => {
     const response = await api
       .post(`/api/groups/${testGroup.id}`)
       .set('Authorization', `Bearer ${token}`)
