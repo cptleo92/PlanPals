@@ -1,46 +1,146 @@
 const Group = require('../models/groupModel')
+const User = require('../models/userModel')
 
-const getMyGroups = () => {}
+const getMyGroups = async (request, response) => {
+  const currentUser = await User.findById(request.user.id)
+
+  response.json(currentUser.groups)
+}
 
 const createGroup = async (request, response) => {
   const { title, description } = request.body
 
   if (!title || !description) {
-    response.status(400).json({ error: 'All fields are required!' })
+    return response.status(400).json({ error: 'All fields are required!' })
   }
 
-  // don't allow user to have duplicate group titles
+  const currentUser = await User.findById(request.user.id)
 
   const newGroup = new Group({
     title,
     description,
-    admin: request.user.id,
-    members: [request.user.id]
+    admin: currentUser.id,
+    members: [],
   })
 
   try {
     await newGroup.save()
+
+    currentUser.groups.push(newGroup.id)
+    await currentUser.save()
+
     response.status(201).json({
       _id: newGroup.id,
       title: newGroup.title,
       description: newGroup.description,
-      admin: request.user.id,
-      members: [request.user.id]
+      admin: currentUser.id,
+      members: [],
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
   }
-
 }
 
-const joinGroup = () => {}
+const joinGroup = async (request, response) => {
+  const groupId = request.params.id
 
-const removeFromGroup = () => {}
+  const currentUser = await User.findById(request.user.id)
+  const groupToJoin = await Group.findById(groupId)
 
+  // don't let user join twice, or admin join again
+  const alreadyJoined = () => {
+    let usersGroups = currentUser.groups.map((grp) => grp.id)
+    let groupMembers = groupToJoin.members.map((mem) => mem.toString())
+    let isAdmin = groupToJoin.admin.toString() === request.user.id
+
+    return (
+      usersGroups.includes(groupId) ||
+      groupMembers.includes(currentUser.id) ||
+      isAdmin
+    )
+  }
+
+  if (alreadyJoined()) {
+    return response
+      .status(400)
+      .json({ error: 'You are already in this group!' })
+  }
+
+  try {
+    currentUser.groups.push(groupId)
+    await currentUser.save()
+
+    groupToJoin.members.push(currentUser.id)
+    await groupToJoin.save()
+
+    response.json(groupToJoin)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
+const leaveGroup = async (request, response) => {
+  // admin can't leave group
+  const group = await Group.findById(request.params.id)
+
+  if (!group) {
+    return response.status(404).json({ error: 'group not found' })
+  }
+
+  if (group.admin.toString() === request.user.id) {
+    return response.status(400).json({ error: 'admin cannot leave the group' })
+  }
+
+  const currentUser = await User.findById(request.user.id)
+
+  try {
+    currentUser.groups = currentUser.groups.filter((grp) => {
+      // console.log(typeof grp.id)
+      return grp.id !== group.id
+    })
+
+    await currentUser.save()
+
+    group.members = group.members.filter((member) => {
+      // console.log(member.toString())
+      return member.toString() !== currentUser.id
+    })
+    await group.save()
+
+    response.status(204).end()
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
+const kickFromGroup = async (request, response) => {
+  const { userId, groupId } = request.body
+
+  const kickThisUser = await User.findById(userId)
+  const kickFromThisGroup = await Group.findById(groupId)
+
+  // only group's admin can kick
+  if (request.user.id !== kickFromThisGroup.admin.toString()) {
+    return response.status(401).json({ error: 'only admin can remove a user from the group' })
+  }
+
+  try {
+    kickThisUser.groups = kickThisUser.groups.filter(group => group.id !== groupId)
+    await kickThisUser.save()
+
+    kickFromThisGroup.members = kickFromThisGroup.members.filter(member => member.toString() !== userId)
+    await kickFromThisGroup.save()
+
+    response.status(204).end()
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
 
 module.exports = {
   getMyGroups,
   createGroup,
   joinGroup,
-  removeFromGroup,
+  leaveGroup,
+  kickFromGroup
 }

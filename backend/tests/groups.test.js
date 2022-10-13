@@ -6,60 +6,23 @@ const api = supertest(app)
 const User = require('../models/userModel')
 const Group = require('../models/groupModel')
 
-const testUsers = [
-  {
-    name: 'Alan',
-    email: 'alan@test.com',
-    password: 'password'
-  },
-  {
-    name: 'Bob',
-    email: 'ben@test.com',
-    password: 'password'
-  },
-  {
-    name: 'Cora',
-    email: 'cora@test.com',
-    password: 'password'
-  },
-]
+const seedDb = require('./seed_db/seed.json')
+const { seedUsers, loginTestUser, logDb } = require('./seed_db/test_helpers')
 
-const testGroups = [
-  {
-    title: 'Fishing Club',
-    description: 'A club for fishing'
-  },
-  {
-    title: 'Coffee Lovers',
-    description: 'A club for coffee lovers'
-  },
-]
+const testUsers = Object.values(seedDb.testUsers)
+const testGroups = Object.values(seedDb.testGroups)
 
 let token
 
-beforeEach(async () => {
+beforeAll(async () => {
   await User.deleteMany({})
   await Group.deleteMany({})
 
-  for (let testUser of testUsers) {
-    await api.post('/api/users').send(testUser)
-  }
-
-  // login a user
-  const response = await api
-    .post('/api/users/login')
-    .send(testUsers[0])
-
-  token = response.body.token
+  await seedUsers(testUsers)
+  token = await loginTestUser(testUsers[0])
 })
 
 describe('creating a new group', () => {
-  // const request = {
-  //   headers: {
-  //     authorization: ''
-  //   }
-  // }
-
   test('creation fails if logged out', async () => {
     const response = await api
       .post('/api/groups')
@@ -74,7 +37,7 @@ describe('creating a new group', () => {
 
   test('creation fails if group is invalid', async () => {
     const invalidGroup = {
-      title: 'Random title'
+      title: 'Random title',
     }
 
     const response = await api
@@ -89,7 +52,7 @@ describe('creating a new group', () => {
     expect(allGroups.length).toEqual(0)
   })
 
-  test('successful creation returns proper json', async () => {
+  test('successful creation returns proper json and adds new groups to user', async () => {
     for (let testGroup of testGroups) {
       await api
         .post('/api/groups')
@@ -102,17 +65,134 @@ describe('creating a new group', () => {
 
     const currentUser = await User.findOne({ name: testUsers[0].name })
 
-    for (let group of allGroups) {
-      expect(group).toHaveProperty('id')
-      expect(group).toHaveProperty('title')
-      expect(group).toHaveProperty('description')
-      expect(group.admin).toEqual(currentUser._id)
-      expect(group.members.length).toEqual(1)
-    }
+    const group = allGroups[0]
+
+    expect(group).toHaveProperty('id')
+    expect(group).toHaveProperty('title')
+    expect(group).toHaveProperty('description')
+    expect(group.admin).toEqual(currentUser._id)
+    expect(group.members.length).toEqual(0)
+
+    // making sure the new groups were added to the user
+    expect(currentUser.groups.length).toEqual(testGroups.length)
   })
 })
 
-afterAll(done => {
+describe('joining a group', () => {
+  let testGroup
+  beforeAll(async () => {
+    testGroup = await Group.findOne({ title: testGroups[0].title })
+  })
+
+  test('cannot join a group twice', async () => {
+    const response = await api
+      .post(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    expect(response.body.error).toEqual('You are already in this group!')
+  })
+
+  test('successfully joining a new group updates models correctly', async () => {
+    // login a different user
+    const newUser = testUsers[1]
+    let token2 = await loginTestUser(newUser)
+
+    const originalMembersAmount = testGroup.members.length
+
+    const response = await api
+      .post(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(200)
+
+    expect(response.body.members.length).toEqual(originalMembersAmount + 1)
+
+    const updatedTestUser = await User.findOne({ name: newUser.name })
+    expect(updatedTestUser.groups.length).toEqual(1)
+  })
+})
+
+describe('leaving a group', () => {
+  test('fails if admin tries to leave', async () => {
+    const testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    // token should refer to user who created groups in earlier test
+    const response = await api
+      .delete(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    expect(response.body.error).toEqual('admin cannot leave the group')
+  })
+
+  test('succesfully leaving a group updates models correctly', async () => {
+    // this group should have no members yet
+    let testGroup = await Group.findOne({ title: testGroups[1].title })
+
+    // this user should not be admin of any groups
+    let testUser = await User.findOne({ name: testUsers[1].name })
+    let token2 = await loginTestUser(testUsers[1])
+    const startingGroupsLength = testUser.groups.length
+
+    // first, join the group
+    await api
+      .post(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(200)
+
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(1)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testUser.groups.length).toEqual(startingGroupsLength + 1)
+
+    // leaving the group
+    await api
+      .delete(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(204)
+
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(0)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testUser.groups.length).toEqual(startingGroupsLength)
+  })
+
+  test('kicking someone out of a group', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+    let testUser = await User.findById(testGroup.members[0])
+
+    const body = {
+      userId: testUser.id,
+      groupId: testGroup.id
+    }
+
+    // first, make sure non-admin can't kick
+    // sign in user 3
+    let token3 = await loginTestUser(testUsers[2])
+
+    const response = await api
+      .post('/api/groups/kick')
+      .set('Authorization', `Bearer ${token3}`)
+      .send(body)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only admin can remove a user from the group')
+
+    await api
+      .post('/api/groups/kick')
+      .set('Authorization', `Bearer ${token}`)
+      .send(body)
+      .expect(204)
+
+    // double check user and group
+    testGroup = await Group.findOne({ title: testGroups[1].title })
+    expect(testGroup.members.length).toEqual(0)
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testUser.groups.length).toEqual(0)
+  })
+})
+
+afterAll((done) => {
   mongoose.connection.close()
   done()
 })

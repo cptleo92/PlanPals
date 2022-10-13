@@ -56,8 +56,6 @@ describe('user creation', () => {
   })
 
   test('successful if valid', async () => {
-    const startingUsers = await User.find({})
-
     const newUser = {
       name: 'Leo',
       email: 'leo@leo.com',
@@ -72,7 +70,7 @@ describe('user creation', () => {
     expect(response.body.token).toBeTruthy()
 
     const allUsers = await User.find({})
-    expect(allUsers.length).toEqual(startingUsers.length + 1)
+    expect(allUsers.length).toEqual(2)
     expect(allUsers.map(user => user.name)).toContain('Leo')
   })
 })

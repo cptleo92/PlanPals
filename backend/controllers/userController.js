@@ -3,27 +3,33 @@ const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 
+const getUser = async (request, response) => {
+  const user = await User.findById(request.params.id)
+  if (!user) return response.status(404).json({ error: 'user not found' })
+  response.json(user).select('-password')
+}
+
 const registerUser = async (request, response) => {
   const { name, email, password } = request.body
 
   if (!name || !email || !password) {
-    response.status(400).json({ error: 'All fields are required!' })
+    return response.status(400).json({ error: 'All fields are required!' })
   }
 
   // don't allow numbers or special characters
   if (!isAlpha(name, 'en-US', { ignore: ' -' })) {
-    response.status(400).json({ error: 'Name is invalid' })
+    return response.status(400).json({ error: 'Name is invalid' })
   }
 
   // password must be 6 chars
   if (password.length < 6) {
-    response.status(400).json({ error: 'Password must be at least 6 characters' })
+    return response.status(400).json({ error: 'Password must be at least 6 characters' })
   }
 
   // check for existing user
   const existingUser = await User.findOne({ email })
   if (existingUser) {
-    response.status(400).json({ error: 'User already exists!' })
+    return response.status(400).json({ error: 'User already exists!' })
   }
 
   // generate password hash
@@ -75,4 +81,4 @@ const generateToken = (id) => {
   )
 }
 
-module.exports = { registerUser, loginUser }
+module.exports = { registerUser, loginUser, getUser }

@@ -1,0 +1,30 @@
+{
+  "testUsers": {
+    "user1": {
+      "name": "Alan",
+      "email": "alan@test.com",
+      "password": "password"
+    },
+    "user2": {
+      "name": "Bob",
+      "email": "ben@test.com",
+      "password": "password"
+    },
+    "user3": {
+      "name": "Cora",
+      "email": "cora@test.com",
+      "password": "password"
+    }
+  },
+
+  "testGroups": {
+    "group1": {
+      "title": "Fishing Club",
+      "description": "A club for fishing"
+    },
+    "group2": {
+      "title": "Coffee Lovers",
+      "description": "A club for coffee lovers"
+    }
+  }
+}
