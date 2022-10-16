@@ -1,20 +1,18 @@
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <Box
-      sx={{
-        width: 900,
-        height: 900,
-        margin: "auto"
-      }}
-    >
-      Learn React
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" />
-      <TextField id="filled-basic" label="Filled" variant="filled" />
-      <TextField id="standard-basic" label="Standard" variant="standard" />
-    </Box>
+    <>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path='/' element={<div>Root</div>} />
+          <Route path='/login' element={<div>login</div>} />
+          <Route path='/register' element={<div>register</div>} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
