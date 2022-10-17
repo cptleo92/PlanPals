@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from "./components/Navbar";
+import UserForm from './components/UserForm';
 
 function App() {
   return (
@@ -8,8 +9,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path='/' element={<div>Root</div>} />
-          <Route path='/login' element={<div>login</div>} />
-          <Route path='/register' element={<div>register</div>} />
+          <Route path='/login' element={<UserForm />} />
+          <Route path='/register' element={<UserForm />} />
         </Routes>
       </Router>
     </>
