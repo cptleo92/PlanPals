@@ -13,7 +13,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, redirect } from "react-router-dom";
+import { registerUser, loginUser } from '../utils/apiHelper'
 
 function Copyright(props) {
   return (
@@ -55,6 +56,7 @@ export default function UserForm() {
   const [emailInvalid, setEmailInvalid] = useState(false);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [passwordLengthError, setPasswordLengthError] = useState(false);
+  const [loginError, setLoginError] = useState(false)
 
   const [checked, setChecked] = useState(false);
 
@@ -120,10 +122,18 @@ export default function UserForm() {
     return noErrors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(validateFields());
-
+    
+    if (!validateFields()) return
+  
+    if (pathname === "/login") {
+      const user = await loginUser(formData)      
+      user ? console.log(user) : setLoginError(true)
+    } else {
+      const res = await registerUser(formData)
+      console.log(res)
+    }
   };
 
   // reset everything on switching form type
@@ -153,7 +163,10 @@ export default function UserForm() {
       [e.target.name]: false,
     }));
 
-    if (e.target.name === "email") setEmailInvalid(false);
+    if (e.target.name === "email") {
+      setEmailInvalid(false);
+      setLoginError(false)
+    }
     if (e.target.name === "confirmPassword") setPasswordMatchError(false);
     if (e.target.name === "password") setPasswordLengthError(false);
   };
@@ -202,10 +215,11 @@ export default function UserForm() {
               />
             )}
             <TextField
-              error={emptyFields.email || emailInvalid}
+              error={emptyFields.email || emailInvalid || loginError}
               helperText={
                 (emptyFields.email && "Email address is required.") ||
-                (emailInvalid && "Email address is invalid.")
+                (emailInvalid && "Email address is invalid.") || 
+                (loginError && "Invalid credentials.")
               }
               margin="normal"
               required
