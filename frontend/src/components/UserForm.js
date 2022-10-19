@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { useLocation, useNavigate, redirect } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { registerUser, loginUser } from '../utils/apiHelper'
 
 function Copyright(props) {
@@ -46,7 +46,7 @@ const emptyForm = {
   confirmPassword: "",
 };
 
-export default function UserForm() {
+export default function UserForm({ setUser }) {
   const { pathname } = useLocation();
   const navigate = useNavigate()
 
@@ -54,9 +54,10 @@ export default function UserForm() {
 
   const [emptyFields, setEmptyFields] = useState(noEmptyFields);
   const [emailInvalid, setEmailInvalid] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [passwordLengthError, setPasswordLengthError] = useState(false);
-  const [loginError, setLoginError] = useState(false)
+  const [loginError, setLoginError] = useState(false)  
 
   const [checked, setChecked] = useState(false);
 
@@ -65,7 +66,7 @@ export default function UserForm() {
     let noErrors = true;
     // set error if email is invalid format
     if (
-      !formData.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+      !formData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
     ) {
       setEmailInvalid(true);
       noErrors = false;
@@ -127,13 +128,22 @@ export default function UserForm() {
     
     if (!validateFields()) return
   
+    let response;
     if (pathname === "/login") {
-      const user = await loginUser(formData)      
-      user ? console.log(user) : setLoginError(true)
+      response = await loginUser(formData)      
     } else {
-      const res = await registerUser(formData)
-      console.log(res)
+      response = await registerUser(formData)      
     }
+
+    if (response === "User already exists!") {
+      setEmailTaken(true)
+      return
+    }
+
+    console.log(response)
+    window.localStorage.setItem('currentUser', JSON.stringify(response))
+    setUser(response)
+    navigate('/')
   };
 
   // reset everything on switching form type
@@ -166,6 +176,7 @@ export default function UserForm() {
     if (e.target.name === "email") {
       setEmailInvalid(false);
       setLoginError(false)
+      setEmailTaken(false)
     }
     if (e.target.name === "confirmPassword") setPasswordMatchError(false);
     if (e.target.name === "password") setPasswordLengthError(false);
@@ -215,11 +226,12 @@ export default function UserForm() {
               />
             )}
             <TextField
-              error={emptyFields.email || emailInvalid || loginError}
+              error={emptyFields.email || emailInvalid || loginError || emailTaken}
               helperText={
                 (emptyFields.email && "Email address is required.") ||
                 (emailInvalid && "Email address is invalid.") || 
-                (loginError && "Invalid credentials.")
+                (loginError && "Invalid credentials.") || 
+                (emailTaken && "Email is already in use.")
               }
               margin="normal"
               required
