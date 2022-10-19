@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import MuiLink from "@mui/material/Link";
+import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -47,6 +47,7 @@ const emptyForm = {
 
 export default function UserForm() {
   const { pathname } = useLocation();
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState(emptyForm);
 
@@ -136,9 +137,9 @@ export default function UserForm() {
 
   const renderSwitchType = () => {
     return pathname === "/login" ? (
-      <Link to="/register">"Don't have an account? Sign Up"</Link>
+      <Link variant="body2" onClick={() => navigate('/register')}>"Don't have an account? Sign Up"</Link>
     ) : (
-      <Link to="/login">"Already have an account? Sign In"</Link>
+      <Link variant="body2" onClick={()=> navigate('/login')}>"Already have an account? Sign In"</Link>
     );
   };
 
@@ -271,10 +272,10 @@ export default function UserForm() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <MuiLink variant="body2">Forgot password?</MuiLink>
+                <Link variant="body2">Forgot password?</Link>
               </Grid>
               <Grid item>
-                <MuiLink variant="body2">{renderSwitchType()}</MuiLink>
+                {renderSwitchType()}
               </Grid>
             </Grid>
           </Box>

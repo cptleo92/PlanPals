@@ -10,13 +10,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { Link, useNavigate } from 'react-router-dom'
 
-
-
 export default function Navbar() {
   const navigate = useNavigate()
 
-  const handleLoginNav = () => {
-    navigate('login')
+  const handleUserNav = (e) => {
+    navigate(`/${e.target.name}`)
   }
 
   return (
@@ -35,7 +33,8 @@ export default function Navbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link to="/">PlanPals</Link>
           </Typography>         
-          <Button color="inherit" onClick={handleLoginNav}>Login</Button>
+            <Button name="login" color="inherit" onClick={handleUserNav}>Login</Button>
+            <Button name="register" color="inherit" onClick={handleUserNav}>Register</Button>
         </Toolbar>
       </AppBar>
     </Box>

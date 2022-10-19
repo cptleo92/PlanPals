@@ -1,8 +1,17 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import userEvent from '@testing-library/user-event'
+import App from './App'
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
-});
+describe('renders properly based on register/login path', () => {
+  test('full app rendering/navigating', () => {
+    render (<App /> )
+
+    expect(screen.getByText(/root/i)).toBeInTheDocument()
+
+    userEvent.click(screen.getByText(/login/i))
+    expect(screen.getByText(/don't have an account?/i)).toBeInTheDocument()
+
+    userEvent.click(screen.getByText(/register/i))
+    expect(screen.getByText(/already have an/i)).toBeInTheDocument()
+  })
+})
