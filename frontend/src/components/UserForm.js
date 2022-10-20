@@ -292,7 +292,6 @@ export default function UserForm({ setUser }) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
             >
               Sign In
             </Button>
