@@ -140,7 +140,11 @@ export default function UserForm({ setUser }) {
       return
     }
 
-    console.log(response)
+    if (response === "Invalid credentials") {
+      setLoginError(true)
+      return
+    }
+
     window.localStorage.setItem('currentUser', JSON.stringify(response))
     setUser(response)
     navigate('/')
