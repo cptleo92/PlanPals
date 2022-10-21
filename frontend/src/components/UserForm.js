@@ -11,10 +11,11 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import LinearProgress from "@mui/material/LinearProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { registerUser, loginUser } from '../utils/apiHelper'
+import { registerUser, loginUser } from "../utils/apiHelper";
 
 function Copyright(props) {
   return (
@@ -42,24 +43,23 @@ const emptyForm = {
 
 export default function UserForm({ setUser }) {
   const { pathname } = useLocation();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState(emptyForm);
 
-  const [nameError, setNameError] = useState("")
-  const [emailError, setEmailError] = useState("")
-  const [passwordError, setPasswordError] = useState("")
-  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
   const [checked, setChecked] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // returns true if no errors are found
   const validateFields = () => {
     let noErrors = true;
     // set error if email is invalid format
-    if (
-      !formData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
-    ) {
+    if (!formData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
       setEmailError("Email address is invalid.");
       noErrors = false;
     }
@@ -68,30 +68,30 @@ export default function UserForm({ setUser }) {
     if (pathname === "/register") {
       // set error if passowrds do not match
       if (formData.password !== formData.confirmPassword) {
-        setConfirmPasswordError("Passwords do not match.")
+        setConfirmPasswordError("Passwords do not match.");
         noErrors = false;
       }
 
       // set error if password is too short
       if (formData.password.length < 6) {
-        setPasswordError("Password must be at least 6 characters.")
+        setPasswordError("Password must be at least 6 characters.");
         noErrors = false;
       }
 
       // set error if any field is empty
       if (formData.name === "") {
-        setNameError("Name is required.")
+        setNameError("Name is required.");
         noErrors = false;
-      }  
+      }
     }
 
     if (formData.email === "") {
-      setEmailError("Email address is required.")
+      setEmailError("Email address is required.");
       noErrors = false;
     }
 
     if (formData.password === "") {
-      setPasswordError("Password is required.")
+      setPasswordError("Password is required.");
       noErrors = false;
     }
 
@@ -100,40 +100,51 @@ export default function UserForm({ setUser }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    if (!validateFields()) return
-  
-    let response;
-    if (pathname === "/login") {
-      response = await loginUser(formData)      
-    } else {
-      response = await registerUser(formData)      
+    setSubmitting(true);
+
+    if (validateFields()) {
+      let response;
+      if (pathname === "/login") {
+        response = await loginUser(formData);
+      } else {
+        response = await registerUser(formData);
+      }
+
+      if (
+        response === "User already exists!" ||
+        response === "Invalid credentials."
+      ) {
+        setEmailError(response);        
+      }
+
+      if (response.token) {
+        window.localStorage.setItem("currentUser", JSON.stringify(response));
+        setUser(response);
+        navigate("/");
+      }
     }
 
-    if (response === "User already exists!" || response === "Invalid credentials.") {
-      setEmailError(response)
-      return
-    }
-
-    window.localStorage.setItem('currentUser', JSON.stringify(response))
-    setUser(response)
-    navigate('/')
+    setSubmitting(false)
   };
 
   // reset everything on switching form type
   useEffect(() => {
     setFormData(emptyForm);
-    setNameError("")
-    setEmailError("")
-    setPasswordError("")
-    setConfirmPasswordError("")
+    setNameError("");
+    setEmailError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
   }, [pathname]);
 
-  const renderSwitchType = () => {
+  const renderSwitchType = () => {  
     return pathname === "/login" ? (
-      <Link variant="body2" onClick={() => navigate('/register')}>"Don't have an account? Sign Up"</Link>
+      <Link variant="body2" onClick={() => navigate("/register")}>
+        "Don't have an account? Sign Up"
+      </Link>
     ) : (
-      <Link variant="body2" onClick={()=> navigate('/login')}>"Already have an account? Sign In"</Link>
+      <Link variant="body2" onClick={() => navigate("/login")}>
+        "Already have an account? Sign In"
+      </Link>
     );
   };
 
@@ -142,9 +153,9 @@ export default function UserForm({ setUser }) {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-    
-    if (e.target.name === "name") setNameError("")
-    if (e.target.name === "email") setEmailError("")
+
+    if (e.target.name === "name") setNameError("");
+    if (e.target.name === "email") setEmailError("");
     if (e.target.name === "confirmPassword") setConfirmPasswordError("");
     if (e.target.name === "password") setPasswordError("");
   };
@@ -250,16 +261,15 @@ export default function UserForm({ setUser }) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={submitting}
             >
-              Sign In
+              {pathname === "/login" ? "Sign In" : "Sign Up"}
             </Button>
             <Grid container>
               <Grid item xs>
                 <Link variant="body2">Forgot password?</Link>
               </Grid>
-              <Grid item>
-                {renderSwitchType()}
-              </Grid>
+              <Grid item>{renderSwitchType()}</Grid>
             </Grid>
           </Box>
         </Box>

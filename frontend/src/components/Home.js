@@ -3,6 +3,7 @@ import { getMyGroups } from "../utils/apiHelper";
 
 import Typography from "@mui/material/Typography";
 import NewGroupButton from "./NewGroupButton";
+import Loading from "./Loading";
 
 const Home = ({ user }) => {
   const [myGroups, setMyGroups] = useState([]);
@@ -17,7 +18,7 @@ const Home = ({ user }) => {
   }, []);
 
   return loading ? (
-    <div>Loading</div>
+    <Loading />
   ) : (
     <>
       <Typography variant="h3" component="h2" mt={3}>
