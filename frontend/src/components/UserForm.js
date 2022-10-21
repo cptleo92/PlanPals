@@ -33,12 +33,6 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const noEmptyFields = {
-  name: false,
-  email: false,
-  password: false,
-};
-
 const emptyForm = {
   name: "",
   email: "",
@@ -52,12 +46,10 @@ export default function UserForm({ setUser }) {
 
   const [formData, setFormData] = useState(emptyForm);
 
-  const [emptyFields, setEmptyFields] = useState(noEmptyFields);
-  const [emailInvalid, setEmailInvalid] = useState(false);
-  const [emailTaken, setEmailTaken] = useState(false);
-  const [passwordMatchError, setPasswordMatchError] = useState(false);
-  const [passwordLengthError, setPasswordLengthError] = useState(false);
-  const [loginError, setLoginError] = useState(false)  
+  const [nameError, setNameError] = useState("")
+  const [emailError, setEmailError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [confirmPasswordError, setConfirmPasswordError] = useState("")
 
   const [checked, setChecked] = useState(false);
 
@@ -68,7 +60,7 @@ export default function UserForm({ setUser }) {
     if (
       !formData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
     ) {
-      setEmailInvalid(true);
+      setEmailError("Email address is invalid.");
       noErrors = false;
     }
 
@@ -76,47 +68,30 @@ export default function UserForm({ setUser }) {
     if (pathname === "/register") {
       // set error if passowrds do not match
       if (formData.password !== formData.confirmPassword) {
-        setPasswordMatchError(true);
+        setConfirmPasswordError("Passwords do not match.")
         noErrors = false;
       }
 
       // set error if password is too short
       if (formData.password.length < 6) {
-        setPasswordLengthError(true);
+        setPasswordError("Password must be at least 6 characters.")
         noErrors = false;
       }
 
       // set error if any field is empty
       if (formData.name === "") {
-        setEmptyFields((prevState) => ({
-          ...prevState,
-          name: true,
-        }));
+        setNameError("Name is required.")
         noErrors = false;
-      }
-
-      if (formData.confirmPassword === "") {
-        setEmptyFields((prevState) => ({
-          ...prevState,
-          confirmPassword: true,
-        }));
-        noErrors = false;
-      }
+      }  
     }
 
     if (formData.email === "") {
-      setEmptyFields((prevState) => ({
-        ...prevState,
-        email: true,
-      }));
+      setEmailError("Email address is required.")
       noErrors = false;
     }
 
     if (formData.password === "") {
-      setEmptyFields((prevState) => ({
-        ...prevState,
-        password: true,
-      }));
+      setPasswordError("Password is required.")
       noErrors = false;
     }
 
@@ -135,13 +110,8 @@ export default function UserForm({ setUser }) {
       response = await registerUser(formData)      
     }
 
-    if (response === "User already exists!") {
-      setEmailTaken(true)
-      return
-    }
-
-    if (response === "Invalid credentials") {
-      setLoginError(true)
+    if (response === "User already exists!" || response === "Invalid credentials.") {
+      setEmailError(response)
       return
     }
 
@@ -153,10 +123,10 @@ export default function UserForm({ setUser }) {
   // reset everything on switching form type
   useEffect(() => {
     setFormData(emptyForm);
-    setEmptyFields(noEmptyFields);
-    setEmailInvalid(false);
-    setPasswordMatchError(false);
-    setPasswordLengthError(false);
+    setNameError("")
+    setEmailError("")
+    setPasswordError("")
+    setConfirmPasswordError("")
   }, [pathname]);
 
   const renderSwitchType = () => {
@@ -172,18 +142,11 @@ export default function UserForm({ setUser }) {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
-    setEmptyFields((prevState) => ({
-      ...prevState,
-      [e.target.name]: false,
-    }));
-
-    if (e.target.name === "email") {
-      setEmailInvalid(false);
-      setLoginError(false)
-      setEmailTaken(false)
-    }
-    if (e.target.name === "confirmPassword") setPasswordMatchError(false);
-    if (e.target.name === "password") setPasswordLengthError(false);
+    
+    if (e.target.name === "name") setNameError("")
+    if (e.target.name === "email") setEmailError("")
+    if (e.target.name === "confirmPassword") setConfirmPasswordError("");
+    if (e.target.name === "password") setPasswordError("");
   };
 
   const handleCheckbox = (e) => {
@@ -216,8 +179,8 @@ export default function UserForm({ setUser }) {
           >
             {pathname === "/register" && (
               <TextField
-                error={emptyFields.name}
-                helperText={emptyFields.name && "Name is required."}
+                error={nameError !== ""}
+                helperText={nameError}
                 margin="normal"
                 required
                 fullWidth
@@ -230,13 +193,8 @@ export default function UserForm({ setUser }) {
               />
             )}
             <TextField
-              error={emptyFields.email || emailInvalid || loginError || emailTaken}
-              helperText={
-                (emptyFields.email && "Email address is required.") ||
-                (emailInvalid && "Email address is invalid.") || 
-                (loginError && "Invalid credentials.") || 
-                (emailTaken && "Email is already in use.")
-              }
+              error={emailError !== ""}
+              helperText={emailError}
               margin="normal"
               required
               fullWidth
@@ -248,12 +206,8 @@ export default function UserForm({ setUser }) {
               onChange={handleChange}
             />
             <TextField
-              error={emptyFields.password || passwordLengthError}
-              helperText={
-                (emptyFields.password && "Password is required.") ||
-                (passwordLengthError &&
-                  "Password must be at least 6 characters.")
-              }
+              error={passwordError !== ""}
+              helperText={passwordError}
               margin="normal"
               required
               fullWidth
@@ -267,8 +221,8 @@ export default function UserForm({ setUser }) {
             />
             {pathname === "/register" && (
               <TextField
-                error={passwordMatchError}
-                helperText={passwordMatchError && "Passwords do not match."}
+                error={confirmPasswordError !== ""}
+                helperText={confirmPasswordError}
                 margin="normal"
                 required
                 fullWidth

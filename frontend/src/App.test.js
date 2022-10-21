@@ -6,7 +6,7 @@ describe('renders properly based on register/login path', () => {
   test('full app rendering/navigating', () => {
     render (<App /> )
 
-    expect(screen.getByText(/root/i)).toBeInTheDocument()
+    expect(screen.getByText(/front page/i)).toBeInTheDocument()
 
     userEvent.click(screen.getByText(/login/i))
     expect(screen.getByText(/don't have an account?/i)).toBeInTheDocument()
