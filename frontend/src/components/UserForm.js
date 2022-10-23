@@ -16,6 +16,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUser, loginUser } from "../utils/apiHelper";
+import { CircularProgress } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -100,6 +101,8 @@ export default function UserForm({ setUser }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (submitting) return;
+
     setSubmitting(true);
 
     if (validateFields()) {
@@ -114,7 +117,7 @@ export default function UserForm({ setUser }) {
         response === "User already exists!" ||
         response === "Invalid credentials."
       ) {
-        setEmailError(response);        
+        setEmailError(response);
       }
 
       if (response.token) {
@@ -124,7 +127,7 @@ export default function UserForm({ setUser }) {
       }
     }
 
-    setSubmitting(false)
+    setSubmitting(false);
   };
 
   // reset everything on switching form type
@@ -136,7 +139,7 @@ export default function UserForm({ setUser }) {
     setConfirmPasswordError("");
   }, [pathname]);
 
-  const renderSwitchType = () => {  
+  const renderSwitchType = () => {
     return pathname === "/login" ? (
       <Link variant="body2" onClick={() => navigate("/register")}>
         "Don't have an account? Sign Up"
@@ -162,6 +165,20 @@ export default function UserForm({ setUser }) {
 
   const handleCheckbox = (e) => {
     setChecked(e.target.checked);
+  };
+
+  const renderSubmit = () => {
+    return (
+      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+        {submitting ? (
+          <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+        ) : pathname === "/login" ? (
+          "Sign In"
+        ) : (
+          "Sign Up"
+        )}
+      </Button>
+    );
   };
 
   return (
@@ -256,15 +273,8 @@ export default function UserForm({ setUser }) {
               }
               label="Remember me"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={submitting}
-            >
-              {pathname === "/login" ? "Sign In" : "Sign Up"}
-            </Button>
+            {renderSubmit()}
+
             <Grid container>
               <Grid item xs>
                 <Link variant="body2">Forgot password?</Link>
