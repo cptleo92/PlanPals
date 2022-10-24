@@ -1,12 +1,5 @@
 import axios from 'axios'
 
-axios.interceptors.request.use(function (config) {
-  const currentUser = JSON.parse(window.localStorage.getItem('currentUser'))
-  if (currentUser?.token) config.headers.Authorization = `Bearer ${currentUser.token}`
-
-  return config
-})
-
 export const registerUser = async (formData) => {
   try {
     const response = await axios.post('/api/users/', formData) 
