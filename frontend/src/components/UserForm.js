@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { registerUser, loginUser } from "../utils/apiHelper";
 import { CircularProgress } from "@mui/material";
+import { UserContext } from "../App";
 
 function Copyright(props) {
   return (
@@ -42,9 +43,11 @@ const emptyForm = {
   confirmPassword: "",
 };
 
-export default function UserForm({ setUser }) {
+export default function UserForm() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const { setUser } = useContext(UserContext)
 
   const [formData, setFormData] = useState(emptyForm);
 

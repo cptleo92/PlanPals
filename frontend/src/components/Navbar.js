@@ -1,4 +1,6 @@
-// import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { UserContext } from "../App";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,16 +9,13 @@ import Button from "@mui/material/Button";
 
 import { Link, useNavigate } from 'react-router-dom'
 
-export default function Navbar({ user, setUser }) {  
+export default function Navbar() {  
   const navigate = useNavigate()
+
+  const { user, logoutUser } = useContext(UserContext)  
 
   const handleUserNav = (e) => {
     navigate(`/${e.target.name}`)
-  }
-
-  const logoutUser = () => {
-    window.localStorage.removeItem('currentUser')
-    setUser(null)
   }
 
   const userButtons = () => {

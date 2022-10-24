@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Container from "@mui/material/Container";
 
-function Layout({ user, setUser }) {
+function Layout() {
   return (
     <>
-      <Navbar user={user} setUser={setUser} />
+      <Navbar />
       <Container maxWidth="md">
         <Outlet />
       </Container>
