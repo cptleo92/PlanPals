@@ -14,7 +14,7 @@ const Home = () => {
   const [myGroups, setMyGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const user = useContext(UserContext)
+  const { user } = useContext(UserContext)
 
   useEffect(() => {
     setLoading(true);
@@ -31,7 +31,7 @@ const Home = () => {
       <Typography variant="h3" component="h2" mt={3}>
         Hello there, {user?.name}!
       </Typography>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} mb={2} mt={2}>
+      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} mb={2} mt={2}>        
         {myGroups.map((group) => (
           <Grid xs={2} sm={4} md={4} key={group._id}>
             <GroupCard group={group} />

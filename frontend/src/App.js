@@ -7,6 +7,7 @@ import UserForm from "./components/UserForm";
 import Layout from "./Layout";
 import Home from "./components/Home";
 import NewGroupForm from "./components/NewGroupForm";
+import Loading from './components/Loading'
 
 // history router, used for redirecting in axios interceptors
 import { createBrowserHistory } from "history";
@@ -33,10 +34,8 @@ axios.interceptors.response.use(
     if (
       error.response.status === 401 &&
       error.response.data.error === "Token expired"
-    ) {
-      console.log("redirecting?");
-      window.localStorage.removeItem("currentUser");
-      history.replace("/");
+    ) {            
+      history.replace("/session-expired");
     }
     return Promise.reject(error);
   }
@@ -79,6 +78,8 @@ function App() {
               <Route path="/groups/create" element={<NewGroupForm />} />
             </Route>
           </Route>
+
+          <Route path="/session-expired" element={<Loading redirect />} />          
         </Routes>
       </HistoryRouter>
     </UserContext.Provider>

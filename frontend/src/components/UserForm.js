@@ -11,7 +11,6 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import LinearProgress from "@mui/material/LinearProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -41,6 +40,7 @@ const emptyForm = {
   email: "",
   password: "",
   confirmPassword: "",
+  rememberUser: false
 };
 
 export default function UserForm() {
@@ -56,7 +56,6 @@ export default function UserForm() {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
 
-  const [checked, setChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // returns true if no errors are found
@@ -167,7 +166,10 @@ export default function UserForm() {
   };
 
   const handleCheckbox = (e) => {
-    setChecked(e.target.checked);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      rememberUser: e.target.checked
+    }))
   };
 
   const renderSubmit = () => {
@@ -270,7 +272,7 @@ export default function UserForm() {
                 <Checkbox
                   value="remember"
                   color="primary"
-                  checked={checked}
+                  checked={formData.rememberUser}
                   onChange={handleCheckbox}
                 />
               }
