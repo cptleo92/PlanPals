@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { createGroup } from "../../utils/apiHelper";
 
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import { createGroup } from "../utils/apiHelper";
 
 const NewGroupForm = () => {
   const navigate = useNavigate();

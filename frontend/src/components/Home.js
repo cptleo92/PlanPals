@@ -4,9 +4,9 @@ import { getMyGroups } from "../utils/apiHelper";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
 
-import NewGroupButton from "./NewGroupButton";
+import NewGroupButton from "./Groups/NewGroupButton";
 import Loading from "./Loading";
-import GroupCard from "./GroupCard";
+import GroupCard from "./Groups/GroupCard";
 
 import { UserContext } from "../App";
 

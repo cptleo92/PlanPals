@@ -6,7 +6,7 @@ import axios from "axios";
 import UserForm from "./components/UserForm";
 import Layout from "./Layout";
 import Home from "./components/Home";
-import NewGroupForm from "./components/NewGroupForm";
+import NewGroupForm from "./components/Groups/NewGroupForm";
 import Loading from './components/Loading'
 
 // history router, used for redirecting in axios interceptors

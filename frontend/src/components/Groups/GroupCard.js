@@ -5,7 +5,15 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
+import { useNavigate } from 'react-router-dom'
+
 const GroupCard = ({ group }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    
+  }
+
   return (
     <Card sx={{ width: 270 }}>
       <CardMedia 
@@ -23,7 +31,7 @@ const GroupCard = ({ group }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">View Group</Button>
+        <Button size="small" onClick={handleClick}>View Group</Button>
       </CardActions>
     </Card>
   )
