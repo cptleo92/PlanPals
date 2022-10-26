@@ -2,6 +2,7 @@ import { useState, useEffect, createContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthRoutes, ProtectedRoutes } from "./utils/routesAuth";
 import axios from "axios";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import UserForm from "./components/UserForm";
 import Layout from "./Layout";
@@ -46,6 +47,8 @@ axios.interceptors.response.use(
 
 export const UserContext = createContext();
 
+const queryClient = new QueryClient();
+
 function App() {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("currentUser"))
@@ -62,29 +65,31 @@ function App() {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, logoutUser }}>
-      <HistoryRouter history={history}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route element={<AuthRoutes loggedIn={loggedIn} />}>
-              <Route path="/" element={<div>This is front page</div>} />
-              <Route path="/login" element={<UserForm />} />
-              <Route path="/register" element={<UserForm />} />
+    <QueryClientProvider client={queryClient}>
+      <UserContext.Provider value={{ user, setUser, logoutUser }}>
+        <HistoryRouter history={history}>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route element={<AuthRoutes loggedIn={loggedIn} />}>
+                <Route path="/" element={<div>This is front page</div>} />
+                <Route path="/login" element={<UserForm />} />
+                <Route path="/register" element={<UserForm />} />
+              </Route>
+
+              <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/groups/create" element={<NewGroupForm />} />
+                <Route path="/groups/:path" element={<GroupPage />} />
+              </Route>
+
+              <Route path="/error" element={<Error />} />
             </Route>
 
-            <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/groups/create" element={<NewGroupForm />} />
-              <Route path="/groups/:path" element={<GroupPage />} />
-            </Route>
-
-            <Route path="/error" element={<Error />} />
-          </Route>
-
-          <Route path="/session-expired" element={<Loading redirect />} />
-        </Routes>
-      </HistoryRouter>
-    </UserContext.Provider>
+            <Route path="/session-expired" element={<Loading redirect />} />
+          </Routes>
+        </HistoryRouter>
+      </UserContext.Provider>
+    </QueryClientProvider>
   );
 }
 

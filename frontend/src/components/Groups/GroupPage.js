@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { getGroup } from "../../utils/apiHelper";
 import Loading from "../Loading";
 
@@ -8,41 +9,28 @@ import { Box } from "@mui/material";
 
 const GroupPage = () => {
   const { path } = useParams();
-
   const navigate = useNavigate();
 
-  const [group, setGroup] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { isLoading, error, data } = useQuery(["group", path], () => getGroup(path))
 
-  useEffect(() => {
-    if (path === "undefined") {
-      navigate("/error");
-    } else {
-      setLoading(true);
-      getGroup(path)
-        .then((group) => {
-          setGroup(group);
-        })
-        .then(() => setLoading(false))
-        .catch((err) => console.log("GroupPage: ", err));
-    }
-  }, [path, navigate]);
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    console.log(error)
+    navigate('/error') 
+  }
 
   return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box>
-          <Typography gutterBottom variant="h2">
-            {group.title}
-          </Typography>
-          <Typography gutterBottom variant="subtitle1">
-            {group.description}
-          </Typography>   
-        </Box>
-      )}
-    </>
+    <Box>
+      <Typography gutterBottom variant="h2">
+        {data?.title}
+      </Typography>
+      <Typography gutterBottom variant="subtitle1">
+        {data?.description}
+      </Typography>
+    </Box>
   );
 };
 
