@@ -23,6 +23,10 @@ const groupSchema = mongoose.Schema(
         ref: 'User'
       }
     ],
+    path: {
+      type: String,
+      required: true
+    }
     // hangouts: [
     //   {
     //     type: mongoose.Schema.Types.ObjectId,
