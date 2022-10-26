@@ -87,7 +87,7 @@ describe('user login', () => {
       .send(testUserWrong)
       .expect(400)
 
-    expect(response.body.error).toEqual('Invalid credentials')
+    expect(response.body.error).toEqual('Invalid credentials.')
   })
 
   test('success if valid credentials', async () => {

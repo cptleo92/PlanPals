@@ -7,7 +7,7 @@ const User = require('../models/userModel')
 const Group = require('../models/groupModel')
 
 const seedDb = require('./seed_db/seed.json')
-const { seedUsers, loginTestUser, logDb } = require('./seed_db/test_helpers')
+const { seedUsers, loginTestUser } = require('./seed_db/test_helpers')
 
 const testUsers = Object.values(seedDb.testUsers)
 const testGroups = Object.values(seedDb.testGroups)
@@ -29,7 +29,7 @@ describe('creating a new group', () => {
       .send(testGroups[0])
       .expect(401)
 
-    expect(response.body.error).toEqual('Not authorized')
+    expect(response.body.error).toEqual('No token found')
 
     const allGroups = await Group.find({})
     expect(allGroups.length).toEqual(0)
