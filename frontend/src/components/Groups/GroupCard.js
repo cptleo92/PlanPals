@@ -11,7 +11,7 @@ const GroupCard = ({ group }) => {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    
+    navigate(`/groups/${group.path}`)
   }
 
   return (

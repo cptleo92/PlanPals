@@ -35,3 +35,12 @@ export const getMyGroups = async () => {
     return err.response.data.error
   }
 }
+
+export const getGroup = async (id) => {
+  try {
+    const response = await axios.get(`/api/groups/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}

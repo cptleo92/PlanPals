@@ -7,11 +7,13 @@ import UserForm from "./components/UserForm";
 import Layout from "./Layout";
 import Home from "./components/Home";
 import NewGroupForm from "./components/Groups/NewGroupForm";
-import Loading from './components/Loading'
+import Loading from "./components/Loading";
 
 // history router, used for redirecting in axios interceptors
 import { createBrowserHistory } from "history";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import GroupPage from "./components/Groups/GroupPage";
+import Error from "./components/Error";
 
 let history = createBrowserHistory();
 
@@ -34,7 +36,8 @@ axios.interceptors.response.use(
     if (
       error.response.status === 401 &&
       error.response.data.error === "Token expired"
-    ) {            
+    ) {
+      console.log("Token expired. Redirecting...");
       history.replace("/session-expired");
     }
     return Promise.reject(error);
@@ -44,14 +47,13 @@ axios.interceptors.response.use(
 export const UserContext = createContext();
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser"))
+  );
   const loggedIn = Boolean(user);
 
   useEffect(() => {
-    const currentUser = window.localStorage.getItem("currentUser");
-    if (currentUser) {
-      setUser(JSON.parse(currentUser));
-    }
+    setUser(JSON.parse(localStorage.getItem("currentUser")));
   }, []);
 
   const logoutUser = () => {
@@ -67,19 +69,19 @@ function App() {
             <Route element={<AuthRoutes loggedIn={loggedIn} />}>
               <Route path="/" element={<div>This is front page</div>} />
               <Route path="/login" element={<UserForm />} />
-              <Route
-                path="/register"
-                element={<UserForm />}
-              />
+              <Route path="/register" element={<UserForm />} />
             </Route>
 
             <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
               <Route path="/home" element={<Home />} />
               <Route path="/groups/create" element={<NewGroupForm />} />
+              <Route path="/groups/:path" element={<GroupPage />} />
             </Route>
+
+            <Route path="/error" element={<Error />} />
           </Route>
 
-          <Route path="/session-expired" element={<Loading redirect />} />          
+          <Route path="/session-expired" element={<Loading redirect />} />
         </Routes>
       </HistoryRouter>
     </UserContext.Provider>
