@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getGroup } from "../../utils/apiHelper";
 import Loading from "../Loading";
 
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
+
+const linkStyle = {
+  fontWeight: 500,
+  color: 'blue',
+  textDecoration: 'underline'
+}
 
 const GroupPage = () => {
   const { path } = useParams();
@@ -30,6 +36,7 @@ const GroupPage = () => {
       <Typography gutterBottom variant="subtitle1">
         {data?.description}
       </Typography>
+      <Link style={linkStyle} to="/hangouts/create">Host a hangout</Link>
     </Box>
   );
 };

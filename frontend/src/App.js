@@ -15,6 +15,7 @@ import { createBrowserHistory } from "history";
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import GroupPage from "./components/Groups/GroupPage";
 import Error from "./components/Error";
+import NewHangoutForm from "./components/Hangouts/NewHangoutForm";
 
 let history = createBrowserHistory();
 
@@ -80,6 +81,7 @@ function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/groups/create" element={<NewGroupForm />} />
                 <Route path="/groups/:path" element={<GroupPage />} />
+                <Route path="/hangouts/create" element={<NewHangoutForm />} />
               </Route>
 
               <Route path="/error" element={<Error />} />
