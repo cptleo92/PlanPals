@@ -10,7 +10,7 @@ const getUser = async (request, response) => {
 }
 
 const registerUser = async (request, response) => {
-  const { name, email, password } = request.body
+  const { name, email, password, rememberUser } = request.body
 
   if (!name || !email || !password) {
     return response.status(400).json({ error: 'All fields are required!' })
@@ -48,7 +48,7 @@ const registerUser = async (request, response) => {
       _id: newUser.id,
       name: newUser.name,
       email: newUser.email,
-      token: generateToken(newUser.id)
+      token: generateToken(newUser.id, rememberUser)
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -56,7 +56,7 @@ const registerUser = async (request, response) => {
 }
 
 const loginUser = async (request, response) => {
-  const { email, password } = request.body
+  const { email, password, rememberUser } = request.body
 
   const user = await User.findOne({ email })
   if (user && (await bcrypt.compare(password, user.password))) {
@@ -64,20 +64,20 @@ const loginUser = async (request, response) => {
       _id: user.id,
       name: user.name,
       email: user.email,
-      token: generateToken(user.id)
+      token: generateToken(user.id, rememberUser)
     })
   } else {
     response.status(400).json({
-      error: 'Invalid credentials'
+      error: 'Invalid credentials.'
     })
   }
 }
 
-const generateToken = (id) => {
+const generateToken = (id, rememberUser) => {
   return jwt.sign(
     { id },
     process.env.SECRET,
-    { expiresIn: '60d' }
+    { expiresIn: rememberUser ? '30d' : '1h' }
   )
 }
 

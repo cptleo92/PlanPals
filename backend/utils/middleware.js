@@ -40,17 +40,26 @@ const auth = async (request, response, next) => {
 
       const decoded = jwt.verify(token, process.env.SECRET)
 
+      // token expiration check
+      // if (decoded.exp < Date.now() / 1000) {
+      //   console.log('success')
+
+      // }
+
       request.user = await User.findById(decoded.id).select('-password')
 
       next()
     } catch (error) {
       logger.error(error.message)
+      if (error.message === 'jwt expired') {
+        return response.status(401).json({ error: 'Token expired' })
+      }
       response.status(401).json({ error: 'Not authorized' })
     }
   }
 
   if (!token) {
-    response.status(401).json({ error: 'Not authorized' })
+    response.status(401).json({ error: 'No token found' })
   }
 }
 

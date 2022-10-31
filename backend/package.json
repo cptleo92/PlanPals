@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
     "mongoose-autopopulate": "^0.16.1",
+    "nanoid": "^3.3.4",
     "validator": "^13.7.0"
   },
   "devDependencies": {

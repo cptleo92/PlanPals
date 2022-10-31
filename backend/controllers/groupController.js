@@ -1,10 +1,21 @@
 const Group = require('../models/groupModel')
 const User = require('../models/userModel')
+const { nanoid } = require('nanoid')
 
 const getMyGroups = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
-
   response.json(currentUser.groups)
+}
+
+const getGroupByIDorPath = async (request, response) => {
+  const query = request.params.id
+  let group
+  if (query.length !== 6) {
+    group = await Group.findById(query)
+  } else {
+    group = await Group.findOne({ path: query })
+  }
+  response.json(group)
 }
 
 const createGroup = async (request, response) => {
@@ -21,6 +32,7 @@ const createGroup = async (request, response) => {
     description,
     admin: currentUser.id,
     members: [],
+    path: nanoid(6)
   })
 
   try {
@@ -35,6 +47,7 @@ const createGroup = async (request, response) => {
       description: newGroup.description,
       admin: currentUser.id,
       members: [],
+      path: newGroup.path
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -142,5 +155,6 @@ module.exports = {
   createGroup,
   joinGroup,
   leaveGroup,
-  kickFromGroup
+  kickFromGroup,
+  getGroupByIDorPath
 }
