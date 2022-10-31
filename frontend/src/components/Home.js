@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { getMyGroups } from "../utils/apiHelper";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from 'react-router-dom'
 
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -11,17 +10,17 @@ import Loading from "./Loading";
 import GroupCard from "./Groups/GroupCard";
 
 import { UserContext } from "../App";
+import Error from "./Error";
 
 const Home = () => {
   const { user } = useContext(UserContext)
-  const navigate = useNavigate()
   const { isLoading, error, data } = useQuery(["myGroups", user._id], getMyGroups)
 
   if (isLoading) {
     return <Loading />
   }
 
-  if (error) navigate('/error')
+  if (error) return <Error />
 
   return (
     <>

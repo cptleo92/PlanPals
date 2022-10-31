@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useEffect, useContext } from "react"
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from 'react-router-dom'
 
 import Backdrop from '@mui/material/Backdrop';
@@ -7,12 +8,15 @@ import { UserContext } from '../App';
 
 export default function Loading({ redirect }) {
   const navigate = useNavigate()
-  const { logoutUser } = React.useContext(UserContext)
+  const queryClient = useQueryClient()
 
-  React.useEffect(() => {
+  const { logoutUser } = useContext(UserContext)
+
+  useEffect(() => {
     if (redirect) {
       window.localStorage.removeItem('currentUser')
       logoutUser();
+      queryClient.removeQueries()
       navigate('/login')
     }
   })
