@@ -20,9 +20,13 @@ const groupSchema = mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User'
       }
     ],
+    path: {
+      type: String,
+      required: true
+    }
     // hangouts: [
     //   {
     //     type: mongoose.Schema.Types.ObjectId,
@@ -31,8 +35,16 @@ const groupSchema = mongoose.Schema(
     // ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
+
+// function autopopulateMembers(next) {
+//   this.populate('members', {
+//     name: 1,
+//     email: 1
+//   })
+//   next()
+// }
 
 module.exports = mongoose.model('Group', groupSchema)
