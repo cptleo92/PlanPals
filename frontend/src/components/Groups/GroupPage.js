@@ -36,7 +36,7 @@ const GroupPage = () => {
       <Typography gutterBottom variant="subtitle1">
         {data?.description}
       </Typography>
-      <Link style={linkStyle} to="/hangouts/create">Host a hangout</Link>
+      <Link style={linkStyle} to="./hangouts/create">Host a hangout</Link>
     </Box>
   );
 };
