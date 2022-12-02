@@ -26,13 +26,13 @@ const groupSchema = mongoose.Schema(
     path: {
       type: String,
       required: true
-    }
-    // hangouts: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Hangout',
-    //   }
-    // ]
+    },
+    hangouts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hangout',
+      }
+    ]
   },
   {
     timestamps: true
