@@ -79,7 +79,6 @@ describe('creating a new hangout', () => {
   })
 
   test('successful creation returns proper json and adds new hangout to user and group', async () => {
-
     for (let testHangout of testHangouts) {
       await api
         .post('/api/hangouts')
@@ -106,9 +105,44 @@ describe('creating a new hangout', () => {
     // making sure the new hangouts were added to the user
     expect(currentUser.hangouts.length).toEqual(testHangouts.length)
 
-
     // making sure hangouts were added to their respective groups
     expect(group.hangouts).toContainEqual(hangout._id)
+  })
+})
+
+describe('attending a handout', () => {
+  let testHangout
+  beforeAll(async () => {
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+  })
+
+  test('cannot attend a hangout twice', async () => {
+    const response = await api
+      .post(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
+
+    expect(response.body.error).toEqual('You are already attending this hangout')
+  })
+
+  test('successfully attending a hangout updates models correctly', async () => {
+    let testUser = await User.findOne({ name: testUsers[1].name })
+    let token2 = await loginTestUser(testUsers[1])
+
+    const response = await api
+      .post(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(200)
+
+    expect(response.body.attendees).toContain(testUser.id)
+
+    // double checking that this person can't attend again
+    const response2 = await api
+      .post(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(400)
+
+    expect(response2.body.error).toEqual('You are already attending this hangout')
   })
 })
 

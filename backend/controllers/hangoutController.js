@@ -55,7 +55,43 @@ const createHangout = async (request, response) => {
   }
 }
 
-const joinHangout = async (request, response) => {}
+const joinHangout = async (request, response) => {
+  const hangoutId = request.params.id
+
+  const currentUser = await User.findById(request.user.id)
+  const hangoutToJoin = await Hangout.findById(hangoutId)
+
+  // don't let user join twice, or admin join again
+  const alreadyJoined = () => {
+    let userHangouts = currentUser.hangouts.map((hangout) => hangout.id)
+    let hangoutAttendees = hangoutToJoin.attendees.map((mem) => mem.toString())
+    let isPlanner = hangoutToJoin.planner.toString() === request.user.id
+
+    return (
+      userHangouts.includes(hangoutId) ||
+      hangoutAttendees.includes(currentUser.id) ||
+      isPlanner
+    )
+  }
+
+  if (alreadyJoined()) {
+    return response
+      .status(400)
+      .json({ error: 'You are already attending this hangout' })
+  }
+
+  try {
+    currentUser.hangouts.push(hangoutId)
+    await currentUser.save()
+
+    hangoutToJoin.attendees.push(currentUser.id)
+    await hangoutToJoin.save()
+
+    response.status(200).json(hangoutToJoin)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
 
 const leaveHangout = async (request, response) => {}
 
