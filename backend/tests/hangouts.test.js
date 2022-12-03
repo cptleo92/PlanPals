@@ -8,7 +8,7 @@ const Group = require('../models/groupModel')
 const Hangout = require('../models/hangoutModel')
 
 const seedDb = require('./seed_db/seed.json')
-const { seedUsers, seedGroups, loginTestUser, logDb } = require('./seed_db/test_helpers')
+const { seedUsers, seedGroups, loginTestUser } = require('./seed_db/test_helpers')
 
 const testUsers = Object.values(seedDb.testUsers)
 const testGroups = Object.values(seedDb.testGroups)
@@ -143,6 +143,47 @@ describe('attending a handout', () => {
       .expect(400)
 
     expect(response2.body.error).toEqual('You are already attending this hangout')
+  })
+})
+
+describe('leaving a hangout', () => {
+  test('fails under invalid conditions', async () => {
+    // user who is not attending and trying to leave should throw an error
+    const testUser = await User.findOne({ name: testUsers[1].name })
+    const token2 = await loginTestUser(testUsers[1])
+
+    const testHangout = await Hangout.findOne({ title: testHangouts[2].title })
+
+    expect(testHangout.attendees).not.toContain(testUser.id)
+
+    const response = await api
+      .delete(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(400)
+
+    expect(response.body.error).toEqual('You are already not attending')
+  })
+
+  test('successfully leaving a hangout updates models correctly', async () => {
+    // using the success case from the 'attending a hangout' block
+    let testUser = await User.findOne({ name: testUsers[1].name })
+    const token2 = await loginTestUser(testUsers[1])
+    let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    // make sure the user has the hangout id and vice versa
+    expect(testHangout.attendees).toContainEqual(testUser._id)
+    expect(testUser.hangouts).toContainEqual(testHangout._id)
+
+    await api
+      .delete(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(204)
+
+    testUser = await User.findOne({ name: testUsers[1].name })
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    console.log(testUser,testHangout)
+    expect(testHangout.attendees).not.toContainEqual(testUser._id)
+    expect(testUser.hangouts).not.toContainEqual(testHangout._id)
   })
 })
 

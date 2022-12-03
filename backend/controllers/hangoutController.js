@@ -93,7 +93,43 @@ const joinHangout = async (request, response) => {
   }
 }
 
-const leaveHangout = async (request, response) => {}
+const leaveHangout = async (request, response) => {
+  // error if hangout is invalid
+  const hangout = await Hangout.findById(request.params.id)
+
+  if (!hangout) {
+    return response.status(404).json({ error: 'hangout not found' })
+  }
+
+  const currentUser = await User.findById(request.user.id)
+
+  // user can't leave if user isn't attending in the first place
+  if (
+    !currentUser.hangouts.includes(hangout.id) ||
+    !hangout.attendees.includes(currentUser.id)
+  ) {
+    return response.status(400).json({ error: 'You are already not attending' })
+  }
+
+  try {
+    // remove hangout from user's hangouts
+    currentUser.hangouts = currentUser.hangouts.filter((usersHangout) => {
+      return usersHangout.toString() !== hangout.id
+    })
+
+    await currentUser.save()
+
+    // remove user from hangout attendees
+    hangout.attendees = hangout.attendees.filter((attendee) => {
+      return attendee.toString() !== currentUser.id
+    })
+    await hangout.save()
+
+    response.sendStatus(204)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
 
 
 module.exports = {
