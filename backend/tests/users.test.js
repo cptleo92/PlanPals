@@ -56,8 +56,6 @@ describe('user creation', () => {
   })
 
   test('successful if valid', async () => {
-    const startingUsers = await User.find({})
-
     const newUser = {
       name: 'Leo',
       email: 'leo@leo.com',
@@ -72,7 +70,7 @@ describe('user creation', () => {
     expect(response.body.token).toBeTruthy()
 
     const allUsers = await User.find({})
-    expect(allUsers.length).toEqual(startingUsers.length + 1)
+    expect(allUsers.length).toEqual(2)
     expect(allUsers.map(user => user.name)).toContain('Leo')
   })
 })
@@ -89,7 +87,7 @@ describe('user login', () => {
       .send(testUserWrong)
       .expect(400)
 
-    expect(response.body.error).toEqual('Invalid credentials')
+    expect(response.body.error).toEqual('Invalid credentials.')
   })
 
   test('success if valid credentials', async () => {
@@ -104,7 +102,6 @@ describe('user login', () => {
 
 
 afterAll(done => {
-  // Closing the DB connection allows Jest to exit successfully.
   mongoose.connection.close()
   done()
 })

@@ -19,10 +19,25 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true
     },
+    groups: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Group',
+        autopopulate: true
+      }
+    ],
+    hangouts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hangout',
+      }
+    ]
   },
   {
     timestamps: true,
   }
 )
+
+userSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('User', userSchema)

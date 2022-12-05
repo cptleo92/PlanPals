@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'test') {
 
 // routes
 app.use('/api/users', require('./routes/userRoutes'))
-
+app.use('/api/groups', require('./routes/groupRoutes'))
 
 app.use(middleware.requestLogger)
 app.use(middleware.unknownEndpoint)
