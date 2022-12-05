@@ -93,8 +93,6 @@ describe('creating a new hangout', () => {
 
     const hangout = allHangouts[0]
     const group = await Group.findById(hangout.group.id)
-    // const groups = await Group.find({})
-    // console.log(groups, allHangouts)
 
     expect(hangout).toHaveProperty('id')
     expect(hangout).toHaveProperty('title')
@@ -226,6 +224,51 @@ describe('leaving a hangout', () => {
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees).not.toContainEqual(testUser._id)
     expect(testUser.hangouts).not.toContainEqual(testHangout._id)
+  })
+})
+
+describe('updating hangout information', () => {
+  const newHangoutData = {
+    description: 'EDITED DESCRIPTION'
+  }
+
+  test('fails if user is not hangout planner', async () => {
+    let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    // sign in someone who isn't the planner
+    const token3 = await loginTestUser(testUsers[2])
+    const body = {
+      hangoutId: testHangout.id,
+      newHangoutData
+    }
+
+    const response = await api
+      .post('/api/hangouts/update')
+      .set('Authorization', `Bearer ${token3}`)
+      .send(body)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only planner can update the hangout')
+  })
+
+  test('successful if valid', async () => {
+    let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    const body = {
+      hangoutId: testHangout.id,
+      newHangoutData
+    }
+
+    const response = await api
+      .post('/api/hangouts/update')
+      .set('Authorization', `Bearer ${token}`)
+      .send(body)
+      .expect(200)
+
+    expect(response.body.description).toEqual(newHangoutData.description)
+
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    expect(testHangout.description).toEqual(newHangoutData.description)
   })
 })
 

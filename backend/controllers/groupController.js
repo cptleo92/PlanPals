@@ -170,6 +170,7 @@ const updateGroup = async (request, response) => {
     response.status(400).json({ error: error.message })
   }
 }
+
 module.exports = {
   getMyGroups,
   createGroup,

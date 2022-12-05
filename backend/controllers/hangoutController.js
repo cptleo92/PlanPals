@@ -155,11 +155,30 @@ const kickFromHangout = async (request, response) => {
   }
 }
 
+const updateHangout = async (request, response) => {
+  const { hangoutId, newHangoutData } = request.body
+
+  let updateThisHangout = await Hangout.findById(hangoutId)
+
+  // only hangout planner can update
+  if (request.user.id !== updateThisHangout.planner.toString()) {
+    return response.status(401).json({ error: 'only planner can update the hangout' })
+  }
+
+  try {
+    updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, newHangoutData, { new: true })
+
+    response.status(200).json(updateThisHangout)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
 
 module.exports = {
   getMyHangouts,
   kickFromHangout,
   createHangout,
   joinHangout,
-  leaveHangout
+  leaveHangout,
+  updateHangout
 }

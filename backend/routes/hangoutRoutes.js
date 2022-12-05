@@ -4,7 +4,8 @@ const {
   kickFromHangout,
   createHangout,
   joinHangout,
-  leaveHangout
+  leaveHangout,
+  updateHangout
 } = require('../controllers/hangoutController')
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
@@ -30,6 +31,9 @@ router.get('/:id', async (request, response) => {
 
 // create a new hangout
 router.post('/', createHangout)
+
+// update a hangout
+router.post('/update', updateHangout)
 
 // join a hangout
 router.post('/:id', joinHangout)
