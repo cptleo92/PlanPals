@@ -32,6 +32,7 @@ const createGroup = async (request, response) => {
     description,
     admin: currentUser.id,
     members: [],
+    hangouts: [],
     path: nanoid(6)
   })
 
@@ -47,6 +48,7 @@ const createGroup = async (request, response) => {
       description: newGroup.description,
       admin: currentUser.id,
       members: [],
+      hangouts: [],
       path: newGroup.path
     })
   } catch (error) {

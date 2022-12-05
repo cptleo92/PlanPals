@@ -31,18 +31,26 @@
   "testHangouts": {
     "hangout1": {
       "title": "Going hiking!",
+      "description": "1 1 1 1 1",
+      "location": "testland",
       "dateOptions": ["11/20/2022", "11/27/2022"]
     },
     "hangout2": {
       "title": "Bowling at the beach",
+      "description": "222222",
+      "location": "testland",
       "dateOptions": ["12/5/2022"]
     },
     "hangout3": {
       "title": "My birthday",
-      "dateOptions": [""]
+      "description": "3 3 3 3 3",
+      "location": "testland",
+      "dateOptions": ["1/22/2023"]
     },
     "hangout4": {
       "title": "Secret Santa",
+      "description": "44444",
+      "location": "testland",
       "dateOptions": ["12/20/2022", "12/21/2022", "12/22/2022"]
     }
   }

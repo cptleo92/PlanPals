@@ -21,6 +21,7 @@ if (process.env.NODE_ENV === 'test') {
 // routes
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/groups', require('./routes/groupRoutes'))
+app.use('/api/hangouts', require('./routes/hangoutRoutes'))
 
 app.use(middleware.requestLogger)
 app.use(middleware.unknownEndpoint)

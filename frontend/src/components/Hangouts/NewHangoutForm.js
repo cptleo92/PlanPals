@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom"
 import { Calendar } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 
@@ -12,7 +13,7 @@ const emptyForm = {
   title: "",
   description: "",
   location: "",
-  dateOptions: [],
+  dateOptions: []  
 };
 
 const errorStyle = {
@@ -31,6 +32,7 @@ const datePickerStyles = {
 
 const NewHangoutForm = () => {
   const [formData, setFormData] = useState(emptyForm);
+  const { path } = useParams();
 
   const [titleError, setTitleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
@@ -65,7 +67,10 @@ const NewHangoutForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     validateFields();
-    console.log(formData);
+    console.log({
+      ...formData,
+      path
+    });
   };
 
   const handleChange = (e) => {

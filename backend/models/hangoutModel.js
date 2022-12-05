@@ -10,6 +10,7 @@ const hangoutSchema = mongoose.Schema(
     description: {
       type: String,
       trim: true,
+      required: true
     },
     location: {
       type: String,
@@ -30,6 +31,11 @@ const hangoutSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'Group',
+    },
+    groupPath: {
+      type: String,
+      trim: true,
+      required: true
     },
     attendees: [
       {

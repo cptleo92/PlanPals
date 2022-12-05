@@ -107,8 +107,10 @@ describe('joining a group', () => {
 
     expect(response.body.members.length).toEqual(originalMembersAmount + 1)
 
-    const updatedTestUser = await User.findOne({ name: newUser.name })
-    expect(updatedTestUser.groups.length).toEqual(1)
+    testGroup = await Group.findOne({ title: testGroups[0].title })
+    const testUser = await User.findOne({ name: newUser.name })
+    expect(testUser.groups[0].id).toEqual(testGroup.id)
+    expect(testGroup.members).toContainEqual(testUser._id)
   })
 })
 

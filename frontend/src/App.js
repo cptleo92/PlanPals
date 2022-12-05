@@ -81,7 +81,7 @@ function App() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/groups/create" element={<NewGroupForm />} />
                 <Route path="/groups/:path" element={<GroupPage />} />
-                <Route path="/hangouts/create" element={<NewHangoutForm />} />
+                <Route path="groups/:path/hangouts/create" element={<NewHangoutForm />} />
               </Route>
 
               <Route path="/error" element={<Error />} />
