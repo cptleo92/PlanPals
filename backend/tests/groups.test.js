@@ -194,6 +194,51 @@ describe('leaving a group', () => {
   })
 })
 
+describe('updating group information', () => {
+  const newGroupData = {
+    description: 'EDITED DESCRIPTION'
+  }
+
+  test('fails if user is not group admin', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    // sign in someone who isn't the admin
+    const token3 = await loginTestUser(testUsers[2])
+    const body = {
+      groupId: testGroup.id,
+      newGroupData
+    }
+
+    const response = await api
+      .post('/api/groups/update')
+      .set('Authorization', `Bearer ${token3}`)
+      .send(body)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only admin can update the group')
+  })
+
+  test('successful if valid', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    const body = {
+      groupId: testGroup.id,
+      newGroupData
+    }
+
+    const response = await api
+      .post('/api/groups/update')
+      .set('Authorization', `Bearer ${token}`)
+      .send(body)
+      .expect(200)
+
+    expect(response.body.description).toEqual(newGroupData.description)
+
+    testGroup = await Group.findOne({ title: testGroups[0].title })
+    expect(testGroup.description).toEqual(newGroupData.description)
+  })
+})
+
 afterAll((done) => {
   mongoose.connection.close()
   done()

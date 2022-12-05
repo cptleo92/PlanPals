@@ -152,11 +152,30 @@ const kickFromGroup = async (request, response) => {
   }
 }
 
+const updateGroup = async (request, response) => {
+  const { groupId, newGroupData } = request.body
+
+  let updateThisGroup = await Group.findById(groupId)
+
+  // only group's admin can update
+  if (request.user.id !== updateThisGroup.admin.toString()) {
+    return response.status(401).json({ error: 'only admin can update the group' })
+  }
+
+  try {
+    updateThisGroup = await Group.findByIdAndUpdate(groupId, newGroupData, { new: true })
+
+    response.status(200).json(updateThisGroup)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
 module.exports = {
   getMyGroups,
   createGroup,
   joinGroup,
   leaveGroup,
   kickFromGroup,
-  getGroupByIDorPath
+  getGroupByIDorPath,
+  updateGroup
 }
