@@ -80,8 +80,8 @@ function App() {
               <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
                 <Route path="/home" element={<Home />} />
                 <Route path="/groups/create" element={<NewGroupForm />} />
-                <Route path="/groups/:path" element={<GroupPage />} />
-                <Route path="groups/:path/hangouts/create" element={<NewHangoutForm />} />
+                <Route path="/groups/:groupPath" element={<GroupPage />} />
+                <Route path="groups/:groupPath/hangouts/create" element={<NewHangoutForm />} />
               </Route>
 
               <Route path="/error" element={<Error />} />

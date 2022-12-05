@@ -14,10 +14,10 @@ const linkStyle = {
 }
 
 const GroupPage = () => {
-  const { path } = useParams();
+  const { groupPath } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, error, data } = useQuery(["group", path], () => getGroup(path))
+  const { isLoading, error, data } = useQuery(["group", groupPath], () => getGroup(groupPath))
 
   if (isLoading) {
     return <Loading />;

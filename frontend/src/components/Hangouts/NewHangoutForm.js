@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom"
+import { useNavigate } from 'react-router-dom'
 import { Calendar } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 
@@ -8,6 +9,7 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { createHangout } from "../../utils/apiHelper";
 
 const emptyForm = {
   title: "",
@@ -32,7 +34,8 @@ const datePickerStyles = {
 
 const NewHangoutForm = () => {
   const [formData, setFormData] = useState(emptyForm);
-  const { path } = useParams();
+  const { groupPath } = useParams();
+  const navigate = useNavigate();
 
   const [titleError, setTitleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
@@ -64,13 +67,18 @@ const NewHangoutForm = () => {
     return noErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    validateFields();
-    console.log({
-      ...formData,
-      path
-    });
+    
+    if (validateFields()) {
+      const response = await createHangout({
+        ...formData,
+        groupPath
+      })
+      console.log(response)
+      navigate(`/groups/${groupPath}`)
+    }  
+
   };
 
   const handleChange = (e) => {

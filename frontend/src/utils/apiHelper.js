@@ -44,3 +44,12 @@ export const getGroup = async (id) => {
     return err.response.data.error
   }
 }
+
+export const createHangout = async (formData) => {
+  try {
+    const response = await axios.post('/api/hangouts', formData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}

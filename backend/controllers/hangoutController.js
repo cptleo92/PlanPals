@@ -43,7 +43,7 @@ const createHangout = async (request, response) => {
       description: newHangout.description,
       planner: currentUser.id,
       group: group.id,
-      groupPath: group.groupPath,
+      groupPath: group.path,
       dateOptions: newHangout.dateOptions,
       attendees: newHangout.attendees
     })
