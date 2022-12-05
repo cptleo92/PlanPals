@@ -7,8 +7,6 @@ const getMyHangouts = async (request, response) => {
   response.json(currentUser.hangouts)
 }
 
-const kickFromHangout = async (request, response) => {}
-
 const createHangout = async (request, response) => {
   const { title, description, location, dateOptions, groupPath } = request.body
 
@@ -124,6 +122,32 @@ const leaveHangout = async (request, response) => {
       return attendee.toString() !== currentUser.id
     })
     await hangout.save()
+
+    response.sendStatus(204)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
+const kickFromHangout = async (request, response) => {
+  const { userId, hangoutId } = request.body
+
+  const kickThisUser = await User.findById(userId)
+  const kickFromHangout = await Hangout.findById(hangoutId)
+
+  // only planner can kick
+  if (request.user.id !== kickFromHangout.planner.toString()) {
+    return response.status(401).json({
+      error: 'only planner can remove a user from the hangout'
+    })
+  }
+
+  try {
+    kickThisUser.hangouts = kickThisUser.hangouts.filter(hangout => hangout.toString() !== hangoutId)
+    await kickThisUser.save()
+
+    kickFromHangout.attendees = kickFromHangout.attendees.filter(attendee => attendee.toString() !== userId)
+    await kickFromHangout.save()
 
     response.sendStatus(204)
   } catch (error) {

@@ -181,7 +181,44 @@ describe('leaving a hangout', () => {
 
     testUser = await User.findOne({ name: testUsers[1].name })
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
-    console.log(testUser,testHangout)
+    expect(testHangout.attendees).not.toContainEqual(testUser._id)
+    expect(testUser.hangouts).not.toContainEqual(testHangout._id)
+  })
+
+  test('kicking someone out of a hangout', async () => {
+    // start by having a user attend
+    let testUser = await User.findOne({ name: testUsers[1].name })
+    let token2 = await loginTestUser(testUsers[1])
+    let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    await api
+      .post(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(200)
+
+    const body = {
+      userId: testUser.id,
+      hangoutId: testHangout.id
+    }
+
+    // first, make sure non-admin can't kick
+    let response = await api
+      .post('/api/hangouts/kick')
+      .set('Authorization', `Bearer ${token2}`)
+      .send(body)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only planner can remove a user from the hangout')
+
+    // use the planner's token and kick the new user
+    await api
+      .post('/api/hangouts/kick')
+      .set('Authorization', `Bearer ${token}`)
+      .send(body)
+      .expect(204)
+
+    testUser = await User.findOne({ name: testUsers[1].name })
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees).not.toContainEqual(testUser._id)
     expect(testUser.hangouts).not.toContainEqual(testHangout._id)
   })
