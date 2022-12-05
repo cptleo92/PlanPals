@@ -136,6 +136,11 @@ describe('attending a handout', () => {
 
     expect(response.body.attendees).toContain(testUser.id)
 
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    testUser = await User.findOne({ name: testUsers[1].name })
+    expect(testHangout.attendees).toContainEqual(testUser._id)
+    expect(testUser.hangouts).toContainEqual(testHangout._id)
+
     // double checking that this person can't attend again
     const response2 = await api
       .post(`/api/hangouts/${testHangout.id}`)
