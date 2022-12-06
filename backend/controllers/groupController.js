@@ -10,11 +10,24 @@ const getMyGroups = async (request, response) => {
 const getGroupByIDorPath = async (request, response) => {
   const query = request.params.id
   let group
+
+  // populating here instead of the model as an experiment
   if (query.length !== 6) {
-    group = await Group.findById(query)
+    group = await Group
+      .findById(query)
+      .populate('hangouts')
+      .populate('admin', {
+        name: 1
+      })
   } else {
-    group = await Group.findOne({ path: query })
+    group = await Group
+      .findOne({ path: query })
+      .populate('hangouts')
+      .populate('admin', {
+        name: 1
+      })
   }
+
   response.json(group)
 }
 
