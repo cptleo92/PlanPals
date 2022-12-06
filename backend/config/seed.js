@@ -11,7 +11,11 @@ const { nanoid } = require('nanoid')
 
 const USERSCOUNT = 20
 const GROUPSCOUNT = 5
+const HANGOUTSCOUNT = 20
 
+/**
+ * creates and saves a new user
+ */
 const createSeedUser = async (i) => {
   const firstName = faker.name.firstName()
   const lastName = faker.name.lastName()
@@ -35,6 +39,9 @@ const createSeedUser = async (i) => {
   await newUser.save()
 }
 
+/**
+ * creates and saves a new group
+ */
 const createSeedGroup = async (i) => {
   const allUsers = await User.find()
 
@@ -53,6 +60,41 @@ const createSeedGroup = async (i) => {
 
   randomAdmin.groups.push(newGroup.id)
   await randomAdmin.save()
+}
+
+/**
+ * creates and saves a new hangout
+ *
+ */
+const createSeedHangout = async () => {
+  const allGroups = await Group.find()
+  const randomGroup = allGroups[Math.floor(Math.random() * GROUPSCOUNT)]
+
+  // picks out a random user in a random group
+  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)].id)
+
+  const newHangout = new Hangout({
+    title: faker.company.catchPhrase(),
+    description: faker.lorem.paragraph(),
+    location: 'NYC',
+    planner: randomUser.id,
+    group: randomGroup.id,
+    groupPath: randomGroup.path,
+    dateOptions: [
+      faker.date.soon(10),
+      faker.date.soon(20),
+      faker.date.soon(30)
+    ],
+    attendees: [randomUser.id],
+  })
+
+  await newHangout.save()
+
+  randomUser.hangouts.push(newHangout.id)
+  await randomUser.save()
+
+  randomGroup.hangouts.push(newHangout.id)
+  await randomGroup.save()
 }
 
 /**
@@ -116,6 +158,11 @@ const seedDb = async () => {
   // seed memberships
   for (let i = 0; i < 40; i++) {
     await seedMemberships()
+  }
+
+  // seed hangouts
+  for (let i = 0; i < HANGOUTSCOUNT; i++) {
+    await createSeedHangout()
   }
 }
 
