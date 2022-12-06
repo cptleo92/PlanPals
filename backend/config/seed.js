@@ -1,6 +1,9 @@
 const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const Hangout = require('../models/hangoutModel')
+const {
+  getRandomModel
+} = require('./seedHelper')
 
 const { faker } = require('@faker-js/faker')
 const bcrypt = require('bcrypt')
@@ -67,8 +70,7 @@ const createSeedGroup = async (i) => {
  *
  */
 const createSeedHangout = async () => {
-  const allGroups = await Group.find()
-  const randomGroup = allGroups[Math.floor(Math.random() * GROUPSCOUNT)]
+  const randomGroup = await getRandomModel('group')
 
   // picks out a random user in a random group
   const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)].id)
@@ -101,11 +103,8 @@ const createSeedHangout = async () => {
  *  function to make random users join random groups
  */
 const seedMemberships = async () => {
-  const allUsers = await User.find()
-  const allGroups = await Group.find()
-
-  const randomUser = allUsers[Math.floor(Math.random() * USERSCOUNT)]
-  const randomGroup = allGroups[Math.floor(Math.random() * GROUPSCOUNT)]
+  const randomUser = await getRandomModel('user')
+  const randomGroup = await getRandomModel('group')
 
   // don't let user join twice, or admin join again
   const alreadyJoined = () => {
@@ -128,6 +127,42 @@ const seedMemberships = async () => {
     await randomGroup.save()
   }
 }
+
+/**
+ * seeds random attendances between users/hangouts
+ *
+ *  - pick a random group
+ *  - pick a random user within that group
+ *  - pick a random hangout within that group
+ *  - attend!
+ */
+const seedAttendances = async () => {
+  const randomGroup = await getRandomModel('group')
+  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)].id)
+  const randomHangout = randomGroup.hangouts[Math.floor(Math.random() * randomGroup.hangouts.length)]
+
+  // don't let user join twice, or admin join again
+  const alreadyJoined = () => {
+    let userHangouts = randomUser.hangouts.map((hangout) => hangout.id)
+    let hangoutAttendees = randomHangout.attendees.map((mem) => mem.toString())
+    let isPlanner = randomHangout.planner.toString() === randomUser.id
+
+    return (
+      userHangouts.includes(randomHangout.id) ||
+      hangoutAttendees.includes(randomUser.id) ||
+      isPlanner
+    )
+  }
+
+  if (!alreadyJoined()) {
+    randomUser.hangouts.push(randomHangout.id)
+    await randomUser.save()
+
+    randomHangout.attendees.push(randomUser.id)
+    await randomHangout.save()
+  }
+}
+
 
 try {
   mongoose.connect(config.MONGODB_URI)
@@ -163,6 +198,11 @@ const seedDb = async () => {
   // seed hangouts
   for (let i = 0; i < HANGOUTSCOUNT; i++) {
     await createSeedHangout()
+  }
+
+  // seed attendances
+  for (let i = 0; i < 30; i++) {
+    await seedAttendances()
   }
 }
 
