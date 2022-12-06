@@ -73,7 +73,7 @@ const createSeedHangout = async () => {
   const randomGroup = await getRandomModel('group')
 
   // picks out a random user in a random group
-  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)].id)
+  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id)
 
   const newHangout = new Hangout({
     title: faker.company.catchPhrase(),
@@ -138,8 +138,8 @@ const seedMemberships = async () => {
  */
 const seedAttendances = async () => {
   const randomGroup = await getRandomModel('group')
-  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)].id)
-  const randomHangout = randomGroup.hangouts[Math.floor(Math.random() * randomGroup.hangouts.length)]
+  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id)
+  const randomHangout = await Hangout.findById(randomGroup.hangouts[Math.floor(Math.random() * randomGroup.hangouts.length)]._id)
 
   // don't let user join twice, or admin join again
   const alreadyJoined = () => {
