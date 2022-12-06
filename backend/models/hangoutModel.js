@@ -26,6 +26,10 @@ const hangoutSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
+      autopopulate: {
+        select: 'name',
+        maxDepth: 1
+      }
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +44,11 @@ const hangoutSchema = mongoose.Schema(
     attendees: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        autopopulate: {
+          select: 'name',
+          maxDepth: 1
+        }
       }
     ],
   },
@@ -49,4 +57,5 @@ const hangoutSchema = mongoose.Schema(
   }
 )
 
+hangoutSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('Hangout', hangoutSchema)
