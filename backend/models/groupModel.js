@@ -5,7 +5,7 @@ const groupSchema = mongoose.Schema(
     title: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     description: {
       type: String,
@@ -16,11 +16,19 @@ const groupSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'User',
+      autopopulate: {
+        select: 'name',
+        maxDepth: 1
+      }
     },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        autopopulate: {
+          select: 'name',
+          maxDepth: 1
+        }
       }
     ],
     path: {
@@ -31,6 +39,7 @@ const groupSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hangout',
+        autopopulate: true
       }
     ]
   },
@@ -39,12 +48,5 @@ const groupSchema = mongoose.Schema(
   }
 )
 
-// function autopopulateMembers(next) {
-//   this.populate('members', {
-//     name: 1,
-//     email: 1
-//   })
-//   next()
-// }
-
+groupSchema.plugin(require('mongoose-autopopulate'))
 module.exports = mongoose.model('Group', groupSchema)

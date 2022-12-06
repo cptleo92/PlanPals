@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group',
-        autopopulate: true
+        autopopulate: { maxDepth: 2 }
       }
     ],
     hangouts: [

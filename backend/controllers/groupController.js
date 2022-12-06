@@ -13,19 +13,23 @@ const getGroupByIDorPath = async (request, response) => {
 
   // populating here instead of the model as an experiment
   if (query.length !== 6) {
-    group = await Group
-      .findById(query)
-      .populate('hangouts')
-      .populate('admin', {
-        name: 1
-      })
+    group = await Group.findById(query)
+    // .populate('hangouts')
+    // .populate('admin', {
+    //   name: 1
+    // })
+    // .populate('members', {
+    //   name: 1
+    // })
   } else {
-    group = await Group
-      .findOne({ path: query })
-      .populate('hangouts')
-      .populate('admin', {
-        name: 1
-      })
+    group = await Group.findOne({ path: query })
+    // .populate('hangouts')
+    // .populate('admin', {
+    //   name: 1
+    // })
+    // .populate('members', {
+    //   name: 1
+    // })
   }
 
   response.json(group)

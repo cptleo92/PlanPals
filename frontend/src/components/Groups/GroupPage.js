@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { UserContext } from "../../App";
 import { getGroup } from "../../utils/apiHelper";
 import Loading from "../Loading";
 import GroupHangoutsList from "./GroupHangoutsList";
@@ -17,10 +18,11 @@ const linkStyle = {
 };
 
 const GroupPage = () => {
+  const { user } = useContext(UserContext);
   const { groupPath } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, error, data } = useQuery(["group", groupPath], () =>
+  const { isLoading, error, data: group } = useQuery(["group", groupPath], () =>
     getGroup(groupPath)
   );
 
@@ -28,19 +30,28 @@ const GroupPage = () => {
     return <Loading />;
   }
 
-  console.log(data)
+  console.log(group);
 
   if (error) {
     console.log(error);
     navigate("/error");
   }
 
-  const hangouts = data.hangouts;
+  const hangouts = group.hangouts;
+  const members = group.members;
+
+  const generateAvatars = () => {
+    return members.map(mem => <Avatar key={mem._id}>{mem.name[0]}</Avatar>)
+  }
+
+  const isAdmin = () => {
+    return user._id === group.admin._id;
+  };
 
   return (
     <Box>
       <Typography variant="h3" component="h2" mt={6} mb={6}>
-        {data?.title}
+        {group?.title}
       </Typography>
 
       <Box
@@ -56,18 +67,17 @@ const GroupPage = () => {
       />
 
       <Typography gutterBottom variant="subtitle1" mt={3}>
-        {data?.description}
+        {group?.description}
       </Typography>
 
-      <Typography gutterBottom variant="h5" mt={6}>
-        Members
+      <Typography gutterBottom variant="h5" mt={6} mb={3}>
+        Members ({members.length})
       </Typography>
+
+
       <Stack direction="row" spacing={2}>
-        <Avatar sx={{ width: 75, height: 75 }}>{data.admin.name[0]}</Avatar>
-        <Avatar>T</Avatar>
-        <Avatar>E</Avatar>
-        <Avatar>M</Avatar>
-        <Avatar>P</Avatar>
+        <Avatar sx={{ width: 75, height: 75 }}>{group.admin.name[0]}</Avatar>
+        { generateAvatars() }
       </Stack>
 
       <Typography gutterBottom variant="h5" mt={6}>
@@ -76,9 +86,11 @@ const GroupPage = () => {
 
       <GroupHangoutsList hangouts={hangouts} />
 
-      <Link style={linkStyle} to="./hangouts/create">
-        Host a hangout
-      </Link>
+      {isAdmin() && (
+        <Link style={linkStyle} to="./hangouts/create">
+          Host a hangout
+        </Link>
+      )}
     </Box>
   );
 };
