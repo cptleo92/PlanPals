@@ -25,11 +25,7 @@ const hangoutSchema = mongoose.Schema(
     planner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
-      autopopulate: {
-        select: 'name',
-        maxDepth: 1
-      }
+      ref: 'User'
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,11 +40,7 @@ const hangoutSchema = mongoose.Schema(
     attendees: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        autopopulate: {
-          select: 'name',
-          maxDepth: 1
-        }
+        ref: 'User'
       }
     ],
   },

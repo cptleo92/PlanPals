@@ -15,20 +15,12 @@ const groupSchema = mongoose.Schema(
     admin: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
-      autopopulate: {
-        select: 'name',
-        maxDepth: 1
-      }
+      ref: 'User'
     },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        autopopulate: {
-          select: 'name',
-          maxDepth: 1
-        }
+        ref: 'User'
       }
     ],
     path: {
@@ -39,7 +31,6 @@ const groupSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hangout',
-        autopopulate: true
       }
     ]
   },
