@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+
 import BackArrow from '../BackArrow'
+import HangoutAttend from './HangoutAttend'
 
 
 const HangoutPage = () => {
@@ -18,10 +19,7 @@ const HangoutPage = () => {
   const { hangoutPath } = useParams()
   const navigate = useNavigate()
 
-  // modal state handling
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+
 
   const {
     isLoading,
@@ -80,14 +78,7 @@ const HangoutPage = () => {
         {generateAvatars()}
       </Stack>
 
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        onClick={handleOpen}
-      >
-        RSVP
-      </Button>
+      <HangoutAttend hangout={hangout} />
     </Box>
   )
 }
