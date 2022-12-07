@@ -22,6 +22,10 @@ const hangoutSchema = mongoose.Schema(
         required: true
       }
     ],
+    path: {
+      type: String,
+      required: true
+    },
     planner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

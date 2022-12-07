@@ -87,6 +87,7 @@ const createSeedHangout = async () => {
       faker.date.soon(20),
       faker.date.soon(30)
     ],
+    path: nanoid(6),
     attendees: [randomUser.id],
   })
 

@@ -5,7 +5,8 @@ const {
   createHangout,
   joinHangout,
   leaveHangout,
-  updateHangout
+  updateHangout,
+  getHangoutByPath
 } = require('../controllers/hangoutController')
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
@@ -20,6 +21,9 @@ router.use(auth)
 
 // get all hangouts that current user is part of
 router.get('/', getMyHangouts)
+
+// get hangout with matching path
+router.get('/:path', getHangoutByPath)
 
 // kick from hangout
 router.post('/kick', kickFromHangout)

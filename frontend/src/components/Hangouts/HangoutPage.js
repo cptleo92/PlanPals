@@ -1,9 +1,8 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getGroup } from "../../utils/apiHelper";
+import { getHangoutByPath } from "../../utils/apiHelper";
 import { useCurrentUser } from "../../utils/userHooks";
 import Loading from "../Loading";
-import GroupHangoutsList from "./GroupHangoutsList";
 
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -11,48 +10,39 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import BackArrow from "../BackArrow";
 
-const linkStyle = {
-  fontWeight: 500,
-  color: "blue",
-  textDecoration: "underline",
-};
 
-const GroupPage = () => {
+
+const HangoutPage = () => {
   const { user } = useCurrentUser()
-  const { groupPath } = useParams();
+  const { hangoutPath } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, error, data: group } = useQuery(["group", groupPath], () =>
-    getGroup(groupPath)
-  );
+  const { isLoading, error, data: hangout } = useQuery(["hangout", hangoutPath], () => 
+    getHangoutByPath(hangoutPath)
+  )
 
   if (isLoading) {
     return <Loading />;
   }
 
-  console.log(group);
+  console.log(hangout)
 
   if (error) {
     console.log(error);
     navigate("/error");
   }
 
-  const hangouts = group.hangouts;
-  const members = group.members;
+  const attendees = hangout.attendees
 
   const generateAvatars = () => {
-    return members.map(mem => <Avatar key={mem._id}>{mem.name[0]}</Avatar>)
+    return attendees.map(att => <Avatar key={att._id}>{att.name[0]}</Avatar>)
   }
-
-  const isAdmin = () => {
-    return user._id === group.admin._id;
-  };
 
   return (
     <Box mt={3}>
-      <BackArrow link={`/home`}/>
+      <BackArrow link={`/groups/${hangout.groupPath}`}/>
       <Typography variant="h3" component="h2" mt={3} mb={6}>
-        {group?.title}
+        {hangout?.title}
       </Typography>
 
       <Box
@@ -68,32 +58,20 @@ const GroupPage = () => {
       />
 
       <Typography gutterBottom variant="subtitle1" mt={3}>
-        {group?.description}
+        {hangout?.description}
       </Typography>
 
       <Typography gutterBottom variant="h5" mt={6} mb={3}>
-        Members ({members.length})
+        Attending ({attendees.length})
       </Typography>
 
 
       <Stack direction="row" spacing={2}>
-        <Avatar sx={{ width: 75, height: 75 }}>{group.admin.name[0]}</Avatar>
+        <Avatar sx={{ width: 75, height: 75 }}>{hangout.planner.name[0]}</Avatar>
         { generateAvatars() }
       </Stack>
-
-      <Typography gutterBottom variant="h5" mt={6}>
-        Upcoming Hangouts
-      </Typography>
-
-      <GroupHangoutsList hangouts={hangouts} />
-
-      {isAdmin() && (
-        <Link style={linkStyle} to="./hangouts/create">
-          Host a hangout
-        </Link>
-      )}
     </Box>
-  );
-};
+  )
+}
 
-export default GroupPage;
+export default HangoutPage

@@ -53,3 +53,12 @@ export const createHangout = async (formData) => {
     return err.response.data.error
   }
 }
+
+export const getHangoutByPath = async (path) => {
+  try {
+    const response = await axios.get(`/api/hangouts/${path}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, createContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthRoutes, ProtectedRoutes } from "./utils/routesAuth";
 import axios from "axios";
@@ -9,6 +9,7 @@ import Layout from "./Layout";
 import Home from "./components/Home";
 import NewGroupForm from "./components/Groups/NewGroupForm";
 import Loading from "./components/Loading";
+import HangoutPage from "./components/Hangouts/HangoutPage";
 
 // history router, used for redirecting in axios interceptors
 import { createBrowserHistory } from "history";
@@ -82,6 +83,7 @@ function App() {
                 <Route path="/groups/create" element={<NewGroupForm />} />
                 <Route path="/groups/:groupPath" element={<GroupPage />} />
                 <Route path="groups/:groupPath/hangouts/create" element={<NewHangoutForm />} />
+                <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
               </Route>
 
               <Route path="/error" element={<Error />} />

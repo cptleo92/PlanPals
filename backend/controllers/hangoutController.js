@@ -1,10 +1,21 @@
 const Hangout = require('../models/hangoutModel')
 const Group = require('../models/groupModel')
 const User = require('../models/userModel')
+const { nanoid } = require('nanoid')
 
 const getMyHangouts = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
   response.json(currentUser.hangouts)
+}
+
+const getHangoutByPath = async (request, response) => {
+  const { path } = request.params
+  try {
+    const hangout = await Hangout.findOne({ path })
+    response.json(hangout)
+  } catch (error) {
+    response.status(404).json({ error: 'Hangout not found' })
+  }
 }
 
 const createHangout = async (request, response) => {
@@ -26,6 +37,7 @@ const createHangout = async (request, response) => {
     groupPath,
     dateOptions,
     attendees: [currentUser.id],
+    path: nanoid(6)
   })
 
   try {
@@ -45,7 +57,8 @@ const createHangout = async (request, response) => {
       group: group.id,
       groupPath: group.path,
       dateOptions: newHangout.dateOptions,
-      attendees: newHangout.attendees
+      attendees: newHangout.attendees,
+      path: newHangout.path
     })
 
   } catch (error) {
@@ -184,5 +197,6 @@ module.exports = {
   createHangout,
   joinHangout,
   leaveHangout,
-  updateHangout
+  updateHangout,
+  getHangoutByPath
 }

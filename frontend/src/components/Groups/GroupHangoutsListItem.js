@@ -1,9 +1,9 @@
-import React from 'react'
+import { Link } from "react-router-dom";
 
 const GroupHangoutsListItem = ({ hangout }) => {
   return (
     <>
-      <h2>{hangout.title}</h2>
+      <Link to={`./hangouts/${hangout.path}`}>{hangout.title}</Link>
       <p>{hangout.description}</p>
     </>
   )
