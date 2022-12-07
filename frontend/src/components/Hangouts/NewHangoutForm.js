@@ -15,7 +15,6 @@ const emptyForm = {
   title: '',
   description: '',
   location: '',
-  dateOptions: []
 }
 
 const errorStyle = {
@@ -34,6 +33,7 @@ const datePickerStyles = {
 
 const NewHangoutForm = () => {
   const [formData, setFormData] = useState(emptyForm)
+  const [dateOptions, setDateOptions] = useState([])
   const { groupPath } = useParams()
   const navigate = useNavigate()
 
@@ -54,12 +54,12 @@ const NewHangoutForm = () => {
       noErrors = false
     }
 
-    if (formData.dateOptions.length === 0) {
+    if (dateOptions.length === 0) {
       setDatesError('At least 1 date must be specified.')
       noErrors = false
     }
 
-    if (formData.dateOptions.length > 7) {
+    if (dateOptions.length > 7) {
       setDatesError('Maximum of 7 dates can be specified.')
       noErrors = false
     }
@@ -67,13 +67,24 @@ const NewHangoutForm = () => {
     return noErrors
   }
 
+  const parseDateOptions = () => {
+    const parsedDateOptions = {}
+
+    for (let date of dateOptions) {
+      parsedDateOptions[date.toString()] = []
+    }
+
+    return parsedDateOptions
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (validateFields()) {
-      const response = await createHangout({
+      let response = await createHangout({
         ...formData,
-        groupPath
+        groupPath,
+        dateOptions: parseDateOptions()
       })
       console.log(response)
       navigate(`/groups/${groupPath}`)
@@ -91,11 +102,8 @@ const NewHangoutForm = () => {
     if (e.target.name === 'description') setDescriptionError('')
   }
 
-  const handleDateChange = (date) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      dateOptions: date.map((d) => d.toDate()), // convert dates from library to JS date objects
-    }))
+  const handleDateChange = (dates) => {
+    setDateOptions(dates)
     setDatesError('')
   }
 
@@ -152,7 +160,7 @@ const NewHangoutForm = () => {
           style={datePickerStyles}
           multiple
           sort
-          value={formData.dateOptions}
+          value={dateOptions}
           onChange={handleDateChange}
           minDate={Date.now()}
           name="dateOptions"

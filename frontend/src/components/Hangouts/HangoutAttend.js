@@ -53,7 +53,7 @@ const HangoutAttend = ({ hangout }) => {
             Select at least 1 date that you are available!
           </Typography>
 
-          <HangoutAttendDatesForm dateOptions={dateOptions} />
+          <HangoutAttendDatesForm dateOptions={dateOptions} id={hangout._id} />
 
         </Box>
       </Modal>

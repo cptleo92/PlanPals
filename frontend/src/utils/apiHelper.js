@@ -62,3 +62,7 @@ export const getHangoutByPath = async (path) => {
     return err.response.data.error
   }
 }
+
+export const joinHangout = async (id) => {
+
+}

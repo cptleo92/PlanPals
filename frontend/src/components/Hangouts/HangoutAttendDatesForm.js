@@ -15,9 +15,11 @@ const errorStyle = {
   marginTop: '3px',
 }
 
-export default function HangoutAttendDatesForm({ dateOptions }) {
+export default function HangoutAttendDatesForm({ id, dateOptions }) {
   const [checked, setChecked] = useState([])
   const [error, setError] = useState(false)
+
+  console.log(id)
 
   const handleToggle = (value) => () => {
     setError(false)
@@ -58,17 +60,20 @@ export default function HangoutAttendDatesForm({ dateOptions }) {
                   inputProps={{ 'aria-labelledby': labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`${date}`} />
+              <ListItemText
+                id={labelId}
+                primary={`${date}`}
+                secondary={'Number of votes'}
+              />
             </ListItemButton>
           </ListItem>
         )
       })}
 
       <Button onClick={handleSubmit}>Submit</Button>
-      {
-        error &&
+      {error && (
         <span style={errorStyle}>Must have at least 1 date selected!</span>
-      }
+      )}
     </List>
   )
 }
