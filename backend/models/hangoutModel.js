@@ -16,12 +16,10 @@ const hangoutSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    dateOptions: [
-      {
-        type: String,
-        required: true
-      }
-    ],
+    dateOptions: {
+      type: Map,
+      of: [mongoose.Schema.Types.ObjectId]
+    },
     path: {
       type: String,
       required: true

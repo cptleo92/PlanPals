@@ -25,7 +25,6 @@ const formatHangouts = async (hangouts) => {
 
     return {
       ...hangout,
-      dateOptions: hangout.dateOptions.map(date => new Date(date)),
       group: randomGroup.id,
       groupPath: randomGroup.path,
     }
