@@ -14,22 +14,8 @@ const getGroupByIDorPath = async (request, response) => {
   // populating here instead of the model as an experiment
   if (query.length !== 6) {
     group = await Group.findById(query)
-    // .populate('hangouts')
-    // .populate('admin', {
-    //   name: 1
-    // })
-    // .populate('members', {
-    //   name: 1
-    // })
   } else {
     group = await Group.findOne({ path: query })
-    // .populate('hangouts')
-    // .populate('admin', {
-    //   name: 1
-    // })
-    // .populate('members', {
-    //   name: 1
-    // })
   }
 
   response.json(group)
@@ -119,7 +105,7 @@ const leaveGroup = async (request, response) => {
     return response.status(404).json({ error: 'group not found' })
   }
 
-  if (group.admin.toString() === request.user.id) {
+  if (group.admin.id  === request.user.id) {
     return response.status(400).json({ error: 'admin cannot leave the group' })
   }
 
@@ -127,15 +113,13 @@ const leaveGroup = async (request, response) => {
 
   try {
     currentUser.groups = currentUser.groups.filter((grp) => {
-      // console.log(typeof grp.id)
       return grp.id !== group.id
     })
 
     await currentUser.save()
 
     group.members = group.members.filter((member) => {
-      // console.log(member.toString())
-      return member.toString() !== currentUser.id
+      return member.id !== currentUser.id
     })
     await group.save()
 
@@ -152,7 +136,7 @@ const kickFromGroup = async (request, response) => {
   const kickFromThisGroup = await Group.findById(groupId)
 
   // only group's admin can kick
-  if (request.user.id !== kickFromThisGroup.admin.toString()) {
+  if (request.user.id !== kickFromThisGroup.admin.id) {
     return response.status(401).json({ error: 'only admin can remove a user from the group' })
   }
 
@@ -160,7 +144,7 @@ const kickFromGroup = async (request, response) => {
     kickThisUser.groups = kickThisUser.groups.filter(group => group.id !== groupId)
     await kickThisUser.save()
 
-    kickFromThisGroup.members = kickFromThisGroup.members.filter(member => member.toString() !== userId)
+    kickFromThisGroup.members = kickFromThisGroup.members.filter(member => member.id !== userId)
     await kickFromThisGroup.save()
 
     response.status(204).end()
@@ -175,7 +159,7 @@ const updateGroup = async (request, response) => {
   let updateThisGroup = await Group.findById(groupId)
 
   // only group's admin can update
-  if (request.user.id !== updateThisGroup.admin.toString()) {
+  if (request.user.id !== updateThisGroup.admin.id) {
     return response.status(401).json({ error: 'only admin can update the group' })
   }
 

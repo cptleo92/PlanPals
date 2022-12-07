@@ -70,7 +70,7 @@ describe('creating a new group', () => {
     expect(group).toHaveProperty('id')
     expect(group).toHaveProperty('title')
     expect(group).toHaveProperty('description')
-    expect(group.admin).toEqual(currentUser._id)
+    expect(group.admin.id).toEqual(currentUser.id)
     expect(group.members.length).toEqual(0)
 
     // making sure the new groups were added to the user
@@ -110,7 +110,7 @@ describe('joining a group', () => {
     testGroup = await Group.findOne({ title: testGroups[0].title })
     const testUser = await User.findOne({ name: newUser.name })
     expect(testUser.groups[0].id).toEqual(testGroup.id)
-    expect(testGroup.members).toContainEqual(testUser._id)
+    expect(testGroup.members.length).toEqual(originalMembersAmount + 1)
   })
 })
 
