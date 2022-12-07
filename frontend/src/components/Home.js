@@ -14,7 +14,7 @@ import Error from "./Error";
 
 const Home = () => {
   const { user } = useContext(UserContext)
-  const { isLoading, error, data } = useQuery(["myGroups", user._id], getMyGroups)
+  const { isLoading, error, data: userGroups } = useQuery(["myGroups", user._id], getMyGroups)
 
   if (isLoading) {
     return <Loading />
@@ -28,7 +28,7 @@ const Home = () => {
         Hello there, {user?.name}!
       </Typography>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} mb={2} mt={2}>        
-        {data?.map((group) => (
+        {userGroups.map((group) => (
           <Grid xs={2} sm={4} md={4} key={group._id}>
             <GroupCard group={group} />
           </Grid>

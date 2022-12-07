@@ -186,6 +186,23 @@ export default function UserForm() {
     );
   };
 
+  /**
+   * REMOVE IN PROD!!
+   */
+  const loginTest = async () => {
+    let response = await loginUser({
+      email: 'test2@test.com',
+      password: 'password'
+    });
+
+    if (response.token) {
+      window.localStorage.setItem("currentUser", JSON.stringify(response));
+      setUser(response);
+      navigate("/");
+    }
+    
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -199,7 +216,7 @@ export default function UserForm() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+            <LockOutlinedIcon onClick={loginTest} />
           </Avatar>
           <Typography component="h1" variant="h5">
             {pathname === "/login" ? "Sign in" : "Sign up"}
