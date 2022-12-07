@@ -1,56 +1,56 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getGroup } from "../../utils/apiHelper";
-import { useCurrentUser } from "../../utils/userHooks";
-import Loading from "../Loading";
-import GroupHangoutsList from "./GroupHangoutsList";
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getGroup } from '../../utils/apiHelper'
+import { useCurrentUser } from '../../utils/userHooks'
+import Loading from '../Loading'
+import GroupHangoutsList from './GroupHangoutsList'
 
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import BackArrow from "../BackArrow";
+import Typography from '@mui/material/Typography'
+import Stack from '@mui/material/Stack'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import BackArrow from '../BackArrow'
 
 const linkStyle = {
   fontWeight: 500,
-  color: "blue",
-  textDecoration: "underline",
-};
+  color: 'blue',
+  textDecoration: 'underline',
+}
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
-  const { groupPath } = useParams();
-  const navigate = useNavigate();
+  const { groupPath } = useParams()
+  const navigate = useNavigate()
 
-  const { isLoading, error, data: group } = useQuery(["group", groupPath], () =>
+  const { isLoading, error, data: group } = useQuery(['group', groupPath], () =>
     getGroup(groupPath)
-  );
+  )
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading />
   }
 
-  console.log(group);
+  console.log(group)
 
   if (error) {
-    console.log(error);
-    navigate("/error");
+    console.log(error)
+    navigate('/error')
   }
 
-  const hangouts = group.hangouts;
-  const members = group.members;
+  const hangouts = group.hangouts
+  const members = group.members
 
   const generateAvatars = () => {
     return members.map(mem => <Avatar key={mem._id}>{mem.name[0]}</Avatar>)
   }
 
   const isAdmin = () => {
-    return user._id === group.admin._id;
-  };
+    return user._id === group.admin._id
+  }
 
   return (
     <Box mt={3}>
-      <BackArrow link={`/home`}/>
+      <BackArrow link={'/home'}/>
       <Typography variant="h3" component="h2" mt={3} mb={6}>
         {group?.title}
       </Typography>
@@ -93,7 +93,7 @@ const GroupPage = () => {
         </Link>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default GroupPage;
+export default GroupPage

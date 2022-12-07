@@ -1,16 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 const BackArrow = ({ link }) => {
   const navigate = useNavigate()
 
   const handleGoBack = () => {
     navigate(link)
-  }   
+  }
 
   return (
-      <ArrowBackIcon onClick={handleGoBack} sx={{ cursor: 'pointer' }} />
+    <ArrowBackIcon onClick={handleGoBack} sx={{ cursor: 'pointer' }} />
   )
 }
 

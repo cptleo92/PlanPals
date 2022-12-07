@@ -1,60 +1,59 @@
-import { useState } from "react";
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createGroup } from "../../utils/apiHelper";
+import { createGroup } from '../../utils/apiHelper'
 
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 
 const NewGroupForm = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-  });
+    title: '',
+    description: '',
+  })
 
-  const [titleError, setTitleError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
+  const [titleError, setTitleError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
 
   const validateFields = () => {
-    let noErrors = true;
+    let noErrors = true
 
-    if (formData.title === "") {
-      setTitleError("Title is required.")
+    if (formData.title === '') {
+      setTitleError('Title is required.')
       noErrors = false
     }
 
-    if (formData.description === "") {
-      setDescriptionError("Description is required.")
+    if (formData.description === '') {
+      setDescriptionError('Description is required.')
       noErrors = false
     }
 
-    return noErrors;
-  };
+    return noErrors
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (validateFields()) {
       const response = await createGroup(formData)
       console.log(response)
       navigate('/home')
-    }    
-  };
+    }
+  }
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }));
+    }))
 
-    if (e.target.name === "title") setTitleError("")
-    if (e.target.name === "description") setDescriptionError("")    
-
-  };
+    if (e.target.name === 'title') setTitleError('')
+    if (e.target.name === 'description') setDescriptionError('')
+  }
 
   return (
     <>
@@ -69,7 +68,7 @@ const NewGroupForm = () => {
       >
         <Stack spacing={3}>
           <TextField
-            error={titleError !== ""}
+            error={titleError !== ''}
             helperText={titleError}
             required
             id="title"
@@ -80,7 +79,7 @@ const NewGroupForm = () => {
           />
 
           <TextField
-            error={descriptionError !== ""}
+            error={descriptionError !== ''}
             helperText={descriptionError}
             required
             id="description"
@@ -100,10 +99,17 @@ const NewGroupForm = () => {
           >
             Create
           </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => navigate('/home')}
+          >
+            Go Back
+          </Button>
         </Stack>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default NewGroupForm;
+export default NewGroupForm

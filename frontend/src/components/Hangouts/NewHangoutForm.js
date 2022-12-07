@@ -1,75 +1,76 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom"
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import { Calendar } from "react-multi-date-picker";
-import DatePanel from "react-multi-date-picker/plugins/date_panel";
+import { Calendar } from 'react-multi-date-picker'
+import DatePanel from 'react-multi-date-picker/plugins/date_panel'
 
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import { createHangout } from "../../utils/apiHelper";
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import { createHangout } from '../../utils/apiHelper'
+import BackArrow from '../BackArrow'
 
 const emptyForm = {
-  title: "",
-  description: "",
-  location: "",
-  dateOptions: []  
-};
+  title: '',
+  description: '',
+  location: '',
+  dateOptions: []
+}
 
 const errorStyle = {
-  fontFamily: "Roboto",
-  color: "#d32f2f",
-  fontSize: ".75rem",
-  marginLeft: "14px",
-  marginTop: "3px",
-};
+  fontFamily: 'Roboto',
+  color: '#d32f2f',
+  fontSize: '.75rem',
+  marginLeft: '14px',
+  marginTop: '3px',
+}
 
 const datePickerStyles = {
-  padding: "14px",  
+  padding: '14px',
   height: '2.5rem',
   width: '100%',
-};
+}
 
 const NewHangoutForm = () => {
-  const [formData, setFormData] = useState(emptyForm);
-  const { groupPath } = useParams();
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState(emptyForm)
+  const { groupPath } = useParams()
+  const navigate = useNavigate()
 
-  const [titleError, setTitleError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
-  const [datesError, setDatesError] = useState("");
+  const [titleError, setTitleError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
+  const [datesError, setDatesError] = useState('')
 
   const validateFields = () => {
-    let noErrors = true;
+    let noErrors = true
 
-    if (formData.title === "") {
-      setTitleError("Title is required.");
-      noErrors = false;
+    if (formData.title === '') {
+      setTitleError('Title is required.')
+      noErrors = false
     }
 
-    if (formData.description === "") {
-      setDescriptionError("Description is required.");
-      noErrors = false;
+    if (formData.description === '') {
+      setDescriptionError('Description is required.')
+      noErrors = false
     }
 
     if (formData.dateOptions.length === 0) {
-      setDatesError("At least 1 date must be specified.");
-      noErrors = false;
+      setDatesError('At least 1 date must be specified.')
+      noErrors = false
     }
 
     if (formData.dateOptions.length > 7) {
-      setDatesError("Maximum of 7 dates can be specified.");
-      noErrors = false;
+      setDatesError('Maximum of 7 dates can be specified.')
+      noErrors = false
     }
 
-    return noErrors;
-  };
+    return noErrors
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     if (validateFields()) {
       const response = await createHangout({
         ...formData,
@@ -77,27 +78,27 @@ const NewHangoutForm = () => {
       })
       console.log(response)
       navigate(`/groups/${groupPath}`)
-    }  
+    }
 
-  };
+  }
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }));
+    }))
 
-    if (e.target.name === "title") setTitleError("");
-    if (e.target.name === "description") setDescriptionError("");
-  };
+    if (e.target.name === 'title') setTitleError('')
+    if (e.target.name === 'description') setDescriptionError('')
+  }
 
   const handleDateChange = (date) => {
     setFormData((prevState) => ({
       ...prevState,
       dateOptions: date.map((d) => d.toDate()), // convert dates from library to JS date objects
-    }));
-    setDatesError("");
-  };
+    }))
+    setDatesError('')
+  }
 
   return (
     <>
@@ -112,7 +113,7 @@ const NewHangoutForm = () => {
       >
         <Stack spacing={3}>
           <TextField
-            error={titleError !== ""}
+            error={titleError !== ''}
             helperText={titleError}
             required
             id="title"
@@ -123,7 +124,7 @@ const NewHangoutForm = () => {
           />
 
           <TextField
-            error={descriptionError !== ""}
+            error={descriptionError !== ''}
             helperText={descriptionError}
             required
             id="description"
@@ -152,14 +153,14 @@ const NewHangoutForm = () => {
           style={datePickerStyles}
           multiple
           sort
-          value={formData.dateOptions}          
+          value={formData.dateOptions}
           onChange={handleDateChange}
           minDate={Date.now()}
           name="dateOptions"
           id="dateOptions"
           plugins={[<DatePanel />]}
         />
-        {datesError !== "" && <span style={errorStyle}>{datesError}</span>}
+        {datesError !== '' && <span style={errorStyle}>{datesError}</span>}
 
         <Button
           type="submit"
@@ -169,9 +170,16 @@ const NewHangoutForm = () => {
         >
           Create
         </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => navigate(`/groups/${groupPath}`)}
+        >
+          Go Back
+        </Button>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default NewHangoutForm;
+export default NewHangoutForm

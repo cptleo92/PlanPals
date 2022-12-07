@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useEffect, useState } from 'react'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import CssBaseline from '@mui/material/CssBaseline'
+import TextField from '@mui/material/TextField'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+import Link from '@mui/material/Link'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
-import { useLocation, useNavigate } from "react-router-dom";
-import { registerUser, loginUser } from "../utils/apiHelper";
-import { CircularProgress } from "@mui/material";
-import { useCurrentUser } from "../utils/userHooks";
+import { useLocation, useNavigate } from 'react-router-dom'
+import { registerUser, loginUser } from '../utils/apiHelper'
+import { CircularProgress } from '@mui/material'
+import { useCurrentUser } from '../utils/userHooks'
 
 
 function Copyright(props) {
@@ -27,165 +27,165 @@ function Copyright(props) {
       align="center"
       {...props}
     >
-      {"Copyright © Leo Cheng "}
+      {'Copyright © Leo Cheng '}
       {new Date().getFullYear()}
-      {"."}
+      {'.'}
     </Typography>
-  );
+  )
 }
 
-const theme = createTheme();
+const theme = createTheme()
 
 const emptyForm = {
-  name: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
   rememberUser: false
-};
+}
 
 export default function UserForm() {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   const { setUser } = useCurrentUser()
 
-  const [formData, setFormData] = useState(emptyForm);
+  const [formData, setFormData] = useState(emptyForm)
 
-  const [nameError, setNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [nameError, setNameError] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false)
 
   // returns true if no errors are found
   const validateFields = () => {
-    let noErrors = true;
+    let noErrors = true
     // set error if email is invalid format
     if (!formData.email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
-      setEmailError("Email address is invalid.");
-      noErrors = false;
+      setEmailError('Email address is invalid.')
+      noErrors = false
     }
 
     // validations specific for registering
-    if (pathname === "/register") {
+    if (pathname === '/register') {
       // set error if passowrds do not match
       if (formData.password !== formData.confirmPassword) {
-        setConfirmPasswordError("Passwords do not match.");
-        noErrors = false;
+        setConfirmPasswordError('Passwords do not match.')
+        noErrors = false
       }
 
       // set error if password is too short
       if (formData.password.length < 6) {
-        setPasswordError("Password must be at least 6 characters.");
-        noErrors = false;
+        setPasswordError('Password must be at least 6 characters.')
+        noErrors = false
       }
 
       // set error if any field is empty
-      if (formData.name === "") {
-        setNameError("Name is required.");
-        noErrors = false;
+      if (formData.name === '') {
+        setNameError('Name is required.')
+        noErrors = false
       }
     }
 
-    if (formData.email === "") {
-      setEmailError("Email address is required.");
-      noErrors = false;
+    if (formData.email === '') {
+      setEmailError('Email address is required.')
+      noErrors = false
     }
 
-    if (formData.password === "") {
-      setPasswordError("Password is required.");
-      noErrors = false;
+    if (formData.password === '') {
+      setPasswordError('Password is required.')
+      noErrors = false
     }
 
-    return noErrors;
-  };
+    return noErrors
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (submitting) return;
+    event.preventDefault()
+    if (submitting) return
 
-    setSubmitting(true);
+    setSubmitting(true)
 
     if (validateFields()) {
-      let response;
-      if (pathname === "/login") {
-        response = await loginUser(formData);
+      let response
+      if (pathname === '/login') {
+        response = await loginUser(formData)
       } else {
-        response = await registerUser(formData);
+        response = await registerUser(formData)
       }
 
       if (
-        response === "User already exists!" ||
-        response === "Invalid credentials."
+        response === 'User already exists!' ||
+        response === 'Invalid credentials.'
       ) {
-        setEmailError(response);
+        setEmailError(response)
       }
 
       if (response.token) {
-        window.localStorage.setItem("currentUser", JSON.stringify(response));
-        setUser(response);
-        navigate("/");
+        window.localStorage.setItem('currentUser', JSON.stringify(response))
+        setUser(response)
+        navigate('/')
       }
     }
 
-    setSubmitting(false);
-  };
+    setSubmitting(false)
+  }
 
   // reset everything on switching form type
   useEffect(() => {
-    setFormData(emptyForm);
-    setNameError("");
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-  }, [pathname]);
+    setFormData(emptyForm)
+    setNameError('')
+    setEmailError('')
+    setPasswordError('')
+    setConfirmPasswordError('')
+  }, [pathname])
 
   const renderSwitchType = () => {
-    return pathname === "/login" ? (
-      <Link variant="body2" onClick={() => navigate("/register")}>
+    return pathname === '/login' ? (
+      <Link variant="body2" onClick={() => navigate('/register')}>
         "Don't have an account? Sign Up"
       </Link>
     ) : (
-      <Link variant="body2" onClick={() => navigate("/login")}>
+      <Link variant="body2" onClick={() => navigate('/login')}>
         "Already have an account? Sign In"
       </Link>
-    );
-  };
+    )
+  }
 
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }));
+    }))
 
-    if (e.target.name === "name") setNameError("");
-    if (e.target.name === "email") setEmailError("");
-    if (e.target.name === "confirmPassword") setConfirmPasswordError("");
-    if (e.target.name === "password") setPasswordError("");
-  };
+    if (e.target.name === 'name') setNameError('')
+    if (e.target.name === 'email') setEmailError('')
+    if (e.target.name === 'confirmPassword') setConfirmPasswordError('')
+    if (e.target.name === 'password') setPasswordError('')
+  }
 
   const handleCheckbox = (e) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       rememberUser: e.target.checked
     }))
-  };
+  }
 
   const renderSubmit = () => {
     return (
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         {submitting ? (
           <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
-        ) : pathname === "/login" ? (
-          "Sign In"
+        ) : pathname === '/login' ? (
+          'Sign In'
         ) : (
-          "Sign Up"
+          'Sign Up'
         )}
       </Button>
-    );
-  };
+    )
+  }
 
   /**
    * REMOVE IN PROD!!
@@ -194,14 +194,14 @@ export default function UserForm() {
     let response = await loginUser({
       email: 'test2@test.com',
       password: 'password'
-    });
+    })
 
     if (response.token) {
-      window.localStorage.setItem("currentUser", JSON.stringify(response));
-      setUser(response);
-      navigate("/");
+      window.localStorage.setItem('currentUser', JSON.stringify(response))
+      setUser(response)
+      navigate('/')
     }
-    
+
   }
 
   return (
@@ -211,16 +211,16 @@ export default function UserForm() {
         <Box
           sx={{
             marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon onClick={loginTest} />
           </Avatar>
           <Typography component="h1" variant="h5">
-            {pathname === "/login" ? "Sign in" : "Sign up"}
+            {pathname === '/login' ? 'Sign in' : 'Sign up'}
           </Typography>
           <Box
             component="form"
@@ -228,9 +228,9 @@ export default function UserForm() {
             noValidate
             sx={{ mt: 1 }}
           >
-            {pathname === "/register" && (
+            {pathname === '/register' && (
               <TextField
-                error={nameError !== ""}
+                error={nameError !== ''}
                 helperText={nameError}
                 margin="normal"
                 required
@@ -244,7 +244,7 @@ export default function UserForm() {
               />
             )}
             <TextField
-              error={emailError !== ""}
+              error={emailError !== ''}
               helperText={emailError}
               margin="normal"
               required
@@ -257,7 +257,7 @@ export default function UserForm() {
               onChange={handleChange}
             />
             <TextField
-              error={passwordError !== ""}
+              error={passwordError !== ''}
               helperText={passwordError}
               margin="normal"
               required
@@ -270,9 +270,9 @@ export default function UserForm() {
               autoComplete="current-password"
               onChange={handleChange}
             />
-            {pathname === "/register" && (
+            {pathname === '/register' && (
               <TextField
-                error={confirmPasswordError !== ""}
+                error={confirmPasswordError !== ''}
                 helperText={confirmPasswordError}
                 margin="normal"
                 required
@@ -309,5 +309,5 @@ export default function UserForm() {
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
-  );
+  )
 }

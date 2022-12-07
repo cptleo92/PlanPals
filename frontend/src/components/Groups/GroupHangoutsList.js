@@ -1,4 +1,4 @@
-import GroupHangoutsListItem from "./GroupHangoutsListItem"
+import GroupHangoutsListItem from './GroupHangoutsListItem'
 
 const GroupHangoutsList = ({ hangouts }) => {
   return (
