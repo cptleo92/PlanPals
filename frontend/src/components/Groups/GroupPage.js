@@ -1,8 +1,7 @@
-import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { UserContext } from "../../App";
 import { getGroup } from "../../utils/apiHelper";
+import { useCurrentUser } from "../../utils/userHooks";
 import Loading from "../Loading";
 import GroupHangoutsList from "./GroupHangoutsList";
 
@@ -18,7 +17,7 @@ const linkStyle = {
 };
 
 const GroupPage = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useCurrentUser()
   const { groupPath } = useParams();
   const navigate = useNavigate();
 

@@ -1,6 +1,6 @@
-import { useContext } from "react";
 import { getMyGroups } from "../utils/apiHelper";
 import { useQuery } from "@tanstack/react-query";
+import { useCurrentUser } from "../utils/userHooks";
 
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -9,11 +9,10 @@ import NewGroupButton from "./Groups/NewGroupButton";
 import Loading from "./Loading";
 import GroupCard from "./Groups/GroupCard";
 
-import { UserContext } from "../App";
 import Error from "./Error";
 
 const Home = () => {
-  const { user } = useContext(UserContext)
+  const { user } = useCurrentUser()
   const { isLoading, error, data: userGroups } = useQuery(["myGroups", user._id], getMyGroups)
 
   if (isLoading) {

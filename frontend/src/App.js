@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthRoutes, ProtectedRoutes } from "./utils/routesAuth";
 import axios from "axios";

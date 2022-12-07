@@ -1,16 +1,16 @@
-import { useEffect, useContext } from "react"
+import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from 'react-router-dom'
 
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { UserContext } from '../App';
+import { useCurrentUser } from "../utils/userHooks";
 
 export default function Loading({ redirect }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { logoutUser } = useContext(UserContext)
+  const { logoutUser } = useCurrentUser()
 
   useEffect(() => {
     if (redirect) {
