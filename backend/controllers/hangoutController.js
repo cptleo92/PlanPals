@@ -102,9 +102,13 @@ const leaveHangout = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
 
   // user can't leave if user isn't attending in the first place
+
+  let userHangouts = currentUser.hangouts.map(hout => hout.id)
+  let hangoutAttendees = hangout.attendees.map(att => att.id)
+
   if (
-    !currentUser.hangouts.includes(hangout.id) ||
-    !hangout.attendees.includes(currentUser.id)
+    !userHangouts.includes(hangout.id) ||
+    !hangoutAttendees.includes(currentUser.id)
   ) {
     return response.status(400).json({ error: 'You are already not attending' })
   }
@@ -112,14 +116,14 @@ const leaveHangout = async (request, response) => {
   try {
     // remove hangout from user's hangouts
     currentUser.hangouts = currentUser.hangouts.filter((usersHangout) => {
-      return usersHangout.toString() !== hangout.id
+      return usersHangout.id !== hangout.id
     })
 
     await currentUser.save()
 
     // remove user from hangout attendees
     hangout.attendees = hangout.attendees.filter((attendee) => {
-      return attendee.toString() !== currentUser.id
+      return attendee.id !== currentUser.id
     })
     await hangout.save()
 
@@ -136,17 +140,17 @@ const kickFromHangout = async (request, response) => {
   const kickFromHangout = await Hangout.findById(hangoutId)
 
   // only planner can kick
-  if (request.user.id !== kickFromHangout.planner.toString()) {
+  if (request.user.id !== kickFromHangout.planner.id) {
     return response.status(401).json({
       error: 'only planner can remove a user from the hangout'
     })
   }
 
   try {
-    kickThisUser.hangouts = kickThisUser.hangouts.filter(hangout => hangout.toString() !== hangoutId)
+    kickThisUser.hangouts = kickThisUser.hangouts.filter(hangout => hangout.id !== hangoutId)
     await kickThisUser.save()
 
-    kickFromHangout.attendees = kickFromHangout.attendees.filter(attendee => attendee.toString() !== userId)
+    kickFromHangout.attendees = kickFromHangout.attendees.filter(attendee => attendee.id !== userId)
     await kickFromHangout.save()
 
     response.sendStatus(204)
@@ -161,7 +165,7 @@ const updateHangout = async (request, response) => {
   let updateThisHangout = await Hangout.findById(hangoutId)
 
   // only hangout planner can update
-  if (request.user.id !== updateThisHangout.planner.toString()) {
+  if (request.user.id !== updateThisHangout.planner.id) {
     return response.status(401).json({ error: 'only planner can update the hangout' })
   }
 

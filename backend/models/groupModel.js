@@ -17,7 +17,7 @@ const groupSchema = mongoose.Schema(
       required: true,
       ref: 'User',
       autopopulate: {
-        select: 'name',
+        select: 'name email',
         maxDepth: 1
       }
     },
@@ -26,7 +26,7 @@ const groupSchema = mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         autopopulate: {
-          select: 'name',
+          select: 'name email',
           maxDepth: 1
         }
       }
@@ -39,7 +39,7 @@ const groupSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hangout',
-        autopopulate: true
+        autopopulate: { maxDepth: 1 }
       }
     ]
   },

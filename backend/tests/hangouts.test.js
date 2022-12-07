@@ -92,19 +92,21 @@ describe('creating a new hangout', () => {
     const currentUser = await User.findOne({ name: testUsers[0].name })
 
     const hangout = allHangouts[0]
-    const group = await Group.findById(hangout.group.id)
 
     expect(hangout).toHaveProperty('id')
     expect(hangout).toHaveProperty('title')
     expect(hangout).toHaveProperty('description')
-    expect(hangout.planner).toEqual(currentUser._id)
+    expect(hangout.planner.id).toEqual(currentUser.id)
     expect(hangout).toHaveProperty('dateOptions')
 
     // making sure the new hangouts were added to the user
     expect(currentUser.hangouts.length).toEqual(testHangouts.length)
 
     // making sure hangouts were added to their respective groups
-    expect(group.hangouts).toContainEqual(hangout._id)
+    const allGroups = await Group.find()
+    let hangoutsCount = 0
+    for (let group of allGroups) hangoutsCount += group.hangouts.length
+    expect(hangoutsCount).toEqual(testHangouts.length)
   })
 })
 
@@ -127,17 +129,22 @@ describe('attending a handout', () => {
     let testUser = await User.findOne({ name: testUsers[1].name })
     let token2 = await loginTestUser(testUsers[1])
 
+    const hangoutsCount = testUser.hangouts.length
+    const attendeesCount = testHangout.attendees.length
+
     const response = await api
       .post(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token2}`)
       .expect(200)
 
-    expect(response.body.attendees).toContain(testUser.id)
+    let attendees = response.body.attendees.map(att => att._id)
+    expect(attendees).toContain(testUser.id)
 
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     testUser = await User.findOne({ name: testUsers[1].name })
-    expect(testHangout.attendees).toContainEqual(testUser._id)
-    expect(testUser.hangouts).toContainEqual(testHangout._id)
+
+    expect(testHangout.attendees.length).toEqual(attendeesCount + 1)
+    expect(testUser.hangouts.length).toEqual(hangoutsCount + 1)
 
     // double checking that this person can't attend again
     const response2 = await api
@@ -173,9 +180,8 @@ describe('leaving a hangout', () => {
     const token2 = await loginTestUser(testUsers[1])
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
 
-    // make sure the user has the hangout id and vice versa
-    expect(testHangout.attendees).toContainEqual(testUser._id)
-    expect(testUser.hangouts).toContainEqual(testHangout._id)
+    const hangoutsCount = testUser.hangouts.length
+    const attendeesCount = testHangout.attendees.length
 
     await api
       .delete(`/api/hangouts/${testHangout.id}`)
@@ -184,8 +190,8 @@ describe('leaving a hangout', () => {
 
     testUser = await User.findOne({ name: testUsers[1].name })
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
-    expect(testHangout.attendees).not.toContainEqual(testUser._id)
-    expect(testUser.hangouts).not.toContainEqual(testHangout._id)
+    expect(testHangout.attendees.length).toEqual(attendeesCount - 1)
+    expect(testUser.hangouts.length).toEqual(hangoutsCount - 1)
   })
 
   test('kicking someone out of a hangout', async () => {
@@ -193,6 +199,9 @@ describe('leaving a hangout', () => {
     let testUser = await User.findOne({ name: testUsers[1].name })
     let token2 = await loginTestUser(testUsers[1])
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    const hangoutsCount = testUser.hangouts.length
+    const attendeesCount = testHangout.attendees.length
 
     await api
       .post(`/api/hangouts/${testHangout.id}`)
@@ -220,10 +229,11 @@ describe('leaving a hangout', () => {
       .send(body)
       .expect(204)
 
+    // counts should have gone up 1 then back down 1
     testUser = await User.findOne({ name: testUsers[1].name })
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
-    expect(testHangout.attendees).not.toContainEqual(testUser._id)
-    expect(testUser.hangouts).not.toContainEqual(testHangout._id)
+    expect(testHangout.attendees.length).toEqual(attendeesCount)
+    expect(testUser.hangouts.length).toEqual(hangoutsCount)
   })
 })
 
