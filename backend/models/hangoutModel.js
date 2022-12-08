@@ -18,7 +18,7 @@ const hangoutSchema = mongoose.Schema(
     },
     dateOptions: {
       type: Map,
-      of: [mongoose.Schema.Types.ObjectId]
+      of: [String]
     },
     path: {
       type: String,

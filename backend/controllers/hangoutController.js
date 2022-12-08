@@ -68,9 +68,17 @@ const createHangout = async (request, response) => {
 
 const joinHangout = async (request, response) => {
   const hangoutId = request.params.id
+  const dateVotes = request.body
 
   const currentUser = await User.findById(request.user.id)
   const hangoutToJoin = await Hangout.findById(hangoutId)
+
+  // don't let user join without specifying dates
+  if (!dateVotes || dateVotes.length === 0) {
+    return response
+      .status(400)
+      .json({ error: 'At least 1 date must be chosen' })
+  }
 
   // don't let user join twice, or admin join again
   const alreadyJoined = () => {
@@ -96,6 +104,12 @@ const joinHangout = async (request, response) => {
     await currentUser.save()
 
     hangoutToJoin.attendees.push(currentUser.id)
+
+    // update votes in dateOptions
+    for (let vote of dateVotes) {
+      hangoutToJoin.dateOptions.get(vote).push(currentUser.id)
+    }
+
     await hangoutToJoin.save()
 
     response.status(200).json(hangoutToJoin)
@@ -138,6 +152,13 @@ const leaveHangout = async (request, response) => {
     hangout.attendees = hangout.attendees.filter((attendee) => {
       return attendee.id !== currentUser.id
     })
+
+    // remove user votes from hangout.dateOptions
+    for (let [date, votes] of hangout.dateOptions) {
+      votes = votes.filter(vote => vote !== currentUser.id)
+      hangout.dateOptions.set(date, votes)
+    }
+
     await hangout.save()
 
     response.sendStatus(204)
@@ -164,6 +185,13 @@ const kickFromHangout = async (request, response) => {
     await kickThisUser.save()
 
     kickFromHangout.attendees = kickFromHangout.attendees.filter(attendee => attendee.id !== userId)
+
+    // remove user votes from hangout.dateOptions
+    for (let [date, votes] of kickFromHangout.dateOptions) {
+      votes = votes.filter(vote => vote !== kickThisUser.id)
+      kickFromHangout.dateOptions.set(date, votes)
+    }
+
     await kickFromHangout.save()
 
     response.sendStatus(204)
@@ -191,6 +219,15 @@ const updateHangout = async (request, response) => {
   }
 }
 
+const updateHangoutDateVotes = async (request, response) => {
+  const hangoutId = request.params.id
+  const { dates } = request.body
+
+  console.log( hangoutId, dates )
+
+
+}
+
 module.exports = {
   getMyHangouts,
   kickFromHangout,
@@ -198,5 +235,6 @@ module.exports = {
   joinHangout,
   leaveHangout,
   updateHangout,
-  getHangoutByPath
+  getHangoutByPath,
+  updateHangoutDateVotes
 }

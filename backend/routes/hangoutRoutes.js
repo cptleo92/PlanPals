@@ -6,7 +6,8 @@ const {
   joinHangout,
   leaveHangout,
   updateHangout,
-  getHangoutByPath
+  getHangoutByPath,
+  updateHangoutDateVotes
 } = require('../controllers/hangoutController')
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
@@ -39,8 +40,12 @@ router.post('/', createHangout)
 // update a hangout
 router.post('/update', updateHangout)
 
+
 // join a hangout
 router.post('/:id', joinHangout)
+
+// add votes for a hangout's dateOptions
+router.post('/:id/updatevotes', updateHangoutDateVotes)
 
 // leave a hangout
 router.delete('/:id', leaveHangout)

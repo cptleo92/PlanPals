@@ -38,7 +38,7 @@ beforeAll(async () => {
 
   await seedUsers(testUsers)
   token = await loginTestUser(testUsers[0])
-  // logDb()
+
   await seedGroups(testGroups, token)
 
   await formatHangouts(testHangouts)
@@ -110,15 +110,18 @@ describe('creating a new hangout', () => {
 })
 
 describe('attending a handout', () => {
-  let testHangout
+  let testHangout, dateVotes
   beforeAll(async () => {
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+
+    dateVotes = Array.from(testHangout.dateOptions.keys())
   })
 
-  test('cannot attend a hangout twice', async () => {
+  test('cannot attend a hangout twice or if user is planner', async () => {
     const response = await api
       .post(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token}`)
+      .send(dateVotes)
       .expect(400)
 
     expect(response.body.error).toEqual('You are already attending this hangout')
@@ -134,6 +137,7 @@ describe('attending a handout', () => {
     const response = await api
       .post(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token2}`)
+      .send(dateVotes)
       .expect(200)
 
     let attendees = response.body.attendees.map(att => att._id)
@@ -144,6 +148,10 @@ describe('attending a handout', () => {
 
     expect(testHangout.attendees.length).toEqual(attendeesCount + 1)
     expect(testUser.hangouts.length).toEqual(hangoutsCount + 1)
+
+    // hangout.dateOptions values should be filled with user id
+    const dateVotesByUser = Array.from(testHangout.dateOptions.values())
+    expect(dateVotesByUser.every(vote => vote.includes(testUser.id))).toEqual(true)
 
     // double checking that this person can't attend again
     const response2 = await api
@@ -191,6 +199,10 @@ describe('leaving a hangout', () => {
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees.length).toEqual(attendeesCount - 1)
     expect(testUser.hangouts.length).toEqual(hangoutsCount - 1)
+
+    // user's date votes should be removed
+    const dateVotesByUser = Array.from(testHangout.dateOptions.values())
+    expect(dateVotesByUser.every(vote => !vote.includes(testUser.id))).toEqual(true)
   })
 
   test('kicking someone out of a hangout', async () => {
@@ -198,6 +210,7 @@ describe('leaving a hangout', () => {
     let testUser = await User.findOne({ name: testUsers[1].name })
     let token2 = await loginTestUser(testUsers[1])
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    let dateVotes = Array.from(testHangout.dateOptions.keys())
 
     const hangoutsCount = testUser.hangouts.length
     const attendeesCount = testHangout.attendees.length
@@ -205,6 +218,7 @@ describe('leaving a hangout', () => {
     await api
       .post(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token2}`)
+      .send(dateVotes)
       .expect(200)
 
     const body = {
@@ -233,6 +247,10 @@ describe('leaving a hangout', () => {
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees.length).toEqual(attendeesCount)
     expect(testUser.hangouts.length).toEqual(hangoutsCount)
+
+    // user's date votes should be removed
+    const dateVotesByUser = Array.from(testHangout.dateOptions.values())
+    expect(dateVotesByUser.every(vote => !vote.includes(testUser.id))).toEqual(true)
   })
 })
 
