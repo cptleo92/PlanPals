@@ -36,7 +36,7 @@ const createHangout = async (request, response) => {
     group: group.id,
     groupPath,
     dateOptions,
-    attendees: [currentUser.id],
+    attendees: [],
     path: nanoid(6)
   })
 

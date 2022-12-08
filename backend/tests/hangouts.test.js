@@ -320,7 +320,7 @@ describe('updating hangout information', () => {
     }
 
     const response = await api
-      .post('/api/hangouts/update')
+      .patch('/api/hangouts/update')
       .set('Authorization', `Bearer ${token3}`)
       .send(body)
       .expect(401)
@@ -337,7 +337,7 @@ describe('updating hangout information', () => {
     }
 
     const response = await api
-      .post('/api/hangouts/update')
+      .patch('/api/hangouts/update')
       .set('Authorization', `Bearer ${token}`)
       .send(body)
       .expect(200)

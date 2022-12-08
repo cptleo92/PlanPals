@@ -38,7 +38,7 @@ router.get('/:id', async (request, response) => {
 router.post('/', createHangout)
 
 // update a hangout
-router.post('/update', updateHangout)
+router.patch('/update', updateHangout)
 
 
 // join a hangout
