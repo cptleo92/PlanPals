@@ -7,19 +7,17 @@ import Loading from '../Loading'
 
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
+import { Link as MUILink } from '@mui/material/'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 
 import BackArrow from '../BackArrow'
 import HangoutAttend from './HangoutAttend'
 
-
 const HangoutPage = () => {
   const { user } = useCurrentUser()
   const { hangoutPath } = useParams()
   const navigate = useNavigate()
-
-
 
   const {
     isLoading,
@@ -62,6 +60,13 @@ const HangoutPage = () => {
         alt="placeholder"
         src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
       />
+      <br />
+      {
+        user._id !== hangout.planner._id &&
+        <MUILink href="#" >
+          Edit hangout details
+        </MUILink>
+      }
 
       <Typography gutterBottom variant="subtitle1" mt={3}>
         {hangout?.description}
@@ -78,7 +83,11 @@ const HangoutPage = () => {
         {generateAvatars()}
       </Stack>
 
-      <HangoutAttend hangout={hangout} />
+      <HangoutAttend
+        hangout={hangout}
+        isPlanner={user._id === hangout.planner._id}
+        isAttending={hangout.attendees.map(att => att._id).includes(user._id)}
+      />
     </Box>
   )
 }

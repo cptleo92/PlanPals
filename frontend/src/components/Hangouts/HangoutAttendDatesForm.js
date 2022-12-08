@@ -19,7 +19,18 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
   const [checked, setChecked] = useState([])
   const [error, setError] = useState(false)
 
-  console.log(id)
+  const sortedDates = Object.keys(dateOptions).sort((a, b) => {
+    return new Date(a) - new Date(b)
+  })
+
+  const parseDate = (date)  => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+    return new Date(date).toLocaleDateString(undefined, options)
+  }
+
+  const getVoteNumber = (date) => {
+    return dateOptions[date].length
+  }
 
   const handleToggle = (value) => () => {
     setError(false)
@@ -45,7 +56,7 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {dateOptions.map((date, idx) => {
+      {sortedDates.map((date, idx) => {
         const labelId = `checkbox-list-label-${idx}`
 
         return (
@@ -62,8 +73,8 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
               </ListItemIcon>
               <ListItemText
                 id={labelId}
-                primary={`${date}`}
-                secondary={'Number of votes'}
+                primary={parseDate(date)}
+                secondary={`Number of votes: ${getVoteNumber(date)}`}
               />
             </ListItemButton>
           </ListItem>

@@ -75,6 +75,26 @@ const createSeedHangout = async () => {
   // picks out a random user in a random group
   const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id)
 
+  const generateFakeDates = () => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+    let initialDate = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
+
+    // make sure there's 1 date minimum
+    const fakeDates = {
+      [initialDate]: []
+    }
+
+    // 8 times, 50% chance each time of adding a new date with no duplicates
+    for (let i = 0; i < 8; i++) {
+      if (Math.random() < 0.5) {
+        let date = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
+        if (!(date in fakeDates)) fakeDates[date] = []
+      }
+    }
+
+    return fakeDates
+  }
+
   const newHangout = new Hangout({
     title: faker.company.catchPhrase(),
     description: faker.lorem.paragraph(),
@@ -82,11 +102,7 @@ const createSeedHangout = async () => {
     planner: randomUser.id,
     group: randomGroup.id,
     groupPath: randomGroup.path,
-    dateOptions: [
-      faker.date.soon(10),
-      faker.date.soon(20),
-      faker.date.soon(30)
-    ],
+    dateOptions: generateFakeDates(),
     path: nanoid(6),
     attendees: [randomUser.id],
   })

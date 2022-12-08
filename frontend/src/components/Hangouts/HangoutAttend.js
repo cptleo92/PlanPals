@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import HangoutAttendDatesForm from './HangoutAttendDatesForm'
+import { useCurrentUser } from '../../utils/userHooks'
 
 const style = {
   position: 'absolute',
@@ -18,19 +19,13 @@ const style = {
   p: 4,
 }
 
-const HangoutAttend = ({ hangout }) => {
+const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
   // modal state handling
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
-
-
-  // keep an eye out in case dates need to be sorted
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  const dateOptions = hangout.dateOptions.map(date => {
-    return new Date(date).toLocaleDateString(undefined, options)
-  })
+  const { user } = useCurrentUser()
 
   return (
     <div>
@@ -40,7 +35,7 @@ const HangoutAttend = ({ hangout }) => {
         color="secondary"
         onClick={handleOpen}
       >
-        RSVP
+        { isAttending ? 'Edit RSVP' : 'RSVP' }
       </Button>
       <Modal
         open={open}
@@ -53,8 +48,10 @@ const HangoutAttend = ({ hangout }) => {
             Select at least 1 date that you are available!
           </Typography>
 
-          <HangoutAttendDatesForm dateOptions={dateOptions} id={hangout._id} />
-
+          <HangoutAttendDatesForm
+            dateOptions={hangout.dateOptions}
+            id={hangout._id}
+          />
         </Box>
       </Modal>
     </div>

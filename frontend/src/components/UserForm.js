@@ -18,22 +18,6 @@ import { registerUser, loginUser } from '../utils/apiHelper'
 import { CircularProgress } from '@mui/material'
 import { useCurrentUser } from '../utils/userHooks'
 
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © Leo Cheng '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
-
 const theme = createTheme()
 
 const emptyForm = {
@@ -306,7 +290,6 @@ export default function UserForm() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   )
