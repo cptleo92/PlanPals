@@ -34,8 +34,8 @@
       "description": "1 1 1 1 1",
       "location": "testland",
       "dateOptions": {
-        "11/20/2022": [],
-        "11/27/2022": []
+        "Sunday, November 20, 2022": [],
+        "Sunday, November 27, 2022": []
       }
     },
     "hangout2": {
@@ -43,7 +43,7 @@
       "description": "222222",
       "location": "testland",
       "dateOptions": {
-        "12/5/2022": []
+        "Monday, December 5, 2022": []
       }
     },
     "hangout3": {
@@ -51,7 +51,7 @@
       "description": "3 3 3 3 3",
       "location": "testland",
       "dateOptions": {
-        "1/22/2023": []
+        "Friday, January 22, 20223": []
       }
     },
     "hangout4": {
@@ -59,9 +59,9 @@
       "description": "44444",
       "location": "testland",
       "dateOptions": {
-        "12/20/2022": [],
-        "12/21/2022": [],
-        "12/22/2022": []
+        "Monday, December 12, 2022": [],
+        "Tuesday, December 13, 2022": [],
+        "Wednesday, December 14, 2022": []
       }
     }
   }

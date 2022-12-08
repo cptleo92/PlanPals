@@ -161,6 +161,56 @@ describe('attending a handout', () => {
 
     expect(response2.body.error).toEqual('You are already attending this hangout')
   })
+
+  test('updates dateOptions correctly', async () => {
+    // testHangout.dateOptions
+    //
+    // Map(2) {
+    //   'Sunday, November 20, 2022' => [ '639253df0e653936b71a48d8' ],
+    //   'Sunday, November 27, 2022' => [ '639253df0e653936b71a48d8' ]
+    // }
+
+    let token2 = await loginTestUser(testUsers[1])
+
+    dateVotes = ['Sunday, November 20, 2022']
+
+    await api
+      .patch(`/api/hangouts/${testHangout.id}/updateVotes`)
+      .set('Authorization', `Bearer ${token2}`)
+      .send(dateVotes)
+      .expect(200)
+
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    expect(testHangout.dateOptions.get('Sunday, November 20, 2022').length).toBe(1)
+    expect(testHangout.dateOptions.get('Sunday, November 27, 2022').length).toBe(0)
+
+    // test this out with a 3rd user
+    let token3 = await loginTestUser(testUsers[2])
+    dateVotes = ['Sunday, November 27, 2022']
+
+    await api
+      .post(`/api/hangouts/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token3}`)
+      .send(dateVotes)
+      .expect(200)
+
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    expect(testHangout.dateOptions.get('Sunday, November 20, 2022').length).toBe(1)
+    expect(testHangout.dateOptions.get('Sunday, November 27, 2022').length).toBe(1)
+
+    dateVotes = ['Sunday, November 20, 2022']
+
+    await api
+      .patch(`/api/hangouts/${testHangout.id}/updateVotes`)
+      .set('Authorization', `Bearer ${token3}`)
+      .send(dateVotes)
+      .expect(200)
+
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    expect(testHangout.dateOptions.get('Sunday, November 20, 2022').length).toBe(2)
+    expect(testHangout.dateOptions.get('Sunday, November 27, 2022').length).toBe(0)
+
+  })
 })
 
 describe('leaving a hangout', () => {

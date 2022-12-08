@@ -221,10 +221,47 @@ const updateHangout = async (request, response) => {
 
 const updateHangoutDateVotes = async (request, response) => {
   const hangoutId = request.params.id
-  const { dates } = request.body
+  const dateVotes = request.body // dates = [date strings]
 
-  console.log( hangoutId, dates )
+  const currentUser = await User.findById(request.user.id)
+  const hangout = await Hangout.findById(hangoutId)
 
+  // error if dateVotes is invalid
+  if (dateVotes.length === 0) {
+    return response.status(400).json({ error: 'At least 1 date is required' })
+  }
+
+  // error if user isn't attending
+  let userHangouts = currentUser.hangouts.map(hout => hout.id)
+  let hangoutAttendees = hangout.attendees.map(att => att.id)
+
+  if (
+    !userHangouts.includes(hangout.id) ||
+    !hangoutAttendees.includes(currentUser.id)
+  ) {
+    return response.status(400).json({ error: 'You are not attending' })
+  }
+
+  try {
+    for (let [date, votes] of hangout.dateOptions) {
+    // if date is not in dateVotes, filter user out
+    // otherwise, push user (unless user is already in there)
+
+      if (!dateVotes.includes(date)) {
+        votes = votes.filter(id => id !== currentUser.id)
+      } else if (!votes.includes(currentUser.id)) {
+        votes.push(currentUser.id)
+      }
+
+      hangout.dateOptions.set(date, votes)
+    }
+
+    await hangout.save()
+    response.status(200).json(hangout)
+
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
 
 }
 

@@ -45,7 +45,7 @@ router.post('/update', updateHangout)
 router.post('/:id', joinHangout)
 
 // add votes for a hangout's dateOptions
-router.post('/:id/updatevotes', updateHangoutDateVotes)
+router.patch('/:id/updatevotes', updateHangoutDateVotes)
 
 // leave a hangout
 router.delete('/:id', leaveHangout)
