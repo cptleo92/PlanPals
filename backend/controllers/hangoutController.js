@@ -220,11 +220,11 @@ const updateHangout = async (request, response) => {
 }
 
 const updateHangoutDateVotes = async (request, response) => {
-  const hangoutId = request.params.id
+
   const dateVotes = request.body // dates = [date strings]
 
   const currentUser = await User.findById(request.user.id)
-  const hangout = await Hangout.findById(hangoutId)
+  const hangout = await Hangout.findById(request.params.id)
 
   // error if dateVotes is invalid
   if (dateVotes.length === 0) {

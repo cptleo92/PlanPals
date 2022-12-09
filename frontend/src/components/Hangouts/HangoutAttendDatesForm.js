@@ -7,6 +7,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
+import { updateHangoutDateVotes } from '../../utils/apiHelper'
+import { useNavigate } from 'react-router-dom'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -32,9 +34,9 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
     return selectedDates
   }
 
-  const [checked, setChecked] = useState(getUserDates())
+  const [dateVotes, setDateVotes] = useState(getUserDates())
   const [error, setError] = useState(false)
-
+  const navigate = useNavigate()
 
   const sortedDates = Object.keys(dateOptions).sort((a, b) => {
     return new Date(a) - new Date(b)
@@ -51,23 +53,32 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
 
   const handleToggle = (value) => () => {
     setError(false)
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
+    const currentIndex = dateVotes.indexOf(value)
+    const newDateVotes = [...dateVotes]
 
     if (currentIndex === -1) {
-      newChecked.push(value)
+      newDateVotes.push(value)
     } else {
-      newChecked.splice(currentIndex, 1)
+      newDateVotes.splice(currentIndex, 1)
     }
 
-    setChecked(newChecked)
+    setDateVotes(newDateVotes)
   }
 
-  const handleSubmit = () => {
-    if (checked.length === 0) {
+  const handleSubmit = async () => {
+    if (dateVotes.length === 0) {
       setError(true)
     } else {
-      console.log(checked)
+
+      try {
+        await updateHangoutDateVotes(id, dateVotes)
+        // console.log(response)
+        navigate(0)
+      } catch (error) {
+        // console.log(error)
+        navigate('/error')
+      }
+
     }
   }
 
@@ -82,7 +93,7 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={checked.indexOf(date) !== -1}
+                  checked={dateVotes.indexOf(date) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}

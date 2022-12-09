@@ -63,6 +63,20 @@ export const getHangoutByPath = async (path) => {
   }
 }
 
-export const joinHangout = async (id) => {
+export const joinHangout = async (id, dateVotes) => {
+  try {
+    const response = await axios.post(`/api/hangouts/$${id}`, dateVotes)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
 
+export const updateHangoutDateVotes = async (id, dateVotes) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/${id}/updateVotes`, dateVotes)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
 }
