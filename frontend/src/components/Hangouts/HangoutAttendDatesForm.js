@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useCurrentUser } from '../../utils/userHooks'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -16,8 +17,24 @@ const errorStyle = {
 }
 
 export default function HangoutAttendDatesForm({ id, dateOptions }) {
-  const [checked, setChecked] = useState([])
+  const { user } = useCurrentUser()
+
+  const getUserDates = () => {
+    // get votes array from dateOptions
+    // return array of dates that includes user id
+    const selectedDates = []
+
+    for (let [date, votes] of Object.entries(dateOptions)) {
+      console.log(date, votes, user)
+      if (votes.includes(user._id)) selectedDates.push(date)
+    }
+
+    return selectedDates
+  }
+
+  const [checked, setChecked] = useState(getUserDates())
   const [error, setError] = useState(false)
+
 
   const sortedDates = Object.keys(dateOptions).sort((a, b) => {
     return new Date(a) - new Date(b)
