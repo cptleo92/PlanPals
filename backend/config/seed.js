@@ -104,7 +104,7 @@ const createSeedHangout = async () => {
     groupPath: randomGroup.path,
     dateOptions: generateFakeDates(),
     path: nanoid(6),
-    attendees: [randomUser.id],
+    attendees: [],
   })
 
   await newHangout.save()
@@ -155,8 +155,12 @@ const seedMemberships = async () => {
  */
 const seedAttendances = async () => {
   const randomGroup = await getRandomModel('group')
-  const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id)
-  const randomHangout = await Hangout.findById(randomGroup.hangouts[Math.floor(Math.random() * randomGroup.hangouts.length)]._id)
+
+  const randomUserId = randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id
+  const randomUser = await User.findById(randomUserId)
+
+  const randomHangoutId = randomGroup.hangouts[Math.floor(Math.random() * randomGroup.hangouts.length)]._id
+  const randomHangout = await Hangout.findById(randomHangoutId)
 
   // don't let user join twice, or admin join again
   const alreadyJoined = () => {
@@ -176,6 +180,13 @@ const seedAttendances = async () => {
     await randomUser.save()
 
     randomHangout.attendees.push(randomUser.id)
+
+    // user is available all dates for now
+    for (let [date, votes] of randomHangout.dateOptions) {
+      votes.push(randomUser.id)
+      randomHangout.dateOptions.set(date, votes)
+    }
+
     await randomHangout.save()
   }
 }
