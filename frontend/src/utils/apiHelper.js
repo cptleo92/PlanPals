@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+/**
+ *  USERS
+ */
+
 export const registerUser = async (formData) => {
   try {
     const response = await axios.post('/api/users/', formData)
@@ -17,6 +21,11 @@ export const loginUser = async (formData) => {
     return err.response.data.error
   }
 }
+
+
+/**
+ *  GROUPS
+ */
 
 export const createGroup = async (formData) => {
   try {
@@ -53,6 +62,19 @@ export const updateGroup = async (id, formData) => {
     return err.response.data.error
   }
 }
+
+export const joinGroup = async (id) => {
+  try {
+    const response = await axios.post(`/api/groups/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+/**
+ *  HANGOUTS
+ */
 
 export const createHangout = async (formData) => {
   try {

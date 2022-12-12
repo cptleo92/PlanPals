@@ -7,8 +7,6 @@ import { Typography, Paper } from '@mui/material'
 const GroupHangoutsListItem = ({ hangout }) => {
   const { user } = useCurrentUser()
 
-  console.log(user, hangout)
-
   // temp
   const showInfo = () => {
     if (user._id === hangout.planner ) {
