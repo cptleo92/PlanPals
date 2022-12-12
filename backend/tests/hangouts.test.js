@@ -320,7 +320,7 @@ describe('updating hangout information', () => {
     }
 
     const response = await api
-      .patch('/api/hangouts/update')
+      .patch(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token3}`)
       .send(body)
       .expect(401)
@@ -332,12 +332,11 @@ describe('updating hangout information', () => {
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
 
     const body = {
-      hangoutId: testHangout.id,
       newHangoutData
     }
 
     const response = await api
-      .patch('/api/hangouts/update')
+      .patch(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token}`)
       .send(body)
       .expect(200)

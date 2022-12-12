@@ -7,7 +7,7 @@ import Loading from '../Misc/Loading'
 
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
-import { Link as MUILink } from '@mui/material/'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 
@@ -29,8 +29,6 @@ const HangoutPage = () => {
     return <Loading />
   }
 
-  console.log(hangout)
-
   if (error) {
     console.log(error)
     navigate('/error')
@@ -43,10 +41,18 @@ const HangoutPage = () => {
   }
 
   return (
-    <Box mt={3}>
+    <Box mt={3} sx={{
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
       <BackArrow link={`/groups/${hangout.groupPath}`} />
-      <Typography variant="h3" component="h2" mt={3} mb={6}>
+
+      <Typography variant="h3" component="h2" mt={3}>
         {hangout?.title}
+      </Typography>
+
+      <Typography gutterBottom variant="button">
+        <LocationOnIcon fontSize='inherit'/> Location: {hangout?.location}
       </Typography>
 
       <Box
@@ -60,20 +66,23 @@ const HangoutPage = () => {
         alt="placeholder"
         src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
       />
-      <br />
+
       {
-        user._id !== hangout.planner._id &&
-        <MUILink href="#" >
+        user._id === hangout.planner._id &&
+        <Link to='./edit' style={{ color: 'blue', fontWeight: 500, textDecoration: 'underline' }}>
           Edit hangout details
-        </MUILink>
+        </Link>
       }
 
-      <Typography gutterBottom variant="subtitle1" mt={3}>
+      <Typography gutterBottom variant="h6" mt={4}>
+        Description
+      </Typography>
+      <Typography gutterBottom variant="subtitle1">
         {hangout?.description}
       </Typography>
 
       <Typography gutterBottom variant="h5" mt={6} mb={3}>
-        Attending ({attendees.length})
+        Attending ({attendees.length + 1})
       </Typography>
 
       <Stack direction="row" spacing={2} mb={3}>

@@ -60,17 +60,35 @@ const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
     updateModal()
   }, [])
 
+  const renderButton = () => {
+    if (isPlanner) {
+      return (
+        <Button
+          size="small"
+          variant="contained"
+          color="success"
+        >
+          Select Date
+        </Button>
+      )
+    } else {
+      return (
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          onClick={handleOpen}
+        >
+          { isAttending ? 'Edit RSVP' : 'RSVP' }
+        </Button>
+      )
+    }
+  }
+
 
   return (
     <div>
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        onClick={handleOpen}
-      >
-        { isAttending ? 'Edit RSVP' : 'RSVP' }
-      </Button>
+      { renderButton() }
 
       <Modal
         open={open}

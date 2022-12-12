@@ -39,8 +39,7 @@ const NewGroupForm = () => {
     e.preventDefault()
 
     if (validateFields()) {
-      const response = await createGroup(formData)
-      console.log(response)
+      await createGroup(formData)
       navigate('/home')
     }
   }

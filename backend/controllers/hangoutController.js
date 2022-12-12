@@ -201,7 +201,8 @@ const kickFromHangout = async (request, response) => {
 }
 
 const updateHangout = async (request, response) => {
-  const { hangoutId, newHangoutData } = request.body
+  const hangoutId = request.params.id
+  const newHangoutData = request.body
 
   let updateThisHangout = await Hangout.findById(hangoutId)
 

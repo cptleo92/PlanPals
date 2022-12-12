@@ -72,6 +72,15 @@ export const joinHangout = async (id, dateVotes) => {
   }
 }
 
+export const updateHangout = async (id, newHangoutData) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/${id}`, newHangoutData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 export const updateHangoutDateVotes = async (id, dateVotes) => {
   try {
     const response = await axios.patch(`/api/hangouts/${id}/updateVotes`, dateVotes)

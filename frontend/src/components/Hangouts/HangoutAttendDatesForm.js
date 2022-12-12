@@ -83,10 +83,9 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
           await joinHangout(id, dateVotes)
         }
 
-        // console.log(response)
         navigate(0)
       } catch (error) {
-        // console.log(error)
+        console.log(error)
         navigate('/error')
       }
 

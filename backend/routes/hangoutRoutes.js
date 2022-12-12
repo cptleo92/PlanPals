@@ -37,12 +37,11 @@ router.get('/:id', async (request, response) => {
 // create a new hangout
 router.post('/', createHangout)
 
-// update a hangout
-router.patch('/update', updateHangout)
-
-
 // join a hangout
 router.post('/:id', joinHangout)
+
+// update a hangout
+router.patch('/:id', updateHangout)
 
 // add votes for a hangout's dateOptions
 router.patch('/:id/updatevotes', updateHangoutDateVotes)

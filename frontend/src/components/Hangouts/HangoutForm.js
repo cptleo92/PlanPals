@@ -1,6 +1,8 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getHangoutByPath } from '../../utils/apiHelper'
+import { createHangout, updateHangout } from '../../utils/apiHelper'
 import { Calendar } from 'react-multi-date-picker'
 import DatePanel from 'react-multi-date-picker/plugins/date_panel'
 
@@ -9,13 +11,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import { createHangout } from '../../utils/apiHelper'
-
-const emptyForm = {
-  title: '',
-  description: '',
-  location: '',
-}
+import { useCurrentUser } from '../../utils/userHooks'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -31,11 +27,34 @@ const datePickerStyles = {
   width: '100%',
 }
 
-const NewHangoutForm = () => {
-  const [formData, setFormData] = useState(emptyForm)
-  const [dateOptions, setDateOptions] = useState([])
-  const { groupPath } = useParams()
+const HangoutForm = ({ edit = false }) => {
+  // const [hangout, setHangout] = useState(null)
+  const { hangoutPath, groupPath } = useParams()
   const navigate = useNavigate()
+  const { user } = useCurrentUser()
+
+  const {
+    error,
+    data: hangout,
+  } = useQuery({
+    queryKey: ['hangout', hangoutPath],
+    queryFn: () => getHangoutByPath(hangoutPath),
+    enabled: !!hangoutPath
+  })
+
+  if (error) {
+    console.log(error)
+    navigate('/error')
+  }
+
+  const defaultForm = {
+    title: hangout ? hangout.title : '',
+    description: hangout ? hangout.description : '',
+    location: hangout ? hangout.location : '',
+  }
+
+  const [formData, setFormData] = useState(defaultForm)
+  const [dateOptions, setDateOptions] = useState(hangout ? Object.keys(hangout.dateOptions) : [])
 
   const [titleError, setTitleError] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
@@ -80,16 +99,23 @@ const NewHangoutForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    let response
     if (validateFields()) {
-      let response = await createHangout({
-        ...formData,
-        groupPath,
-        dateOptions: parseDateOptions()
-      })
-      console.log(response)
-      navigate(`/groups/${groupPath}`)
+      if (!edit) {
+        response = await createHangout({
+          ...formData,
+          groupPath,
+          dateOptions: parseDateOptions()
+        })
+      } else {
+        response = await updateHangout( hangout._id, {
+          ...formData,
+          groupPath,
+          dateOptions: parseDateOptions()
+        })
+      }
+      navigate(`/groups/${groupPath}/hangouts/${response.path}`)
     }
-
   }
 
   const handleChange = (e) => {
@@ -107,10 +133,16 @@ const NewHangoutForm = () => {
     setDatesError('')
   }
 
+  useEffect(() => {
+    if (hangout && hangout.planner._id !== user._id) {
+      navigate('/error')
+    }
+  }, [hangout, navigate, user._id])
+
   return (
     <>
       <Typography variant="h3" component="h2" mt={3}>
-        Create a new hangout!
+        { hangout ? 'Edit your hangout!' : 'Create a new hangout!' }
       </Typography>
       <Box
         component="form"
@@ -152,22 +184,28 @@ const NewHangoutForm = () => {
             onChange={handleChange}
           />
 
-          <Typography variant="subtitle2" color="text.secondary">
+          {
+            !edit &&
+          <>
+            <Typography variant="subtitle2" color="text.secondary">
             Suggest Dates (7 max):
-          </Typography>
+            </Typography>
+
+            <Calendar
+              style={datePickerStyles}
+              multiple
+              sort
+              value={dateOptions}
+              onChange={handleDateChange}
+              minDate={Date.now()}
+              name="dateOptions"
+              id="dateOptions"
+              plugins={[<DatePanel />]}
+            />
+            {datesError !== '' && <span style={errorStyle}>{datesError}</span>}
+          </>
+          }
         </Stack>
-        <Calendar
-          style={datePickerStyles}
-          multiple
-          sort
-          value={dateOptions}
-          onChange={handleDateChange}
-          minDate={Date.now()}
-          name="dateOptions"
-          id="dateOptions"
-          plugins={[<DatePanel />]}
-        />
-        {datesError !== '' && <span style={errorStyle}>{datesError}</span>}
 
         <Button
           type="submit"
@@ -175,12 +213,12 @@ const NewHangoutForm = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Create
+          { edit ? 'Update' : 'Create' }
         </Button>
         <Button
           fullWidth
           variant="outlined"
-          onClick={() => navigate(`/groups/${groupPath}`)}
+          onClick={() => navigate(-1)}
         >
           Go Back
         </Button>
@@ -189,4 +227,4 @@ const NewHangoutForm = () => {
   )
 }
 
-export default NewHangoutForm
+export default HangoutForm

@@ -7,10 +7,12 @@ import { Typography, Paper } from '@mui/material'
 const GroupHangoutsListItem = ({ hangout }) => {
   const { user } = useCurrentUser()
 
+  console.log(user, hangout)
+
   // temp
   const showInfo = () => {
-    if (user._id === hangout.planner._id ) {
-      return <Typography sx={{ color: 'darkgreen', fontWeight: 700 }} variant="subtitle1"> You are planner!</Typography>
+    if (user._id === hangout.planner ) {
+      return <Typography sx={{ color: 'darkgreen', fontWeight: 700 }} variant="subtitle1"> You are the planner!</Typography>
     }
 
     if (hangout.attendees.includes(user._id)) {
