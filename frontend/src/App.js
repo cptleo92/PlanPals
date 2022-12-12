@@ -4,18 +4,18 @@ import { AuthRoutes, ProtectedRoutes } from './utils/routesAuth'
 import axios from 'axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import UserForm from './components/UserForm'
+import UserForm from './components/User/UserForm'
 import Layout from './Layout'
-import Home from './components/Home'
+import Home from './components/User/Home'
 import NewGroupForm from './components/Groups/NewGroupForm'
-import Loading from './components/Loading'
+import Loading from './components/Misc/Loading'
 import HangoutPage from './components/Hangouts/HangoutPage'
 
 // history router, used for redirecting in axios interceptors
 import { createBrowserHistory } from 'history'
 import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom'
 import GroupPage from './components/Groups/GroupPage'
-import Error from './components/Error'
+import Error from './components/Misc/Error'
 import NewHangoutForm from './components/Hangouts/NewHangoutForm'
 
 let history = createBrowserHistory()

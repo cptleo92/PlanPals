@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/userHooks'
-import Loading from '../Loading'
+import Loading from '../Misc/Loading'
 
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
@@ -11,7 +11,7 @@ import { Link as MUILink } from '@mui/material/'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 
-import BackArrow from '../BackArrow'
+import BackArrow from '../Misc/BackArrow'
 import HangoutAttend from './HangoutAttend'
 
 const HangoutPage = () => {

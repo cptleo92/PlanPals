@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import UserForm from './UserForm'
-import { UserContext } from '../App'
+import { UserContext } from '../../App'
 
 test('validates registration form properly', () => {
   const setUser = jest.fn()

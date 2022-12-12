@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { useCurrentUser } from '../../utils/userHooks'
+import { updateHangoutDateVotes, joinHangout, leaveHangout } from '../../utils/apiHelper'
+import { useNavigate } from 'react-router-dom'
+
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
@@ -7,8 +10,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
-import { updateHangoutDateVotes } from '../../utils/apiHelper'
-import { useNavigate } from 'react-router-dom'
+import Box from '@mui/material/Box'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -18,18 +20,22 @@ const errorStyle = {
   marginTop: '3px',
 }
 
-export default function HangoutAttendDatesForm({ id, dateOptions }) {
+export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, handleClose }) {
   const { user } = useCurrentUser()
+  let isAttending = false
 
   const getUserDates = () => {
     // get votes array from dateOptions
     // return array of dates that includes user id
+
     const selectedDates = []
 
     for (let [date, votes] of Object.entries(dateOptions)) {
-      console.log(date, votes, user)
       if (votes.includes(user._id)) selectedDates.push(date)
     }
+
+    // if array is empty at the end, that means user is not attending yet
+    isAttending = selectedDates.length !== 0
 
     return selectedDates
   }
@@ -71,7 +77,12 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
     } else {
 
       try {
-        await updateHangoutDateVotes(id, dateVotes)
+        if (isAttending) {
+          await updateHangoutDateVotes(id, dateVotes)
+        } else {
+          await joinHangout(id, dateVotes)
+        }
+
         // console.log(response)
         navigate(0)
       } catch (error) {
@@ -80,6 +91,28 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
       }
 
     }
+  }
+
+  const handleLeave = async () => {
+    try {
+      await leaveHangout(id)
+      navigate(0)
+    } catch (error) {
+      navigate('/error')
+    }
+  }
+
+  const updateModalConfirmation = () => {
+    const confirmation =
+      <Box mt={3} sx={{
+        display: 'flex',
+        flexDirection: 'row-reverse',
+      }}>
+        <Button sx={{ marginLeft: 2 }} variant="contained" onClick={handleLeave}>Yes</Button>
+        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+      </Box>
+
+    updateModal('Are you sure you want to leave?', confirmation)
   }
 
   return (
@@ -109,7 +142,18 @@ export default function HangoutAttendDatesForm({ id, dateOptions }) {
         )
       })}
 
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between'
+      }}>
+        <Button onClick={handleSubmit}>
+          {isAttending ? 'Edit' : 'Attend' }
+        </Button>
+        {isAttending &&
+          <Button onClick={updateModalConfirmation} color='error'>Leave</Button>
+        }
+      </Box>
+
       {error && (
         <span style={errorStyle}>Must have at least 1 date selected!</span>
       )}

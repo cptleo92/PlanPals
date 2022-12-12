@@ -1,15 +1,15 @@
-import { getMyGroups } from '../utils/apiHelper'
+import { getMyGroups } from '../../utils/apiHelper'
 import { useQuery } from '@tanstack/react-query'
-import { useCurrentUser } from '../utils/userHooks'
+import { useCurrentUser } from '../../utils/userHooks'
 
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Unstable_Grid2'
 
-import NewGroupButton from './Groups/NewGroupButton'
-import Loading from './Loading'
-import GroupCard from './Groups/GroupCard'
+import NewGroupButton from '../Groups/NewGroupButton'
+import Loading from '../Misc/Loading'
+import GroupCard from '../Groups/GroupCard'
 
-import Error from './Error'
+import Error from '../Misc/Error'
 
 const Home = () => {
   const { user } = useCurrentUser()
