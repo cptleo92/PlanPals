@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom'
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
-const BackArrow = ({ link }) => {
+const BackArrow = () => {
   const navigate = useNavigate()
 
   const handleGoBack = () => {
-    navigate(link)
+    navigate(-1)
   }
 
   return (

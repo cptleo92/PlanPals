@@ -1,40 +1,58 @@
-import { getMyGroups } from '../../utils/apiHelper'
+import { useState } from 'react'
+import { getMyGroups, getMyHangouts } from '../../utils/apiHelper'
 import { useQuery } from '@tanstack/react-query'
 import { useCurrentUser } from '../../utils/userHooks'
-
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Unstable_Grid2'
-
-import NewGroupButton from '../Groups/NewGroupButton'
+import HomeGroups from './HomeGroups'
+import GroupHangoutsList from '../Groups/GroupHangoutsList'
 import Loading from '../Misc/Loading'
-import GroupCard from '../Groups/GroupCard'
-
 import Error from '../Misc/Error'
 
-const Home = () => {
-  const { user } = useCurrentUser()
-  const { isLoading, error, data: userGroups } = useQuery(['myGroups', user._id], getMyGroups)
+import Typography from '@mui/material/Typography'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
-  if (isLoading) {
+const Home = () => {
+  const [displayType, setDisplayType] = useState('groups')
+
+  const { user } = useCurrentUser()
+  const groupsQuery = useQuery(['myGroups', user._id], getMyGroups)
+  const hangoutsQuery = useQuery(['myHangouts', user._id], getMyHangouts)
+
+  const userGroups = groupsQuery.data
+  const userHangouts = hangoutsQuery.data
+
+  if (groupsQuery.isLoading || hangoutsQuery.isLoading) {
     return <Loading />
   }
 
-  if (error) return <Error />
+  if (groupsQuery.error || hangoutsQuery.error) return <Error />
+
+  const handleChange = (event, newDisplayType) => {
+    setDisplayType(newDisplayType)
+  }
 
   return (
     <>
-      <Typography variant="h3" component="h2" mt={3}>
+      <Typography gutterBottom variant="h3" component="h2" mt={3}>
         Hello there, {user?.name}!
       </Typography>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} mb={2} mt={2}>
-        {userGroups.map((group) => (
-          <Grid xs={2} sm={4} md={4} key={group._id}>
-            <GroupCard group={group} />
-          </Grid>
-        ))}
-      </Grid>
 
-      <NewGroupButton />
+      <ToggleButtonGroup
+        color="primary"
+        value={displayType}
+        exclusive
+        onChange={handleChange}
+        sx={{ marginBottom: 2 }}
+      >
+        <ToggleButton value="groups">My Groups</ToggleButton>
+        <ToggleButton value="hangouts">My Upcoming Hangouts</ToggleButton>
+      </ToggleButtonGroup>
+
+      {
+        displayType === 'groups'
+          ? <HomeGroups userGroups={userGroups} />
+          : <GroupHangoutsList hangouts={userHangouts} />
+      }
     </>
   )
 }

@@ -51,8 +51,9 @@ const HangoutPage = () => {
         {hangout?.title}
       </Typography>
 
-      <Typography gutterBottom variant="button">
-        <LocationOnIcon fontSize='inherit'/> Location: {hangout?.location}
+
+      <Typography gutterBottom variant="button" color="text.secondary">
+        <LocationOnIcon fontSize='inherit'/> {hangout.location}
       </Typography>
 
       <Box

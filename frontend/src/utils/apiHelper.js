@@ -94,6 +94,16 @@ export const getHangoutByPath = async (path) => {
   }
 }
 
+export const getMyHangouts = async () => {
+  try {
+    const response = await axios.get('/api/hangouts/')
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+
 export const joinHangout = async (id, dateVotes) => {
   try {
     const response = await axios.post(`/api/hangouts/${id}`, dateVotes)

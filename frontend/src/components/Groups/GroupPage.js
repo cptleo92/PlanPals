@@ -131,6 +131,9 @@ const GroupPage = () => {
         </Link>
       )}
 
+      <Typography gutterBottom variant="h6" mt={4}>
+        Description
+      </Typography>
       <Typography gutterBottom variant="subtitle1" mt={3}>
         {group?.description}
       </Typography>

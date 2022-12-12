@@ -67,6 +67,7 @@ const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
           size="small"
           variant="contained"
           color="success"
+          onClick={handleOpen}
         >
           Finalize Date
         </Button>

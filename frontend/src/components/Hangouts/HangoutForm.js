@@ -90,7 +90,9 @@ const HangoutForm = ({ edit = false }) => {
     const parsedDateOptions = {}
 
     for (let date of dateOptions) {
-      parsedDateOptions[date.toString()] = []
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+      let parsedDate = date.toDate().toLocaleDateString(undefined, options)
+      parsedDateOptions[parsedDate] = []
     }
 
     return parsedDateOptions
