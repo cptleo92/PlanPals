@@ -45,6 +45,15 @@ export const getGroup = async (id) => {
   }
 }
 
+export const updateGroup = async (id, formData) => {
+  try {
+    const response = await axios.patch(`/api/groups/${id}`, formData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 export const createHangout = async (formData) => {
   try {
     const response = await axios.post('/api/hangouts', formData)

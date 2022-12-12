@@ -314,15 +314,11 @@ describe('updating hangout information', () => {
 
     // sign in someone who isn't the planner
     const token3 = await loginTestUser(testUsers[2])
-    const body = {
-      hangoutId: testHangout.id,
-      newHangoutData
-    }
 
     const response = await api
       .patch(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token3}`)
-      .send(body)
+      .send(newHangoutData)
       .expect(401)
 
     expect(response.body.error).toEqual('only planner can update the hangout')
@@ -331,14 +327,10 @@ describe('updating hangout information', () => {
   test('successful if valid', async () => {
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
 
-    const body = {
-      newHangoutData
-    }
-
     const response = await api
       .patch(`/api/hangouts/${testHangout.id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send(body)
+      .send(newHangoutData)
       .expect(200)
 
     expect(response.body.description).toEqual(newHangoutData.description)

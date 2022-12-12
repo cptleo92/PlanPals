@@ -64,8 +64,15 @@ const GroupPage = () => {
           maxWidth: { xs: 350, md: 250 },
         }}
         alt="placeholder"
-        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+        src="https://placebear.com/400/233"
       />
+      <br />
+      {
+        user._id === group.admin._id &&
+        <Link to='./edit' style={{ color: 'blue', fontWeight: 500, textDecoration: 'underline' }}>
+          Edit group details
+        </Link>
+      }
 
       <Typography gutterBottom variant="subtitle1" mt={3}>
         {group?.description}

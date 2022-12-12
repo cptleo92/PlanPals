@@ -1,19 +1,33 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { createGroup } from '../../utils/apiHelper'
+import { getGroup, updateGroup } from '../../utils/apiHelper'
 
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
+import { useCurrentUser } from '../../utils/userHooks'
 
-const NewGroupForm = () => {
+const GroupForm = ({ edit }) => {
   const navigate = useNavigate()
+  const { groupPath } = useParams()
+  const { user } = useCurrentUser()
+
+  const { error, data: group } = useQuery(['group', groupPath], () =>
+    getGroup(groupPath)
+  )
+
+  if (error) {
+    console.log(error)
+    navigate('/error')
+  }
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
+    title: group ? group.title : '',
+    description: group ? group.description : '',
   })
 
   const [titleError, setTitleError] = useState('')
@@ -39,8 +53,18 @@ const NewGroupForm = () => {
     e.preventDefault()
 
     if (validateFields()) {
-      await createGroup(formData)
-      navigate('/home')
+      try {
+        if (edit) {
+          await updateGroup(group._id, formData)
+        } else {
+          await createGroup(formData)
+        }
+        navigate('/home')
+      } catch (error) {
+        console.log(error)
+        navigate('/error')
+      }
+
     }
   }
 
@@ -54,10 +78,16 @@ const NewGroupForm = () => {
     if (e.target.name === 'description') setDescriptionError('')
   }
 
+  useEffect(() => {
+    if (group && group.admin._id !== user._id) {
+      navigate('/error')
+    }
+  }, [group, navigate, user._id])
+
   return (
     <>
       <Typography variant="h3" component="h2" mt={3}>
-        Create a new group!
+        { edit ? 'Edit Your Group!' : 'Create a new group!' }
       </Typography>
       <Box
         component="form"
@@ -96,12 +126,12 @@ const NewGroupForm = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Create
+            { edit ? 'Update' : 'Create' }
           </Button>
           <Button
             fullWidth
             variant="outlined"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate(-1)}
           >
             Go Back
           </Button>
@@ -111,4 +141,4 @@ const NewGroupForm = () => {
   )
 }
 
-export default NewGroupForm
+export default GroupForm

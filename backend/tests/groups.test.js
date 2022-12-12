@@ -204,15 +204,11 @@ describe('updating group information', () => {
 
     // sign in someone who isn't the admin
     const token3 = await loginTestUser(testUsers[2])
-    const body = {
-      groupId: testGroup.id,
-      newGroupData
-    }
 
     const response = await api
-      .post('/api/groups/update')
+      .patch(`/api/groups/${testGroup.id}`)
       .set('Authorization', `Bearer ${token3}`)
-      .send(body)
+      .send(newGroupData)
       .expect(401)
 
     expect(response.body.error).toEqual('only admin can update the group')
@@ -221,15 +217,10 @@ describe('updating group information', () => {
   test('successful if valid', async () => {
     let testGroup = await Group.findOne({ title: testGroups[0].title })
 
-    const body = {
-      groupId: testGroup.id,
-      newGroupData
-    }
-
     const response = await api
-      .post('/api/groups/update')
+      .patch(`/api/groups/${testGroup.id}`)
       .set('Authorization', `Bearer ${token}`)
-      .send(body)
+      .send(newGroupData)
       .expect(200)
 
     expect(response.body.description).toEqual(newGroupData.description)

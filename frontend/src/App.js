@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import UserForm from './components/User/UserForm'
 import Layout from './Layout'
 import Home from './components/User/Home'
-import NewGroupForm from './components/Groups/NewGroupForm'
+import GroupForm from './components/Groups/GroupForm'
 import Loading from './components/Misc/Loading'
 import HangoutPage from './components/Hangouts/HangoutPage'
 
@@ -80,8 +80,9 @@ function App() {
 
               <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
                 <Route path="/home" element={<Home />} />
-                <Route path="/groups/create" element={<NewGroupForm />} />
+                <Route path="/groups/create" element={<GroupForm />} />
                 <Route path="/groups/:groupPath" element={<GroupPage />} />
+                <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
                 <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
                 <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
                 <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />

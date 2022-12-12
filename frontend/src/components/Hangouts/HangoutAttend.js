@@ -68,7 +68,7 @@ const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
           variant="contained"
           color="success"
         >
-          Select Date
+          Finalize Date
         </Button>
       )
     } else {

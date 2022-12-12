@@ -154,7 +154,8 @@ const kickFromGroup = async (request, response) => {
 }
 
 const updateGroup = async (request, response) => {
-  const { groupId, newGroupData } = request.body
+  const groupId = request.params.id
+  const newGroupData = request.body
 
   let updateThisGroup = await Group.findById(groupId)
 
@@ -165,7 +166,6 @@ const updateGroup = async (request, response) => {
 
   try {
     updateThisGroup = await Group.findByIdAndUpdate(groupId, newGroupData, { new: true })
-
     response.status(200).json(updateThisGroup)
   } catch (error) {
     response.status(400).json({ error: error.message })

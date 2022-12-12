@@ -32,7 +32,7 @@ router.post('/kick', kickFromGroup)
 router.post('/', createGroup)
 
 // update a group
-router.post('/update', updateGroup)
+router.patch('/:id', updateGroup)
 
 // join a group
 router.post('/:id', joinGroup)
