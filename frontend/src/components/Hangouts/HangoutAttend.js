@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import HangoutAttendDatesForm from './HangoutAttendDatesForm'
 import { useCurrentUser } from '../../utils/userHooks'
+import ButtonModal from '../Misc/ButtonModal'
 
 const style = {
   position: 'absolute',
@@ -38,20 +39,22 @@ const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
 
   const generateModalContents = (
     title = 'Select at least 1 date that you are available!',
-    components = <HangoutAttendDatesForm
-      dateOptions={hangout.dateOptions}
-      id={hangout._id}
-      updateModal={updateModal}
-      handleClose={handleClose}
-    />
+    components = (
+      <HangoutAttendDatesForm
+        dateOptions={hangout.dateOptions}
+        id={hangout._id}
+        updateModal={updateModal}
+        handleClose={handleClose}
+      />
+    )
   ) => {
     return (
       <Box sx={style}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          { title }
+          {title}
         </Typography>
 
-        { components }
+        {components}
       </Box>
     )
   }
@@ -80,26 +83,35 @@ const HangoutAttend = ({ hangout, isPlanner, isAttending }) => {
           color="secondary"
           onClick={handleOpen}
         >
-          { isAttending ? 'Edit RSVP' : 'RSVP' }
+          {isAttending ? 'Edit RSVP' : 'RSVP'}
         </Button>
       )
     }
   }
 
-
   return (
-    <div>
-      { renderButton() }
+  // <div>
+  //   { renderButton() }
 
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        { modalContents }
-      </Modal>
-    </div>
+  //   <Modal
+  //     open={open}
+  //     onClose={handleClose}
+  //     aria-labelledby="modal-modal-title"
+  //     aria-describedby="modal-modal-description"
+  //   >
+  //     { modalContents }
+  //   </Modal>
+  // </div>
+
+    <ButtonModal
+      buttonText={isAttending ? 'Edit RSVP' : 'RSVP'}
+      title="Select at least 1 date that you are available!"
+    >
+      <HangoutAttendDatesForm
+        dateOptions={hangout.dateOptions}
+        id={hangout._id}
+      />
+    </ButtonModal>
   )
 }
 

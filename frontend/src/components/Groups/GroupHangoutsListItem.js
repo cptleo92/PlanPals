@@ -45,12 +45,10 @@ const GroupHangoutsListItem = ({ hangout }) => {
     }
   }
 
-  const getEarliestDateAvailable = () => {
-    const sortedDates = Object.keys(hangout.dateOptions).sort((a, b) => {
-      return new Date(a) - new Date(b)
-    })
-
-    return sortedDates[0]
+  const getDate = () => {
+    return hangout.finalized
+      ?  hangout.finalDate
+      : 'Pending'
   }
 
   const handleClick = () => {
@@ -96,7 +94,7 @@ const GroupHangoutsListItem = ({ hangout }) => {
         </Typography>
 
         <Typography gutterBottom variant="button" color="text.secondary">
-          <DateRangeIcon fontSize="inherit" /> {getEarliestDateAvailable()}
+          <DateRangeIcon fontSize="inherit" /> {getDate()}
         </Typography>
         {showInfo()}
       </Box>

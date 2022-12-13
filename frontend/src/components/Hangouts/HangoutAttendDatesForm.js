@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { useCurrentUser } from '../../utils/userHooks'
-import { updateHangoutDateVotes, joinHangout, leaveHangout } from '../../utils/apiHelper'
+import {
+  updateHangoutDateVotes,
+  joinHangout,
+  leaveHangout,
+} from '../../utils/apiHelper'
 import { useNavigate } from 'react-router-dom'
 
 import List from '@mui/material/List'
@@ -20,7 +24,13 @@ const errorStyle = {
   marginTop: '3px',
 }
 
-export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, handleClose }) {
+export default function HangoutAttendDatesForm({
+  id,
+  dateOptions,
+  handleClose,
+  setModalTitle,
+  setModalContents,
+}) {
   const { user } = useCurrentUser()
   let isAttending = false
 
@@ -48,8 +58,13 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
     return new Date(a) - new Date(b)
   })
 
-  const parseDate = (date)  => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  const parseDate = (date) => {
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }
     return new Date(date).toLocaleDateString(undefined, options)
   }
 
@@ -75,7 +90,6 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
     if (dateVotes.length === 0) {
       setError(true)
     } else {
-
       try {
         if (isAttending) {
           await updateHangoutDateVotes(id, dateVotes)
@@ -88,7 +102,6 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
         console.log(error)
         navigate('/error')
       }
-
     }
   }
 
@@ -102,16 +115,29 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
   }
 
   const updateModalConfirmation = () => {
-    const confirmation =
-      <Box mt={3} sx={{
-        display: 'flex',
-        flexDirection: 'row-reverse',
-      }}>
-        <Button sx={{ marginLeft: 2 }} variant="contained" onClick={handleLeave}>Yes</Button>
-        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+    const confirmation = (
+      <Box
+        mt={3}
+        sx={{
+          display: 'flex',
+          justifyContent: 'right',
+        }}
+      >
+        <Button variant="outlined" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button
+          sx={{ marginLeft: 2 }}
+          variant="contained"
+          onClick={handleLeave}
+        >
+          Yes
+        </Button>
       </Box>
+    )
 
-    updateModal('Are you sure you want to leave?', confirmation)
+    setModalTitle('Are you sure you want to leave this hangout?')
+    setModalContents(confirmation)
   }
 
   return (
@@ -141,16 +167,20 @@ export default function HangoutAttendDatesForm({ id, dateOptions, updateModal, h
         )
       })}
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-between'
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
         <Button onClick={handleSubmit}>
-          {isAttending ? 'Edit' : 'Attend' }
+          {isAttending ? 'Edit' : 'Attend'}
         </Button>
-        {isAttending &&
-          <Button onClick={updateModalConfirmation} color='error'>Leave</Button>
-        }
+        {isAttending && (
+          <Button onClick={updateModalConfirmation} color="error">
+            Leave
+          </Button>
+        )}
       </Box>
 
       {error && (
