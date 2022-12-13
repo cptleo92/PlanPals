@@ -266,6 +266,43 @@ const updateHangoutDateVotes = async (request, response) => {
 
 }
 
+const deleteHangout = async (request, response) => {
+  const hangoutId = request.params.id
+  const userId = request.user.id
+
+  const deleteThisHangout = await Hangout.findById(hangoutId)
+
+  // only planner can delete hangout
+  if (userId !== deleteThisHangout.planner.id) {
+    return response.status(401).json({ error: 'only planner can delete the hangout' })
+  }
+
+  // can't delete if people are attending
+  if (deleteThisHangout.attendees.length > 0) {
+    return response.status(401).json({ error: 'cannot delete if there are attendees' })
+  }
+
+  try {
+    await Group.findOneAndUpdate({ id: deleteThisHangout.group }, {
+      $pull: {
+        'hangouts': hangoutId
+      }
+    })
+
+    await User.findOneAndUpdate({ id: userId }, {
+      $pull: {
+        'hangouts': hangoutId
+      }
+    })
+
+    await deleteThisHangout.remove()
+
+    response.sendStatus(204)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   getMyHangouts,
   kickFromHangout,
@@ -274,5 +311,6 @@ module.exports = {
   leaveHangout,
   updateHangout,
   getHangoutByPath,
-  updateHangoutDateVotes
+  updateHangoutDateVotes,
+  deleteHangout
 }

@@ -163,12 +163,6 @@ describe('attending a handout', () => {
   })
 
   test('updates dateOptions correctly', async () => {
-    // testHangout.dateOptions
-    //
-    // Map(2) {
-    //   'Sunday, November 20, 2022' => [ '639253df0e653936b71a48d8' ],
-    //   'Sunday, November 27, 2022' => [ '639253df0e653936b71a48d8' ]
-    // }
 
     let token2 = await loginTestUser(testUsers[1])
 
@@ -337,6 +331,54 @@ describe('updating hangout information', () => {
 
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.description).toEqual(newHangoutData.description)
+  })
+})
+
+describe('deleting a hangout', () => {
+  let testHangout
+  beforeAll(async () => {
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+  })
+
+  test('fails if user is not the planner', async () => {
+    const token2 = await loginTestUser(testUsers[1])
+
+    const response = await api
+      .delete(`/api/hangouts/delete/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token2}`)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only planner can delete the hangout')
+  })
+
+  test('fails if hangout has attendees', async () => {
+    const response = await api
+      .delete(`/api/hangouts/delete/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(401)
+
+    expect(response.body.error).toEqual('cannot delete if there are attendees')
+  })
+
+  test('successful deletion removes hangout from parent group and planner', async () => {
+    let parentGroup = await Group.findById(testHangout.group)
+    let planner = await User.findById(testHangout.planner)
+
+    const groupHangoutsCount = parentGroup.hangouts.length
+    const userHangoutsCount = planner.hangouts.length
+
+    testHangout = await Hangout.findOne({ title: testHangouts[1].title })
+
+    await api
+      .delete(`/api/hangouts/delete/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
+
+    parentGroup = await Group.findById(testHangout.group)
+    planner = await User.findById(testHangout.planner)
+    expect(parentGroup.hangouts.length).toBe(groupHangoutsCount - 1)
+    expect(planner.hangouts.length).toBe(userHangoutsCount - 1)
+
   })
 })
 

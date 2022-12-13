@@ -7,7 +7,8 @@ const {
   leaveHangout,
   updateHangout,
   getHangoutByPath,
-  updateHangoutDateVotes
+  updateHangoutDateVotes,
+  deleteHangout
 } = require('../controllers/hangoutController')
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
@@ -48,6 +49,9 @@ router.patch('/:id/updatevotes', updateHangoutDateVotes)
 
 // leave a hangout
 router.delete('/:id', leaveHangout)
+
+// delete a hangout
+router.delete('/delete/:id', deleteHangout)
 
 
 module.exports = router
