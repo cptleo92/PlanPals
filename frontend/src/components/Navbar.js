@@ -1,4 +1,4 @@
-import { useCurrentUser } from '../utils/userHooks'
+import { useCurrentUser } from '../utils/hooks'
 import { Link, useNavigate } from 'react-router-dom'
 
 import AppBar from '@mui/material/AppBar'

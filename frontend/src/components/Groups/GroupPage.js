@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
-import { useCurrentUser } from '../../utils/userHooks'
+import { splitHangouts } from '../../utils/hangouts'
+import { useCurrentUser } from '../../utils/hooks'
 import Loading from '../Misc/Loading'
 import GroupHangoutsList from './GroupHangoutsList'
 
@@ -10,18 +12,18 @@ import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
-import { Button } from '@mui/material'
-
-const linkStyle = {
-  fontWeight: 500,
-  color: 'blue',
-  textDecoration: 'underline',
-}
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Button from '@mui/material/Button'
+import { Container } from '@mui/material'
+import HangoutForm from '../Hangouts/HangoutForm'
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
   const { groupPath } = useParams()
   const navigate = useNavigate()
+
+  const [displayType, setDisplayType] = useState('pendingHangouts')
 
   const {
     isLoading,
@@ -33,8 +35,6 @@ const GroupPage = () => {
     return <Loading />
   }
 
-  console.log(group)
-
   if (error) {
     console.log(error)
     navigate('/error')
@@ -42,16 +42,12 @@ const GroupPage = () => {
 
   const hangouts = group.hangouts
   const members = group.members
+  const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(hangouts)
 
   const generateAvatars = () => {
     return members.map((mem) => <Avatar key={mem._id}>{mem.name[0]}</Avatar>)
   }
 
-  const isAdmin = () => {
-    return user._id === group.admin._id
-  }
-
-  console.log(user)
   const handleJoin = async () => {
     try {
       await joinGroup(group._id)
@@ -59,6 +55,24 @@ const GroupPage = () => {
     } catch (error) {
       console.log(error)
       navigate('/error')
+    }
+  }
+
+  const handleChange = (event, newDisplayType) => {
+    if (newDisplayType !== null) {
+      setDisplayType(newDisplayType)
+    }
+  }
+
+  const renderListType = () => {
+    if (displayType === 'pendingHangouts') {
+      return <GroupHangoutsList hangouts={pendingHangouts} />
+    } else if (displayType === 'upcomingHangouts') {
+      return <GroupHangoutsList hangouts={upcomingHangouts} />
+    } else if (displayType === 'pastHangouts') {
+      return <GroupHangoutsList hangouts={pastHangouts} />
+    } else if (displayType === 'newHangout') {
+      return <HangoutForm />
     }
   }
 
@@ -71,17 +85,25 @@ const GroupPage = () => {
 
     if (isMemberOrPlanner()) {
       return (
-        <>
-          <Typography gutterBottom variant="h5" mt={6}>
-            Upcoming Hangouts
-          </Typography>
+        <Box mt={4}>
+          <ToggleButtonGroup
+            color="primary"
+            value={displayType}
+            exclusive
+            onChange={handleChange}
+            sx={{ marginBottom: 2 }}
+          >
+            <ToggleButton value="pendingHangouts">Pending Hangouts</ToggleButton>
+            <ToggleButton value="upcomingHangouts">Upcoming Hangouts</ToggleButton>
+            <ToggleButton value="pastHangouts">Past Hangouts</ToggleButton>
+            <ToggleButton value="newHangout" color="success">
 
-          <GroupHangoutsList hangouts={hangouts} />
+                Plan a new hangout!
 
-          <Link style={linkStyle} to="./hangouts/create">
-            Host a hangout
-          </Link>
-        </>
+            </ToggleButton>
+          </ToggleButtonGroup>
+          { renderListType() }
+        </Box>
       )
     } else {
       return (
@@ -136,16 +158,19 @@ const GroupPage = () => {
         {group?.description}
       </Typography>
 
-      <Typography gutterBottom variant="h5" mt={6} mb={3}>
+      <Container sx={{ marginLeft: 0 }} disableGutters maxWidth="sm">
+        <Typography gutterBottom variant="h5" mt={6} mb={3}>
         Members ({members.length + 1})
-      </Typography>
+        </Typography>
 
-      <Stack direction="row" spacing={2}>
-        <Avatar sx={{ width: 75, height: 75 }}>{group.admin.name[0]}</Avatar>
-        {generateAvatars()}
-      </Stack>
 
-      {renderInfo()}
+        <Stack direction="row" spacing={2}>
+          <Avatar sx={{ width: 75, height: 75 }}>{group.admin.name[0]}</Avatar>
+          {generateAvatars()}
+        </Stack>
+
+        {renderInfo()}
+      </Container>
     </Box>
   )
 }

@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -113,7 +113,6 @@ const HangoutForm = ({ edit = false }) => {
         response = await updateHangout( hangout._id, {
           ...formData,
           groupPath,
-          dateOptions: parseDateOptions()
         })
       }
       navigate(`/groups/${groupPath}/hangouts/${response.path}`)
@@ -143,14 +142,14 @@ const HangoutForm = ({ edit = false }) => {
 
   return (
     <>
-      <Typography variant="h3" component="h2" mt={3}>
-        { hangout ? 'Edit your hangout!' : 'Create a new hangout!' }
+      <Typography variant="h5" component="h2" mt={3}>
+        { hangout ? 'Edit your hangout!' : 'Fill out your hangout details!' }
       </Typography>
       <Box
         component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ mt: 3, width: 2 / 3 }}
+        sx={{ mt: 3, width: edit ? 2/3 : null }}
       >
         <Stack spacing={3}>
           <TextField
@@ -217,13 +216,16 @@ const HangoutForm = ({ edit = false }) => {
         >
           { edit ? 'Update' : 'Create' }
         </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => navigate(-1)}
-        >
+        {
+          edit &&
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={() => navigate(-1)}
+          >
           Go Back
-        </Button>
+          </Button>
+        }
       </Box>
     </>
   )

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { getMyGroups, getMyHangouts } from '../../utils/apiHelper'
 import { useQuery } from '@tanstack/react-query'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
+import { splitHangouts } from '../../utils/hangouts'
 import HomeGroups from './HomeGroups'
 import GroupHangoutsList from '../Groups/GroupHangoutsList'
 import Loading from '../Misc/Loading'
@@ -21,29 +22,20 @@ const Home = () => {
   const userGroups = groupsQuery.data
   const userHangouts = hangoutsQuery.data
 
+
   if (groupsQuery.isLoading || hangoutsQuery.isLoading) {
     return <Loading />
   }
+  const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(userHangouts)
 
   if (groupsQuery.error || hangoutsQuery.error) return <Error />
 
   const handleChange = (event, newDisplayType) => {
-    setDisplayType(newDisplayType)
+    if (newDisplayType !== null) {
+      setDisplayType(newDisplayType)
+    }
   }
 
-  // sort these hangouts by earliest dateOption or finalDate
-  const pendingHangouts = userHangouts.filter(hout => !hout.finalized).sort((a, b) => {
-    let dateOptionA = Object.keys(a.dateOptions)[0]
-    let dateOptionB = Object.keys(b.dateOptions)[0]
-    return new Date(dateOptionA) - new Date(dateOptionB)
-  })
-
-  const upcomingHangouts = userHangouts.filter(hout => hout.finalized).sort((a, b) => {
-    return new Date(a.finalDate) - new Date(b.finalDate)
-  })
-
-
-  console.log(pendingHangouts)
 
   const renderListType = () => {
     if (displayType === 'groups') {
@@ -52,6 +44,8 @@ const Home = () => {
       return <GroupHangoutsList hangouts={pendingHangouts} />
     } else if (displayType === 'upcomingHangouts') {
       return <GroupHangoutsList hangouts={upcomingHangouts} />
+    } else if (displayType === 'pastHangouts') {
+      return <GroupHangoutsList hangouts={pastHangouts} />
     }
   }
 
@@ -71,6 +65,7 @@ const Home = () => {
         <ToggleButton value="groups">My Groups</ToggleButton>
         <ToggleButton value="pendingHangouts">My Pending Hangouts</ToggleButton>
         <ToggleButton value="upcomingHangouts">My Upcoming Hangouts</ToggleButton>
+        <ToggleButton value="pastHangouts">My Past Hangouts</ToggleButton>
       </ToggleButtonGroup>
 
       { renderListType() }

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
 
 import Box from '@mui/material/Box'
@@ -57,7 +57,7 @@ const GroupHangoutsListItem = ({ hangout }) => {
       sx={{
         display: 'flex',
         marginBottom: 3,
-        width: 450,
+        width: 500,
         height: 140,
         cursor: 'pointer',
       }}
@@ -82,7 +82,7 @@ const GroupHangoutsListItem = ({ hangout }) => {
           flexDirection: 'column',
         }}
       >
-        <Typography noWrap variant="h6">
+        <Typography variant="h6">
           {hangout.title}
         </Typography>
 

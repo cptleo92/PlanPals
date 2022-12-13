@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 import Loading from '../Misc/Loading'
 import BackArrow from '../Misc/BackArrow'
 import HangoutAttend from './HangoutAttend'

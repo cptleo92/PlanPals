@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 
 export default function Loading({ redirect }) {
   const navigate = useNavigate()

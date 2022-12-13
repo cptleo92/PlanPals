@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 import {
   updateHangoutDateVotes,
   joinHangout,

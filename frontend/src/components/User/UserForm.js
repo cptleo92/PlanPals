@@ -16,7 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { registerUser, loginUser } from '../../utils/apiHelper'
 import { CircularProgress } from '@mui/material'
-import { useCurrentUser } from '../../utils/userHooks'
+import { useCurrentUser } from '../../utils/hooks'
 
 const theme = createTheme()
 
