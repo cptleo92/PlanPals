@@ -31,6 +31,30 @@ const Home = () => {
     setDisplayType(newDisplayType)
   }
 
+  // sort these hangouts by earliest dateOption or finalDate
+  const pendingHangouts = userHangouts.filter(hout => !hout.finalized).sort((a, b) => {
+    let dateOptionA = Object.keys(a.dateOptions)[0]
+    let dateOptionB = Object.keys(b.dateOptions)[0]
+    return new Date(dateOptionA) - new Date(dateOptionB)
+  })
+
+  const upcomingHangouts = userHangouts.filter(hout => hout.finalized).sort((a, b) => {
+    return new Date(a.finalDate) - new Date(b.finalDate)
+  })
+
+
+  console.log(pendingHangouts)
+
+  const renderListType = () => {
+    if (displayType === 'groups') {
+      return <HomeGroups userGroups={userGroups} />
+    } else if (displayType === 'pendingHangouts') {
+      return <GroupHangoutsList hangouts={pendingHangouts} />
+    } else if (displayType === 'upcomingHangouts') {
+      return <GroupHangoutsList hangouts={upcomingHangouts} />
+    }
+  }
+
   return (
     <>
       <Typography gutterBottom variant="h3" component="h2" mt={3}>
@@ -45,14 +69,11 @@ const Home = () => {
         sx={{ marginBottom: 2 }}
       >
         <ToggleButton value="groups">My Groups</ToggleButton>
-        <ToggleButton value="hangouts">My Upcoming Hangouts</ToggleButton>
+        <ToggleButton value="pendingHangouts">My Pending Hangouts</ToggleButton>
+        <ToggleButton value="upcomingHangouts">My Upcoming Hangouts</ToggleButton>
       </ToggleButtonGroup>
 
-      {
-        displayType === 'groups'
-          ? <HomeGroups userGroups={userGroups} />
-          : <GroupHangoutsList hangouts={userHangouts} />
-      }
+      { renderListType() }
     </>
   )
 }
