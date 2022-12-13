@@ -102,10 +102,11 @@ describe('creating a new hangout', () => {
     expect(currentUser.hangouts.length).toEqual(testHangouts.length)
 
     // making sure hangouts were added to their respective groups
-    const allGroups = await Group.find()
-    let hangoutsCount = 0
-    for (let group of allGroups) hangoutsCount += group.hangouts.length
-    expect(hangoutsCount).toEqual(testHangouts.length)
+    for (let hangout of allHangouts) {
+      let group = await Group.findById(hangout.group)
+      let groupHangouts = group.hangouts.map(hout => hout.id)
+      expect(groupHangouts).toContain(hangout.id)
+    }
   })
 })
 

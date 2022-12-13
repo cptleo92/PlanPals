@@ -7,7 +7,6 @@ const {
   kickFromGroup,
   updateGroup,
   getGroupByIDorPath,
-  deleteGroup
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
 
@@ -40,10 +39,6 @@ router.post('/:id', joinGroup)
 
 // leave a group
 router.delete('/:id', leaveGroup)
-
-// delete a group
-router.delete('/disband/:id', deleteGroup)
-
 
 module.exports = router
 

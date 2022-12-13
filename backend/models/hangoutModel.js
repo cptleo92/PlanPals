@@ -53,6 +53,11 @@ const hangoutSchema = mongoose.Schema(
         }
       }
     ],
+    finalized: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
   },
   {
     timestamps: true

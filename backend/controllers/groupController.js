@@ -172,25 +172,6 @@ const updateGroup = async (request, response) => {
   }
 }
 
-const deleteGroup = async (request, response) => {
-  const groupId = request.params.id
-
-  let deleteThisGroup = await Group.findById(groupId)
-
-  // only group's admin can delete
-  if (request.user.id !== deleteThisGroup.admin.id) {
-    return response.status(401).json({ error: 'only admin can delete the group' })
-  }
-
-  try {
-    await deleteThisGroup.remove()
-
-    response.sendStatus(204)
-  } catch (error) {
-    response.status(400).json({ error: error.message })
-  }
-}
-
 module.exports = {
   getMyGroups,
   createGroup,
@@ -199,5 +180,4 @@ module.exports = {
   kickFromGroup,
   getGroupByIDorPath,
   updateGroup,
-  deleteGroup
 }
