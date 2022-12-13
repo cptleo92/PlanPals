@@ -1,12 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useCurrentUser } from '../../utils/userHooks'
+import { parseDate } from '../../utils/date'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
@@ -47,7 +44,7 @@ const GroupHangoutsListItem = ({ hangout }) => {
 
   const getDate = () => {
     return hangout.finalized
-      ?  hangout.finalDate
+      ?  parseDate(hangout.finalDate)
       : 'Pending'
   }
 

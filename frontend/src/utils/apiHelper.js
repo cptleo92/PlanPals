@@ -138,3 +138,12 @@ export const leaveHangout = async (id) => {
     return err.response.data.error
   }
 }
+
+export const finalizeHangout = async (id, finalDate) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/finalize/${id}`, finalDate)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}

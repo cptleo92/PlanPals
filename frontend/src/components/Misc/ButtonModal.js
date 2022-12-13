@@ -17,10 +17,11 @@ const style = {
   p: 4,
 }
 
-const ButtonModal = ({ buttonText, title, children }) => {
+const ButtonModal = ({ buttonText, title, color, children }) => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => {
+    setModalTitle(title)
     setModalContents(children)
     setOpen(false)
   }
@@ -33,7 +34,7 @@ const ButtonModal = ({ buttonText, title, children }) => {
       <Button
         size="small"
         variant="contained"
-        color="secondary"
+        color={color}
         onClick={handleOpen}
       >
         { buttonText }

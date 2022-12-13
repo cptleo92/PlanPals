@@ -6,6 +6,7 @@ import {
   leaveHangout,
 } from '../../utils/apiHelper'
 import { useNavigate } from 'react-router-dom'
+import { parseDate } from '../../utils/date'
 
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
@@ -29,7 +30,7 @@ export default function HangoutAttendDatesForm({
   dateOptions,
   handleClose,
   setModalTitle,
-  setModalContents,
+  setModalContents
 }) {
   const { user } = useCurrentUser()
   let isAttending = false
@@ -57,16 +58,6 @@ export default function HangoutAttendDatesForm({
   const sortedDates = Object.keys(dateOptions).sort((a, b) => {
     return new Date(a) - new Date(b)
   })
-
-  const parseDate = (date) => {
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }
-    return new Date(date).toLocaleDateString(undefined, options)
-  }
 
   const getVoteNumber = (date) => {
     return dateOptions[date].length
@@ -114,7 +105,7 @@ export default function HangoutAttendDatesForm({
     }
   }
 
-  const updateModalConfirmation = () => {
+  const handleLeaveConfirmation = () => {
     const confirmation = (
       <Box
         mt={3}
@@ -177,7 +168,7 @@ export default function HangoutAttendDatesForm({
           {isAttending ? 'Edit' : 'Attend'}
         </Button>
         {isAttending && (
-          <Button onClick={updateModalConfirmation} color="error">
+          <Button onClick={handleLeaveConfirmation} color="error">
             Leave
           </Button>
         )}

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { createHangout, updateHangout } from '../../utils/apiHelper'
+import { parseDate } from '../../utils/date'
 import { Calendar } from 'react-multi-date-picker'
 import DatePanel from 'react-multi-date-picker/plugins/date_panel'
 
@@ -90,8 +91,7 @@ const HangoutForm = ({ edit = false }) => {
     const parsedDateOptions = {}
 
     for (let date of dateOptions) {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-      let parsedDate = date.toDate().toLocaleDateString(undefined, options)
+      let parsedDate = parseDate(date.toDate())
       parsedDateOptions[parsedDate] = []
     }
 

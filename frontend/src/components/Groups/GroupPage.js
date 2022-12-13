@@ -78,11 +78,9 @@ const GroupPage = () => {
 
           <GroupHangoutsList hangouts={hangouts} />
 
-          {isAdmin() && (
-            <Link style={linkStyle} to="./hangouts/create">
-              Host a hangout
-            </Link>
-          )}
+          <Link style={linkStyle} to="./hangouts/create">
+            Host a hangout
+          </Link>
         </>
       )
     } else {

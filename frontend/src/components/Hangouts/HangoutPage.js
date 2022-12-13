@@ -3,6 +3,9 @@ import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/userHooks'
 import Loading from '../Misc/Loading'
+import BackArrow from '../Misc/BackArrow'
+import HangoutAttend from './HangoutAttend'
+import HangoutPageFinalDetails from './HangoutPageFinalDetails'
 
 import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
@@ -10,8 +13,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 
-import BackArrow from '../Misc/BackArrow'
-import HangoutAttend from './HangoutAttend'
+
 
 const HangoutPage = () => {
   const { user } = useCurrentUser()
@@ -39,20 +41,34 @@ const HangoutPage = () => {
     return attendees.map((att) => <Avatar key={att._id}>{att.name[0]}</Avatar>)
   }
 
+  const renderIfFinalized = () => {
+    return hangout.finalized ? (
+      <HangoutPageFinalDetails hangout={hangout}/>
+    ) : (
+      <HangoutAttend
+        hangout={hangout}
+        isPlanner={user._id === hangout.planner._id}
+        isAttending={hangout.attendees.map((att) => att._id).includes(user._id)}
+      />
+    )
+  }
+
   return (
-    <Box mt={3} sx={{
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <Box
+      mt={3}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <BackArrow link={`/groups/${hangout.groupPath}`} />
 
       <Typography variant="h3" component="h2" mt={3}>
         {hangout?.title}
       </Typography>
 
-
       <Typography gutterBottom variant="button" color="text.secondary">
-        <LocationOnIcon fontSize='inherit'/> {hangout.location}
+        <LocationOnIcon fontSize="inherit" /> {hangout.location}
       </Typography>
 
       <Box
@@ -67,12 +83,18 @@ const HangoutPage = () => {
         src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
       />
 
-      {
-        user._id === hangout.planner._id &&
-        <Link to='./edit' style={{ color: 'blue', fontWeight: 500, textDecoration: 'underline' }}>
+      {user._id === hangout.planner._id && (
+        <Link
+          to="./edit"
+          style={{
+            color: 'blue',
+            fontWeight: 500,
+            textDecoration: 'underline',
+          }}
+        >
           Edit hangout details
         </Link>
-      }
+      )}
 
       <Typography gutterBottom variant="h6" mt={4}>
         Description
@@ -92,11 +114,7 @@ const HangoutPage = () => {
         {generateAvatars()}
       </Stack>
 
-      <HangoutAttend
-        hangout={hangout}
-        isPlanner={user._id === hangout.planner._id}
-        isAttending={hangout.attendees.map(att => att._id).includes(user._id)}
-      />
+      {renderIfFinalized()}
     </Box>
   )
 }
