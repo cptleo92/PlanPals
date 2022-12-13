@@ -170,7 +170,7 @@ describe('attending a handout', () => {
     dateVotes = ['Sunday, November 20, 2022']
 
     await api
-      .patch(`/api/hangouts/${testHangout.id}/updateVotes`)
+      .patch(`/api/hangouts/updateVotes/${testHangout.id}`)
       .set('Authorization', `Bearer ${token2}`)
       .send(dateVotes)
       .expect(200)
@@ -196,7 +196,7 @@ describe('attending a handout', () => {
     dateVotes = ['Sunday, November 20, 2022']
 
     await api
-      .patch(`/api/hangouts/${testHangout.id}/updateVotes`)
+      .patch(`/api/hangouts/updateVotes/${testHangout.id}`)
       .set('Authorization', `Bearer ${token3}`)
       .send(dateVotes)
       .expect(200)
@@ -381,6 +381,28 @@ describe('deleting a hangout', () => {
     expect(planner.hangouts.length).toBe(userHangoutsCount - 1)
 
   })
+})
+
+describe('finalizing a date', () => {
+  let testHangout, finalDate
+  beforeAll(async () => {
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    finalDate = Array.from(testHangout.dateOptions.keys())[0]
+  })
+
+  test('successful finalization updates model correctly', async () => {
+    const response = await api
+      .patch(`/api/hangouts/finalize/${testHangout.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ finalDate })
+      .expect(200)
+
+    expect(response.body.finalized).toBe(true)
+
+    testHangout = await Hangout.findOne({ title: testHangouts[0].title })
+    expect(testHangout.finalDate).toEqual(new Date(finalDate))
+  })
+
 })
 
 afterAll((done) => {

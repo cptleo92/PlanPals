@@ -58,6 +58,9 @@ const hangoutSchema = mongoose.Schema(
       required: true,
       default: false
     },
+    finalDate: {
+      type: Date
+    }
   },
   {
     timestamps: true

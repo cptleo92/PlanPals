@@ -8,7 +8,8 @@ const {
   updateHangout,
   getHangoutByPath,
   updateHangoutDateVotes,
-  deleteHangout
+  deleteHangout,
+  finalizeHangout
 } = require('../controllers/hangoutController')
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
@@ -45,7 +46,10 @@ router.post('/:id', joinHangout)
 router.patch('/:id', updateHangout)
 
 // add votes for a hangout's dateOptions
-router.patch('/:id/updatevotes', updateHangoutDateVotes)
+router.patch('/updatevotes/:id', updateHangoutDateVotes)
+
+// finalize a date
+router.patch('/finalize/:id', finalizeHangout)
 
 // leave a hangout
 router.delete('/:id', leaveHangout)

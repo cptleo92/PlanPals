@@ -124,7 +124,7 @@ export const updateHangout = async (id, newHangoutData) => {
 
 export const updateHangoutDateVotes = async (id, dateVotes) => {
   try {
-    const response = await axios.patch(`/api/hangouts/${id}/updateVotes`, dateVotes)
+    const response = await axios.patch(`/api/hangouts/updateVotes/${id}`, dateVotes)
     return response.data
   } catch (err) {
     return err.response.data.error

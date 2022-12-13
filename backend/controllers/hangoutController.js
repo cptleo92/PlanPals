@@ -21,12 +21,15 @@ const getHangoutByPath = async (request, response) => {
 const createHangout = async (request, response) => {
   const { title, description, location, dateOptions, groupPath } = request.body
 
-  if (!title || !description || dateOptions.length === 0) {
+  if (!title || !description || Object.keys(dateOptions).length === 0) {
     return response.status(400).json({ error: 'All fields are required!' })
   }
 
   const currentUser = await User.findById(request.user.id)
   const group = await Group.findOne({ path: groupPath })
+
+  const finalized = Object.keys(dateOptions).length === 1
+  const finalDate = finalized ? new Date(Object.keys(dateOptions)[0]) : null
 
   const newHangout = new Hangout({
     title,
@@ -37,7 +40,9 @@ const createHangout = async (request, response) => {
     groupPath,
     dateOptions,
     attendees: [],
-    path: nanoid(6)
+    path: nanoid(6),
+    finalized,
+    finalDate
   })
 
   try {
@@ -58,8 +63,10 @@ const createHangout = async (request, response) => {
       groupPath: group.path,
       dateOptions: newHangout.dateOptions,
       attendees: newHangout.attendees,
-      path: newHangout.path
+      path: newHangout.path,
+      finalDate: newHangout.finalDate
     })
+
 
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -303,6 +310,39 @@ const deleteHangout = async (request, response) => {
   }
 }
 
+const finalizeHangout = async (request, response) => {
+  const hangoutId = request.params.id
+  const userId = request.user.id
+  const { finalDate } = request.body
+
+  console.log(finalDate)
+
+  const hangout = await Hangout.findById(hangoutId)
+
+  // only planner can finalize
+  if (userId !== hangout.planner.id) {
+    return response.status(401).json({ error: 'only planner can delete the hangout' })
+  }
+
+  // final date must be one of the options
+  const dates = Array.from(hangout.dateOptions.keys())
+
+  if (!dates.includes(finalDate)) {
+    return response.status(401).json({ error: 'invalid date' })
+  }
+
+  try {
+    hangout.finalized = true
+    hangout.finalDate = new Date(finalDate)
+
+    await hangout.save()
+
+    response.status(200).json(hangout)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   getMyHangouts,
   kickFromHangout,
@@ -312,5 +352,6 @@ module.exports = {
   updateHangout,
   getHangoutByPath,
   updateHangoutDateVotes,
-  deleteHangout
+  deleteHangout,
+  finalizeHangout
 }
