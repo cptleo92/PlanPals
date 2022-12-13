@@ -80,9 +80,10 @@ const GroupHangoutsListItem = ({ hangout }) => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
+          width: '70%'
         }}
       >
-        <Typography variant="h6">
+        <Typography noWrap variant="h6">
           {hangout.title}
         </Typography>
 

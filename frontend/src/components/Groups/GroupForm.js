@@ -16,9 +16,11 @@ const GroupForm = ({ edit }) => {
   const { groupPath } = useParams()
   const { user } = useCurrentUser()
 
-  const { error, data: group } = useQuery(['group', groupPath], () =>
-    getGroup(groupPath)
-  )
+  const { error, data: group } = useQuery({
+    queryKey: ['group', groupPath],
+    queryFn: () => getGroup(groupPath),
+    enabled: !!groupPath
+  })
 
   if (error) {
     console.log(error)
