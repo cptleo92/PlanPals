@@ -17,6 +17,7 @@ import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom'
 import GroupPage from './components/Groups/GroupPage'
 import Error from './components/Misc/Error'
 import HangoutForm from './components/Hangouts/HangoutForm'
+import LandingPage from './components/Landing/LandingPage'
 
 let history = createBrowserHistory()
 
@@ -71,13 +72,13 @@ function App() {
       <UserContext.Provider value={{ user, setUser, logoutUser }}>
         <HistoryRouter history={history}>
           <Routes>
-            <Route element={<Layout />}>
-              <Route element={<AuthRoutes loggedIn={loggedIn} />}>
-                <Route path="/" element={<div>This is front page</div>} />
-                <Route path="/login" element={<UserForm />} />
-                <Route path="/register" element={<UserForm />} />
-              </Route>
+            <Route element={<AuthRoutes loggedIn={loggedIn} />}>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<UserForm />} />
+              <Route path="/register" element={<UserForm />} />
+            </Route>
 
+            <Route element={<Layout />}>
               <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
                 <Route path="/home" element={<Home />} />
                 <Route path="/groups/create" element={<GroupForm />} />

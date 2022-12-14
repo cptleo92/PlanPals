@@ -1,4 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { registerUser, loginUser } from '../../utils/apiHelper'
+import { useCurrentUser } from '../../utils/hooks'
+
+import Navbar from '../Navbar'
+
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -12,11 +18,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-
-import { useLocation, useNavigate } from 'react-router-dom'
-import { registerUser, loginUser } from '../../utils/apiHelper'
 import { CircularProgress } from '@mui/material'
-import { useCurrentUser } from '../../utils/hooks'
 
 const theme = createTheme()
 
@@ -190,6 +192,7 @@ export default function UserForm() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Navbar landing />
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
