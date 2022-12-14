@@ -12,9 +12,11 @@ const config = require('../utils/config')
 const logger = require('../utils/logger')
 const { nanoid } = require('nanoid')
 
-const USERSCOUNT = 20
-const GROUPSCOUNT = 5
-const HANGOUTSCOUNT = 20
+const USERSCOUNT = 40
+const GROUPSCOUNT = 10
+const HANGOUTSCOUNT = 30
+const MEMBERSHIPSCOUNT = (USERSCOUNT * 5)
+const ATTENDANCESCOUNT = (USERSCOUNT * 10)
 
 /**
  * creates and saves a new user
@@ -74,9 +76,23 @@ const createSeedHangout = async () => {
 
   // picks out a random user in a random group
   const randomUser = await User.findById(randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id)
+  let finalized = false
+  let finalDate
 
   const generateFakeDates = () => {
+    // options for stringifying date
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+
+    // chance of instead generating a hangout that already occured
+    if (Math.random() < 0.2) {
+      finalDate = new Date(faker.date.recent(60)).toLocaleDateString(undefined, options)
+      finalized = true
+
+      return {
+        [finalDate]: []
+      }
+    }
+
     let initialDate = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
 
     // make sure there's 1 date minimum
@@ -105,6 +121,8 @@ const createSeedHangout = async () => {
     dateOptions: generateFakeDates(),
     path: nanoid(6),
     attendees: [],
+    finalized,
+    finalDate
   })
 
   await newHangout.save()
@@ -155,6 +173,9 @@ const seedMemberships = async () => {
  */
 const seedAttendances = async () => {
   const randomGroup = await getRandomModel('group')
+
+  // early return if group has no users or hangouts
+  if (randomGroup.members.length === 0 || randomGroup.hangouts.lenght === 0) return
 
   const randomUserId = randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id
   const randomUser = await User.findById(randomUserId)
@@ -219,7 +240,7 @@ const seedDb = async () => {
   }
 
   // seed memberships
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < MEMBERSHIPSCOUNT; i++) {
     await seedMemberships()
   }
 
@@ -229,7 +250,7 @@ const seedDb = async () => {
   }
 
   // seed attendances
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < ATTENDANCESCOUNT; i++) {
     await seedAttendances()
   }
 }

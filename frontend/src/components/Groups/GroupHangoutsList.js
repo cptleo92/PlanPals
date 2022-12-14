@@ -6,12 +6,12 @@ import Typography from '@mui/material/Typography'
 
 
 
-const GroupHangoutsList = ({ hangouts }) => {
+const GroupHangoutsList = ({ hangouts, past }) => {
   return (
     <>
 
       {
-        hangouts.map(hangout => <GroupHangoutsListItem hangout={hangout} key={hangout._id} />)
+        hangouts.map(hangout => <GroupHangoutsListItem past={past} hangout={hangout} key={hangout._id} />)
       }
 
     </>

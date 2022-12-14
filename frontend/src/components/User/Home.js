@@ -45,7 +45,7 @@ const Home = () => {
     } else if (displayType === 'upcomingHangouts') {
       return <GroupHangoutsList hangouts={upcomingHangouts} />
     } else if (displayType === 'pastHangouts') {
-      return <GroupHangoutsList hangouts={pastHangouts} />
+      return <GroupHangoutsList hangouts={pastHangouts} past/>
     }
   }
 

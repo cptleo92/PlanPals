@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
+import AvatarStack from '../Misc/AvatarStack'
 
 
 
@@ -107,12 +108,10 @@ const HangoutPage = () => {
         Attending ({attendees.length + 1})
       </Typography>
 
-      <Stack direction="row" spacing={2} mb={3}>
-        <Avatar sx={{ width: 75, height: 75 }}>
-          {hangout.planner.name[0]}
-        </Avatar>
-        {generateAvatars()}
-      </Stack>
+      <AvatarStack
+        peopleList={attendees}
+        admin={hangout.planner}
+      />
 
       {renderIfFinalized()}
     </Box>

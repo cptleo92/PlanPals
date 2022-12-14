@@ -17,6 +17,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Button from '@mui/material/Button'
 import { Container } from '@mui/material'
 import HangoutForm from '../Hangouts/HangoutForm'
+import AvatarStack from '../Misc/AvatarStack'
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
@@ -44,10 +45,6 @@ const GroupPage = () => {
   const members = group.members
   const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(hangouts)
 
-  const generateAvatars = () => {
-    return members.map((mem) => <Avatar key={mem._id}>{mem.name[0]}</Avatar>)
-  }
-
   const handleJoin = async () => {
     try {
       await joinGroup(group._id)
@@ -70,7 +67,7 @@ const GroupPage = () => {
     } else if (displayType === 'upcomingHangouts') {
       return <GroupHangoutsList hangouts={upcomingHangouts} />
     } else if (displayType === 'pastHangouts') {
-      return <GroupHangoutsList hangouts={pastHangouts} />
+      return <GroupHangoutsList hangouts={pastHangouts} past />
     } else if (displayType === 'newHangout') {
       return <HangoutForm />
     }
@@ -163,11 +160,10 @@ const GroupPage = () => {
         Members ({members.length + 1})
         </Typography>
 
-
-        <Stack direction="row" spacing={2}>
-          <Avatar sx={{ width: 75, height: 75 }}>{group.admin.name[0]}</Avatar>
-          {generateAvatars()}
-        </Stack>
+        <AvatarStack
+          peopleList={group.members}
+          admin={group.admin}
+        />
 
         {renderInfo()}
       </Container>

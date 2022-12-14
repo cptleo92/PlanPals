@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import StarIcon from '@mui/icons-material/Star'
 import Tooltip from '@mui/material/Tooltip'
+import PeopleIcon from '@mui/icons-material/People'
 
 const GroupCard = ({ group }) => {
   const { user } = useCurrentUser()
@@ -50,8 +51,11 @@ const GroupCard = ({ group }) => {
         <Typography gutterBottom variant="h5">
           {group.title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography gutterBottom variant="body2" color="text.secondary">
           {group.description}
+        </Typography>
+        <Typography variant="button" color='text.primary'>
+          <PeopleIcon fontSize="inherit" /> {group.members.length}
         </Typography>
       </CardContent>
       <CardActions>

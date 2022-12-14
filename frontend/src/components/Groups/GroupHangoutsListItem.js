@@ -17,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Person from '@mui/icons-material/Person'
 import PeopleIcon from '@mui/icons-material/People'
 
-const GroupHangoutsListItem = ({ hangout }) => {
+const GroupHangoutsListItem = ({ hangout, past }) => {
   const { user } = useCurrentUser()
   const navigate = useNavigate()
 
@@ -39,14 +39,11 @@ const GroupHangoutsListItem = ({ hangout }) => {
   }
 
   const getDate = () => {
-    let dates = Object.keys(hangout.dateOptions).sort((a, b) => {
-      let dateA = new Date(a)
-      let dateB = new Date(b)
-      return dateA - dateB
-    })
-
     let date = hangout.finalized ? parseDate(hangout.finalDate) : 'Pending'
     let color = hangout.finalized ? 'success.main' : 'text.secondary'
+
+    if (past) color = 'text.disabled'
+
     return (
       <Typography variant="button" color={color}>
         <DateRangeIcon fontSize="inherit" /> {date}
@@ -116,20 +113,20 @@ const GroupHangoutsListItem = ({ hangout }) => {
             justifyContent: 'space-between'
           }}
         >
-          <Typography noWrap variant="h6">
+          <Typography noWrap variant="h6" color={past ? 'text.disabled' : 'text.primary'}>
             {hangout.title}
           </Typography>
 
-          <Typography variant="button" color="text.primary">
+          <Typography variant="button" color={past ? 'text.disabled' : 'text.primary'}>
             <LocationOnIcon fontSize="inherit" /> {hangout.location}
           </Typography>
 
           { getDate() }
 
-          <Typography variant="subtitle2" color="text.primary">
+          <Typography variant="subtitle2" color={past ? 'text.disabled' : 'text.primary'}>
             <Person fontSize="inherit" /> {planner.name}
           </Typography>
-          <Typography variant="button" color="text.secondary">
+          <Typography variant="button" color={past ? 'text.disabled' : 'text.primary'}>
             <PeopleIcon fontSize="inherit" /> {hangout.attendees.length}
           </Typography>
         </Box>

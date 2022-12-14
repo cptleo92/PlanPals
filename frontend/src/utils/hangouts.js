@@ -16,6 +16,13 @@ export const splitHangouts = (hangouts) => {
     }
   }
 
+  // sort pastHangouts by most recent first
+  pastHangouts.sort((a, b) => {
+    let dateOptionA = Object.keys(a.dateOptions)[0]
+    let dateOptionB = Object.keys(b.dateOptions)[0]
+    return new Date(dateOptionB) - new Date(dateOptionA)
+  })
+
   // sort these hangouts by earliest dateOption or finalDate
   const pendingHangouts = currentHangouts.filter(hout => !hout.finalized).sort((a, b) => {
     let dateOptionA = Object.keys(a.dateOptions)[0]
