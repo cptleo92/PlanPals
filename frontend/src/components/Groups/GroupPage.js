@@ -1,28 +1,24 @@
-import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
-import { splitHangouts } from '../../utils/hangouts'
 import { useCurrentUser } from '../../utils/hooks'
+
 import Loading from '../Misc/Loading'
-import HangoutsList from '../Hangouts/HangoutsList'
+import AvatarStack from '../Misc/AvatarStack'
+import GroupHangouts from './GroupHangouts'
 
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Button from '@mui/material/Button'
 import { Container } from '@mui/material'
-import HangoutForm from '../Hangouts/HangoutForm'
-import AvatarStack from '../Misc/AvatarStack'
+
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
   const { groupPath } = useParams()
   const navigate = useNavigate()
 
-  const [displayType, setDisplayType] = useState('pendingHangouts')
 
   const {
     isLoading,
@@ -41,7 +37,6 @@ const GroupPage = () => {
 
   const hangouts = group.hangouts
   const members = group.members
-  const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(hangouts)
 
   const handleJoin = async () => {
     try {
@@ -52,25 +47,6 @@ const GroupPage = () => {
       navigate('/error')
     }
   }
-
-  const handleChange = (event, newDisplayType) => {
-    if (newDisplayType !== null) {
-      setDisplayType(newDisplayType)
-    }
-  }
-
-  const renderListType = () => {
-    if (displayType === 'pendingHangouts') {
-      return <HangoutsList hangouts={pendingHangouts} />
-    } else if (displayType === 'upcomingHangouts') {
-      return <HangoutsList hangouts={upcomingHangouts} />
-    } else if (displayType === 'pastHangouts') {
-      return <HangoutsList hangouts={pastHangouts} past />
-    } else if (displayType === 'newHangout') {
-      return <HangoutForm />
-    }
-  }
-
   const renderInfo = () => {
     const isMemberOrPlanner = () => {
       if (group.admin._id === user._id) return true
@@ -80,25 +56,7 @@ const GroupPage = () => {
 
     if (isMemberOrPlanner()) {
       return (
-        <Box mt={4}>
-          <ToggleButtonGroup
-            color="primary"
-            value={displayType}
-            exclusive
-            onChange={handleChange}
-            sx={{ marginBottom: 2 }}
-          >
-            <ToggleButton value="pendingHangouts">Pending Hangouts</ToggleButton>
-            <ToggleButton value="upcomingHangouts">Upcoming Hangouts</ToggleButton>
-            <ToggleButton value="pastHangouts">Past Hangouts</ToggleButton>
-            <ToggleButton value="newHangout" color="success">
-
-                Plan a new hangout!
-
-            </ToggleButton>
-          </ToggleButtonGroup>
-          { renderListType() }
-        </Box>
+        <GroupHangouts hangouts={hangouts} />
       )
     } else {
       return (
