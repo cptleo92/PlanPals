@@ -2,7 +2,8 @@ const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const Hangout = require('../models/hangoutModel')
 const {
-  getRandomModel
+  getRandomModel,
+  getRandomTitle
 } = require('./seedHelper')
 
 const { faker } = require('@faker-js/faker')
@@ -53,7 +54,7 @@ const createSeedGroup = async (i) => {
   const randomAdmin = allUsers[i]
 
   const newGroup = new Group({
-    title: faker.lorem.sentence(4),
+    title: getRandomTitle('group'),
     description: faker.lorem.paragraph(),
     admin: randomAdmin.id,
     members: [],
@@ -112,9 +113,9 @@ const createSeedHangout = async () => {
   }
 
   const newHangout = new Hangout({
-    title: faker.company.catchPhrase(),
+    title: getRandomTitle('hangout'),
     description: faker.lorem.paragraph(),
-    location: 'NYC',
+    location: faker.address.city(),
     planner: randomUser.id,
     group: randomGroup.id,
     groupPath: randomGroup.path,
@@ -175,7 +176,7 @@ const seedAttendances = async () => {
   const randomGroup = await getRandomModel('group')
 
   // early return if group has no users or hangouts
-  if (randomGroup.members.length === 0 || randomGroup.hangouts.lenght === 0) return
+  if (randomGroup.members.length === 0 || randomGroup.hangouts.length === 0) return
 
   const randomUserId = randomGroup.members[Math.floor(Math.random() * randomGroup.members.length)]._id
   const randomUser = await User.findById(randomUserId)
