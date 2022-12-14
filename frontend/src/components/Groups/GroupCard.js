@@ -23,15 +23,23 @@ const GroupCard = ({ group }) => {
     if (user._id === group.admin) {
       return (
         <Tooltip title="You are the admin!">
-          <StarIcon sx={{ color: 'orange', position: 'absolute' }} />
+          <StarIcon
+            sx={{
+              color: 'orange',
+              position: 'absolute',
+              bottom: 10,
+              right: 10,
+              fontSize: '32px',
+            }}
+          />
         </Tooltip>
       )
     }
   }
 
   return (
-    <Card sx={{ width: 270 }}>
-      { showIfAdmin() }
+    <Card sx={{ width: 270, position: 'relative' }}>
+      {showIfAdmin()}
       <CardMedia
         component="img"
         height="120"
@@ -47,7 +55,6 @@ const GroupCard = ({ group }) => {
         </Typography>
       </CardContent>
       <CardActions>
-
         <Button size="small" onClick={handleClick}>
           View Group
         </Button>

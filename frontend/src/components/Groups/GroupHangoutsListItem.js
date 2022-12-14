@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
+import { getUser } from '../../utils/apiHelper'
+import { useQuery } from '@tanstack/react-query'
+import Skeleton from '@mui/material/Skeleton'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -9,7 +12,10 @@ import CardMedia from '@mui/material/CardMedia'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import DateRangeIcon from '@mui/icons-material/DateRange'
 import StarIcon from '@mui/icons-material/Star'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Tooltip from '@mui/material/Tooltip'
+import Person from '@mui/icons-material/Person'
+import PeopleIcon from '@mui/icons-material/People'
 
 const GroupHangoutsListItem = ({ hangout }) => {
   const { user } = useCurrentUser()
@@ -18,34 +24,35 @@ const GroupHangoutsListItem = ({ hangout }) => {
   const isPlanner = user._id === hangout.planner
   const isAttending = hangout.attendees.includes(user._id)
 
-  // temp
-  const showInfo = () => {
-    if (isPlanner) {
-      return (
-        <Typography
-          sx={{ color: 'darkgreen', fontWeight: 700 }}
-          variant="subtitle1"
-        >
-          {' '}
-          You are the planner!
-        </Typography>
-      )
-    }
+  const {
+    error,
+    isLoading,
+    data: planner,
+  } = useQuery({
+    queryKey: ['planner', hangout.planner],
+    queryFn: () => getUser(hangout.planner),
+  })
 
-    if (isAttending) {
-      return (
-        <Typography sx={{ color: 'blue', fontWeight: 700 }} variant="subtitle1">
-          {' '}
-          You are going!
-        </Typography>
-      )
-    }
+  if (error) {
+    console.log(error)
+    navigate('/error')
   }
 
   const getDate = () => {
-    return hangout.finalized
-      ?  parseDate(hangout.finalDate)
-      : 'Pending'
+    let dates = Object.keys(hangout.dateOptions).sort((a, b) => {
+      let dateA = new Date(a)
+      let dateB = new Date(b)
+      return dateA - dateB
+    })
+
+    let date = hangout.finalized ? parseDate(hangout.finalDate) : 'Pending'
+    let color = hangout.finalized ? 'success.main' : 'text.secondary'
+    return (
+      <Typography variant="button" color={color}>
+        <DateRangeIcon fontSize="inherit" /> {date}
+      </Typography>
+    )
+
   }
 
   const handleClick = () => {
@@ -53,50 +60,81 @@ const GroupHangoutsListItem = ({ hangout }) => {
   }
 
   return (
-    <Card
-      sx={{
-        display: 'flex',
-        marginBottom: 3,
-        width: 500,
-        height: 140,
-        cursor: 'pointer',
-      }}
-      onClick={handleClick}
-    >
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        image="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
-        alt="placeholder"
-      />
-      {isPlanner && (
-        <Tooltip title="You are the planner!">
-          <StarIcon sx={{ color: 'orange', position: 'absolute' }} />
-        </Tooltip>
-      )}
-
-      <Box
-        p={1}
+    isLoading
+      ? <Skeleton variant="rectangular" sx={{ width: 500, height: 150, marginBottom: 3 }} />
+      :
+      (<Card
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          width: '70%'
+          marginBottom: 3,
+          width: 500,
+          height: 150,
+          cursor: 'pointer',
+          position: 'relative',
         }}
+        onClick={handleClick}
       >
-        <Typography noWrap variant="h6">
-          {hangout.title}
-        </Typography>
+        <CardMedia
+          component="img"
+          sx={{ width: 151 }}
+          image="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+          alt="placeholder"
+        />
+        {isPlanner && (
+          <Tooltip title="You are the planner!">
+            <StarIcon
+              sx={{
+                color: 'orange',
+                position: 'absolute',
+                right: 10,
+                bottom: 10,
+                fontSize: '32px',
+              }}
+            />
+          </Tooltip>
+        )}
+        {isAttending && (
+          <Tooltip title="You are attending!">
+            <CheckCircleIcon
+              sx={{
+                color: 'green',
+                position: 'absolute',
+                right: 10,
+                bottom: 10,
+                fontSize: '32px',
+              }}
+            />
+          </Tooltip>
+        )}
 
-        <Typography variant="button" color="text.secondary">
-          <LocationOnIcon fontSize="inherit" /> {hangout.location}
-        </Typography>
+        <Box
+          p={1}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '70%',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Typography noWrap variant="h6">
+            {hangout.title}
+          </Typography>
 
-        <Typography gutterBottom variant="button" color="text.secondary">
-          <DateRangeIcon fontSize="inherit" /> {getDate()}
-        </Typography>
-        {showInfo()}
-      </Box>
-    </Card>
+          <Typography variant="button" color="text.primary">
+            <LocationOnIcon fontSize="inherit" /> {hangout.location}
+          </Typography>
+
+          { getDate() }
+
+          <Typography variant="subtitle2" color="text.primary">
+            <Person fontSize="inherit" /> {planner.name}
+          </Typography>
+          <Typography variant="button" color="text.secondary">
+            <PeopleIcon fontSize="inherit" /> {hangout.attendees.length}
+          </Typography>
+        </Box>
+      </Card>
+      )
   )
 }
 

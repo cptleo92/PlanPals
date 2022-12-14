@@ -22,6 +22,14 @@ export const loginUser = async (formData) => {
   }
 }
 
+export const getUser = async (id) => {
+  try {
+    const response = await axios.get(`/api/users/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
 
 /**
  *  GROUPS
