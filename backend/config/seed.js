@@ -203,10 +203,16 @@ const seedAttendances = async () => {
 
     randomHangout.attendees.push(randomUser.id)
 
-    // user is available all dates for now
+    // guarantees 1 vote, then 50% chance user is available
+    let firstVote = true
     for (let [date, votes] of randomHangout.dateOptions) {
-      votes.push(randomUser.id)
-      randomHangout.dateOptions.set(date, votes)
+
+      if (Math.random() < 0.5 || firstVote) {
+        votes.push(randomUser.id)
+        randomHangout.dateOptions.set(date, votes)
+
+        firstVote = false
+      }
     }
 
     await randomHangout.save()
