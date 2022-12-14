@@ -13,9 +13,9 @@ const config = require('../utils/config')
 const logger = require('../utils/logger')
 const { nanoid } = require('nanoid')
 
-const USERSCOUNT = 40
-const GROUPSCOUNT = 10
-const HANGOUTSCOUNT = 30
+const USERSCOUNT = 10
+const GROUPSCOUNT = (USERSCOUNT / 2)
+const HANGOUTSCOUNT = (USERSCOUNT * 2)
 const MEMBERSHIPSCOUNT = (USERSCOUNT * 5)
 const ATTENDANCESCOUNT = (USERSCOUNT * 10)
 
@@ -106,8 +106,16 @@ const createSeedHangout = async () => {
       if (Math.random() < 0.5) {
         let date = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
         if (!(date in fakeDates)) fakeDates[date] = []
+
+        // 10% chance the hangout will be finalized
+        if (Math.random() < 0.1) {
+          finalized = true
+          finalDate = date
+        }
       }
     }
+
+    // 30% chance that the hangout will be finalized
 
     return fakeDates
   }
