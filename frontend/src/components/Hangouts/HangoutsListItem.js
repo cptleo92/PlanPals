@@ -33,6 +33,8 @@ const HangoutsListItem = ({ hangout, past }) => {
     queryFn: () => getUser(hangout.planner),
   })
 
+  console.log(planner)
+
   if (error) {
     console.log(error)
     navigate('/error')

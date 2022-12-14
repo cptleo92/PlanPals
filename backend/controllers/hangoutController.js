@@ -315,8 +315,6 @@ const finalizeHangout = async (request, response) => {
   const userId = request.user.id
   const { finalDate } = request.body
 
-  console.log(finalDate)
-
   const hangout = await Hangout.findById(hangoutId)
 
   // only planner can finalize

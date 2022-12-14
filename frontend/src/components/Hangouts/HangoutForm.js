@@ -54,6 +54,7 @@ const HangoutForm = ({ edit = false }) => {
     location: hangout ? hangout.location : '',
   }
 
+
   const [formData, setFormData] = useState(defaultForm)
   const [dateOptions, setDateOptions] = useState(hangout ? Object.keys(hangout.dateOptions) : [])
 
@@ -106,6 +107,7 @@ const HangoutForm = ({ edit = false }) => {
       if (!edit) {
         response = await createHangout({
           ...formData,
+          // description: formData.description.split('\n').join('\n'),
           groupPath,
           dateOptions: parseDateOptions()
         })
@@ -173,7 +175,7 @@ const HangoutForm = ({ edit = false }) => {
             value={formData.description}
             onChange={handleChange}
             multiline
-            rows={4}
+            // rows={4}
             placeholder="Write a short description for your new hangout!"
           />
 

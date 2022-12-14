@@ -37,10 +37,6 @@ const HangoutPage = () => {
 
   const attendees = hangout.attendees
 
-  const generateAvatars = () => {
-    return attendees.map((att) => <Avatar key={att._id}>{att.name[0]}</Avatar>)
-  }
-
   const renderIfFinalized = () => {
     return hangout.finalized ? (
       <HangoutPageFinalDetails hangout={hangout}/>
@@ -99,7 +95,7 @@ const HangoutPage = () => {
       <Typography gutterBottom variant="h6" mt={4}>
         Description
       </Typography>
-      <Typography gutterBottom variant="subtitle1">
+      <Typography gutterBottom variant="subtitle1" sx={{ whiteSpace: 'pre-wrap' }}>
         {hangout?.description}
       </Typography>
 
