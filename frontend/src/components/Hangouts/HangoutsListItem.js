@@ -17,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Person from '@mui/icons-material/Person'
 import PeopleIcon from '@mui/icons-material/People'
 
-const GroupHangoutsListItem = ({ hangout, past }) => {
+const HangoutsListItem = ({ hangout, past }) => {
   const { user } = useCurrentUser()
   const navigate = useNavigate()
 
@@ -135,4 +135,4 @@ const GroupHangoutsListItem = ({ hangout, past }) => {
   )
 }
 
-export default GroupHangoutsListItem
+export default HangoutsListItem

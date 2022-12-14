@@ -8,7 +8,6 @@ import HangoutAttend from './HangoutAttend'
 import HangoutPageFinalDetails from './HangoutPageFinalDetails'
 
 import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'

@@ -5,11 +5,9 @@ import { getGroup, joinGroup } from '../../utils/apiHelper'
 import { splitHangouts } from '../../utils/hangouts'
 import { useCurrentUser } from '../../utils/hooks'
 import Loading from '../Misc/Loading'
-import GroupHangoutsList from './GroupHangoutsList'
+import HangoutsList from '../Hangouts/HangoutsList'
 
 import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
 import ToggleButton from '@mui/material/ToggleButton'
@@ -63,11 +61,11 @@ const GroupPage = () => {
 
   const renderListType = () => {
     if (displayType === 'pendingHangouts') {
-      return <GroupHangoutsList hangouts={pendingHangouts} />
+      return <HangoutsList hangouts={pendingHangouts} />
     } else if (displayType === 'upcomingHangouts') {
-      return <GroupHangoutsList hangouts={upcomingHangouts} />
+      return <HangoutsList hangouts={upcomingHangouts} />
     } else if (displayType === 'pastHangouts') {
-      return <GroupHangoutsList hangouts={pastHangouts} past />
+      return <HangoutsList hangouts={pastHangouts} past />
     } else if (displayType === 'newHangout') {
       return <HangoutForm />
     }

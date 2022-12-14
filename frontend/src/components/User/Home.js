@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useCurrentUser } from '../../utils/hooks'
 import { splitHangouts } from '../../utils/hangouts'
 import HomeGroups from './HomeGroups'
-import GroupHangoutsList from '../Groups/GroupHangoutsList'
+import HangoutsList from '../Hangouts/HangoutsList'
 import Loading from '../Misc/Loading'
 import Error from '../Misc/Error'
 
@@ -41,11 +41,11 @@ const Home = () => {
     if (displayType === 'groups') {
       return <HomeGroups userGroups={userGroups} />
     } else if (displayType === 'pendingHangouts') {
-      return <GroupHangoutsList hangouts={pendingHangouts} />
+      return <HangoutsList hangouts={pendingHangouts} />
     } else if (displayType === 'upcomingHangouts') {
-      return <GroupHangoutsList hangouts={upcomingHangouts} />
+      return <HangoutsList hangouts={upcomingHangouts} />
     } else if (displayType === 'pastHangouts') {
-      return <GroupHangoutsList hangouts={pastHangouts} past/>
+      return <HangoutsList hangouts={pastHangouts} past/>
     }
   }
 
