@@ -127,7 +127,7 @@ const HangoutsListItem = ({ hangout, past }) => {
             <Person fontSize="inherit" /> {planner.name}
           </Typography>
           <Typography variant="button" color={past ? 'text.disabled' : 'text.primary'}>
-            <PeopleIcon fontSize="inherit" /> {hangout.attendees.length}
+            <PeopleIcon fontSize="inherit" /> {hangout.attendees.length + 1}
           </Typography>
         </Box>
       </Card>

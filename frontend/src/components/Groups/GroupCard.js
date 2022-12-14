@@ -55,7 +55,7 @@ const GroupCard = ({ group }) => {
           {group.description}
         </Typography>
         <Typography variant="button" color='text.primary'>
-          <PeopleIcon fontSize="inherit" /> {group.members.length}
+          <PeopleIcon fontSize="inherit" /> {group.members.length + 1}
         </Typography>
       </CardContent>
       <CardActions>
