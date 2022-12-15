@@ -1,0 +1,44 @@
+name: Test, Build, and Deploy
+
+on:
+  push:
+    branches: 
+      - develop
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  test-build-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install and test frontend
+        run: |
+          cd frontend 
+          npm ci
+          npm test
+
+      - name: Install and test backend
+        run: |
+          cd ../backend
+          npm ci
+          npm test
+
+      - name: Build
+        run: npm run build:ui
+
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        run: flyctl deploy --remote-only
