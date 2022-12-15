@@ -31,8 +31,8 @@ const GroupPage = () => {
   }
 
   if (error) {
-    console.log(error)
     navigate('/error')
+    console.log(error)
   }
 
   const hangouts = group.hangouts
@@ -43,8 +43,8 @@ const GroupPage = () => {
       await joinGroup(group._id)
       navigate(0)
     } catch (error) {
-      console.log(error)
       navigate('/error')
+      console.log(error)
     }
   }
   const renderInfo = () => {

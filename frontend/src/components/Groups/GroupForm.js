@@ -23,8 +23,8 @@ const GroupForm = ({ edit }) => {
   })
 
   if (error) {
-    console.log(error)
     navigate('/error')
+    console.log(error)
   }
 
   const [formData, setFormData] = useState({
@@ -63,8 +63,8 @@ const GroupForm = ({ edit }) => {
         }
         navigate('/home')
       } catch (error) {
-        console.log(error)
         navigate('/error')
+        console.log(error)
       }
 
     }

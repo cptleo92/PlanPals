@@ -90,8 +90,8 @@ export default function HangoutAttendDatesForm({
 
         navigate(0)
       } catch (error) {
-        console.log(error)
         navigate('/error')
+        console.log(error)
       }
     }
   }

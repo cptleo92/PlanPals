@@ -44,8 +44,8 @@ const HangoutForm = ({ edit = false }) => {
   })
 
   if (error) {
-    console.log(error)
     navigate('/error')
+    console.log(error)
   }
 
   const defaultForm = {

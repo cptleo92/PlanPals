@@ -17,8 +17,8 @@ const HangoutPageFinalDetails = ({ hangout }) => {
       await leaveHangout(hangout._id)
       navigate(0)
     } catch (error) {
-      console.log(error)
       navigate('/error')
+      console.log(error)
     }
   }
 

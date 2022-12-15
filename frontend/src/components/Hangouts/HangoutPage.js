@@ -31,8 +31,8 @@ const HangoutPage = () => {
   }
 
   if (error) {
-    console.log(error)
     navigate('/error')
+    console.log(error)
   }
 
   const attendees = hangout.attendees
