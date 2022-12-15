@@ -23,12 +23,16 @@ jobs:
           cache: "npm"
 
       - name: Install and test frontend
-        run: cd frontend && npm ci
-        run: npm test
+        run: |
+          cd frontend 
+          npm ci
+          npm test
 
       - name: Install and test backend
-        run: cd ../backend && npm ci
-        run: npm test
+        run: |
+          cd ../backend
+          npm ci
+          npm test
 
       - name: Build
         run: npm run build:ui
