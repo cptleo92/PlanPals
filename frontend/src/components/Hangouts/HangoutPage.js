@@ -2,16 +2,20 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
+import { parseDate } from '../../utils/date'
+
 import Loading from '../Misc/Loading'
 import BackArrow from '../Misc/BackArrow'
 import HangoutAttend from './HangoutAttend'
 import HangoutPageFinalDetails from './HangoutPageFinalDetails'
+import AvatarStack from '../Misc/AvatarStack'
+import HangoutPageDateDisplay from './HangoutPageDateDisplay'
 
 import Typography from '@mui/material/Typography'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
-import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
-import AvatarStack from '../Misc/AvatarStack'
+import Paper from '@mui/material/Paper'
+import WarningIcon from '@mui/icons-material/Warning'
 
 
 
@@ -37,7 +41,7 @@ const HangoutPage = () => {
 
   const attendees = hangout.attendees
 
-  const renderIfFinalized = () => {
+  const renderButtonOrFinalDetails = () => {
     return hangout.finalized ? (
       <HangoutPageFinalDetails hangout={hangout}/>
     ) : (
@@ -47,6 +51,60 @@ const HangoutPage = () => {
         isAttending={hangout.attendees.map((att) => att._id).includes(user._id)}
       />
     )
+  }
+
+  /**
+   * if hangout has not been finalized yet and the earliest date option is in
+   * less than 3 days, a warning will be shown
+   */
+  const renderWarning = () => {
+
+    // get earliest date
+    const datesSortedByChrono = Object.keys(hangout.dateOptions).sort((a, b) => {
+      let optionA = new Date(a)
+      let optionB = new Date(b)
+      return optionA - optionB
+    })
+
+    const earliestDate = new Date(datesSortedByChrono[0])
+    const expirationDate = earliestDate.setDate(earliestDate.getDate() - 1)
+
+    // get date with most votes
+    const datesSortedByVotes = Object.keys(hangout.dateOptions).sort((a, b) => {
+      return hangout.dateOptions[b].length - hangout.dateOptions[a].length
+    })
+
+    const dateWithMostVotes = new Date(datesSortedByVotes[0])
+
+    const today = new Date()
+    const threeDaysAfter = today.setDate((new Date().getDate() + 3))
+
+    if (!hangout.finalized && earliestDate < threeDaysAfter) {
+      return (
+        <Box sx={{
+          paddingY: 4,
+          paddingX: 3,
+          border: '1px solid lightgray',
+          width: '70%',
+        }}>
+          <Typography gutterBottom variant="h6" color="error" sx={{ display: 'inline-flex', verticalAlign: 'bottom' }}>
+            <WarningIcon sx={{ marginRight: 1 }} /> It's almost time to hang out!
+          </Typography>
+          <Typography variant="subtitle1">
+            Date selection and voting will no longer be available at this date:
+          </Typography>
+          <Typography gutterBottom variant="subtitle2" color="secondary">
+            {parseDate(expirationDate)}
+          </Typography>
+          <Typography variant="subtitle1">
+          If no action is taken, your hangout will be automatically scheduled for:
+          </Typography>
+          <Typography gutterBottom variant="subtitle2" color="secondary">
+            {parseDate(dateWithMostVotes)}
+          </Typography>
+        </Box>
+      )
+    }
   }
 
   return (
@@ -108,7 +166,13 @@ const HangoutPage = () => {
         admin={hangout.planner}
       />
 
-      {renderIfFinalized()}
+      { renderWarning() }
+
+      { !hangout.finalized &&
+        <HangoutPageDateDisplay dateOptions={hangout.dateOptions} />
+      }
+
+      {renderButtonOrFinalDetails()}
     </Box>
   )
 }
