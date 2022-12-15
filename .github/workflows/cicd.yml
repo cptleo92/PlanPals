@@ -40,7 +40,7 @@ jobs:
         run: npm run build:ui
 
       - name: Setup for deploy
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-      - run: flyctl deploy --remote-only
+        run: flyctl deploy --remote-only
