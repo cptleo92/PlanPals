@@ -14,7 +14,6 @@ import HangoutPageDateDisplay from './HangoutPageDateDisplay'
 import Typography from '@mui/material/Typography'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
 import WarningIcon from '@mui/icons-material/Warning'
 
 
