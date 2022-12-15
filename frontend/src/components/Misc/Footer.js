@@ -2,6 +2,7 @@ import { Container, Box, Link, Stack, Typography, Divider } from '@mui/material'
 
 import GitHubIcon from '@mui/icons-material/GitHub'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import EmailIcon from '@mui/icons-material/Email'
 
 const LandingPageFooter = () => {
   return (
@@ -43,8 +44,15 @@ const LandingPageFooter = () => {
 
 
           <Box textAlign="right" sx={{ width: '30%', minWidth: 100 }}>
-            <GitHubIcon sx={{ marginRight: 5 }} />
-            <LinkedInIcon />
+            <Link href="mailto:leo.cheng92@gmail.com" color="inherit" sx={{ marginRight: 8 }}>
+              <EmailIcon />
+            </Link>
+            <Link href="https://www.github.com/cptleo92" target="_blank" color="inherit" sx={{ marginRight: 8 }} >
+              <GitHubIcon />
+            </Link>
+            <Link href="https://www.linkedin.com/in/sirleoc" target="_blank" color="inherit">
+              <LinkedInIcon />
+            </Link>
           </Box>
         </Box>
       </Container>

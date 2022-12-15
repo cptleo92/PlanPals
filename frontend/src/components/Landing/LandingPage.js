@@ -10,11 +10,6 @@ import Fade from '@mui/material/Fade'
 import Container from '@mui/material/Container'
 
 const LandingPage = () => {
-  // const [fade, setFade] = useState(false)
-
-  // useEffect(() => {
-  //   setFade(true)
-  // }, [])
 
   return (
     <>
@@ -26,7 +21,7 @@ const LandingPage = () => {
           marginY: 8
         }}>
           <Fade in timeout={1000}>
-            <Stack spacing={10} mr={5}>
+            <Stack spacing={10} mr={10}>
               <Box>
                 <Typography variant="h1" sx={{ fontFamily: 'Reem Kufi', fontSize: 70 }}>
                   Event planning
@@ -35,9 +30,8 @@ const LandingPage = () => {
                   simplified.
                 </Typography>
               </Box>
-              <Typography variant="body1">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras elit dolor, tempus et nulla at, consequat vestibulum magna.
-                In hac habitasse platea dictumst. Proin ut venenatis arcu.
+              <Typography variant="h6" color='text.secondary'>
+                Making it easier to navigate a busy world.
               </Typography>
             </Stack>
           </Fade>

@@ -19,7 +19,7 @@ export default function Navbar({ landing }) {
   const userButtons = () => {
     if (user) {
       return (
-        <Button name="login" color="inherit" onClick={logoutUser}>Logout</Button>
+        <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
       )
     }
     return (

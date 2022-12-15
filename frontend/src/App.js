@@ -1,5 +1,5 @@
 import { useState, useEffect, createContext } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import { AuthRoutes, ProtectedRoutes } from './utils/routesAuth'
 import axios from 'axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

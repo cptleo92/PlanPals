@@ -1,6 +1,7 @@
 import { Container, Box, Link, Stack, Typography } from '@mui/material'
 
 import GitHubIcon from '@mui/icons-material/GitHub'
+import EmailIcon from '@mui/icons-material/Email'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 
 const LandingPageFooter = () => {
@@ -31,8 +32,11 @@ const LandingPageFooter = () => {
           </Box>
 
           <Box textAlign="center">
-            <Link href="https://www.github.com/cptleo92" target="_blank" color="inherit">
-              <GitHubIcon sx={{ marginRight: 8 }} />
+            <Link href="mailto:leo.cheng92@gmail.com" color="inherit" sx={{ marginRight: 8 }}>
+              <EmailIcon />
+            </Link>
+            <Link href="https://www.github.com/cptleo92" target="_blank" color="inherit" sx={{ marginRight: 8 }} >
+              <GitHubIcon />
             </Link>
             <Link href="https://www.linkedin.com/in/sirleoc" target="_blank" color="inherit">
               <LinkedInIcon />

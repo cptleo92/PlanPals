@@ -203,11 +203,14 @@ export default function UserForm() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}>
             <LockOutlinedIcon onClick={loginTest} />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography gutterBottom component="h1" variant="h5">
             {pathname === '/login' ? 'Sign in' : 'Sign up'}
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            Click on the Lock icon above to log in as a demo user!
           </Typography>
           <Box
             component="form"
@@ -287,7 +290,7 @@ export default function UserForm() {
 
             <Grid container>
               <Grid item xs>
-                <Link variant="body2">Forgot password?</Link>
+                {/* <Link variant="body2">Forgot password?</Link> */}
               </Grid>
               <Grid item>{renderSwitchType()}</Grid>
             </Grid>
