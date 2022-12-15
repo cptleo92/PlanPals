@@ -17,7 +17,9 @@ function shuffle(a) {
 
 const AvatarStack = ({ peopleList, admin }) => {
   // if list > 8, shuffle and truncate
-  peopleList = shuffle(peopleList).slice(0, 8)
+  if (peopleList.length > 8) {
+    peopleList = shuffle(peopleList).slice(0, 8)
+  }
 
   const generateAvatars = () => {
     return peopleList.map((att) => <Avatar key={att._id}>{att.name[0]}</Avatar>)
