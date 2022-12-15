@@ -1,6 +1,5 @@
 import GroupCard from '../Groups/GroupCard'
 import NewGroupButton from '../Groups/NewGroupButton'
-import Divider from '@mui/material/Divider'
 import Grid from '@mui/material/Unstable_Grid2'
 
 const HomeGroups = ({ userGroups }) => {
@@ -13,7 +12,6 @@ const HomeGroups = ({ userGroups }) => {
           </Grid>
         ))}
       </Grid>
-      <Divider sx={{ marginBottom: 3 }} variant="middle"/>
       <NewGroupButton />
     </>
   )
