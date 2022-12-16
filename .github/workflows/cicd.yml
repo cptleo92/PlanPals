@@ -2,7 +2,7 @@ name: Test, Build, and Deploy
 
 on:
   push:
-    branches: 
+    branches:
       - develop
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -23,9 +23,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-            cache-dependency-path: |
-              backend/package-lock.json
-              frontend/package-lock.json
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
       - name: Install and test frontend
         run: |
