@@ -28,19 +28,13 @@ jobs:
             frontend/package-lock.json
 
       - name: Install and test frontend
-        run: |
-          cd frontend 
-          npm ci
-          npm test
+        run: npm test:frontend
 
       - name: Install and test backend
-        run: |
-          cd ../backend
-          npm ci
-          npm test
+        run: npm test:backend
 
       - name: Build
-        run: npm run build:ui
+        run: npm run build
 
       - name: Setup for deploy
         uses: superfly/flyctl-actions/setup-flyctl@master
