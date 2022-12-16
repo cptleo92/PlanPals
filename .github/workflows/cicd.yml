@@ -1,59 +1,43 @@
-name: Merge Test and Deploy
+name: Test, Build, and Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
-  test and build:
+  test-build-deploy:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+
+      - name: 'Create env file'
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > backend/.env
+
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '16.x'
           cache: "npm"
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
       - name: Install and test frontend
-        run: |
-          cd frontend 
-          npm ci
-          npm test
+        run: npm run test:frontend
 
       - name: Install and test backend
-        run: |
-          cd ../backend
-          npm ci
-          npm test
+        run: npm run test:backend
 
       - name: Build
-        run: npm run build:ui
+        run: npm run build
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-app
-          path: .
-
-  deploy:
-    needs: test and build
-    name: Deploy app
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:   
-          name: node-app
+      - name: Setup for deploy
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        uses: actions/checkout@v3
-        uses: superfly/flyctl-actions/setup-flyctl@master
-        run: flyctl deploy --remote-only
+        run: cd backend && flyctl deploy --remote-only
