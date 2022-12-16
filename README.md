@@ -2,7 +2,7 @@
 
 PlanPals is a tool that takes all the uncertainty out of planning get-togethers, hangouts, events, and occasions! 
 
-[Click to see the demo here!](https://planpals.fly.dev)
+[Click to see the demo here!](https://planpals.fly.dev/home)
 
 ## About This Project
 
