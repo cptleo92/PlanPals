@@ -20,6 +20,22 @@ This project is built on the MERN stack: MongoDB (Mongoose), Express, React, and
 
 ## Update Log
 
+
+### December 15, 2022
+With the basic app more or less complete, I'll be setting up a simple CI/CD pipeline as I continue to work on more features. 
+
+### December 5, 2022
+
+My immediate short-term goal is to complete a skeleton CRUD app with user, group, and hangout models working together in an extremely simple fashion. I need to make sure that the foundational pieces have no bugs or issues before moving on to more specific features. 
+
+### List of features to implement:
+* ~~Date selection. A planner has the option to pick multiple dates for a hangout. Attendees should be able to select the dates that they're available based off that.~~ (Completed: 12/15/2022)
+* Reset password functionality using Nodemailer as an email sender
+* Photo uploads
+* Privacy and security. All groups should be invite-only. Admin-type users should be able to remove other users.
+* User page to change avatars or update personal information
+* Notifications
+
 ### December 2022
 
 My immediate short-term goal is to complete a skeleton CRUD app with user, group, and hangout models working together in an extremely simple fashion. I need to make sure that the foundational pieces have no bugs or issues before moving on to more specific features. 
@@ -28,4 +44,5 @@ Some features to implement:
 * Date selection. A planner has the option to pick multiple dates for a hangout. Attendees should be able to select the dates that they're available based off that. 
 * Reset password functionality using Nodemailer as an email sender
 * Photo uploads
+
 

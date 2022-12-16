@@ -70,7 +70,7 @@ describe('creating a new group', () => {
     expect(group).toHaveProperty('id')
     expect(group).toHaveProperty('title')
     expect(group).toHaveProperty('description')
-    expect(group.admin).toEqual(currentUser._id)
+    expect(group.admin.id).toEqual(currentUser.id)
     expect(group.members.length).toEqual(0)
 
     // making sure the new groups were added to the user
@@ -107,8 +107,10 @@ describe('joining a group', () => {
 
     expect(response.body.members.length).toEqual(originalMembersAmount + 1)
 
-    const updatedTestUser = await User.findOne({ name: newUser.name })
-    expect(updatedTestUser.groups.length).toEqual(1)
+    testGroup = await Group.findOne({ title: testGroups[0].title })
+    const testUser = await User.findOne({ name: newUser.name })
+    expect(testUser.groups[0].id).toEqual(testGroup.id)
+    expect(testGroup.members.length).toEqual(originalMembersAmount + 1)
   })
 })
 
@@ -189,6 +191,42 @@ describe('leaving a group', () => {
     expect(testGroup.members.length).toEqual(0)
     testUser = await User.findOne({ name: testUsers[1].name })
     expect(testUser.groups.length).toEqual(0)
+  })
+})
+
+describe('updating group information', () => {
+  const newGroupData = {
+    description: 'EDITED DESCRIPTION'
+  }
+
+  test('fails if user is not group admin', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    // sign in someone who isn't the admin
+    const token3 = await loginTestUser(testUsers[2])
+
+    const response = await api
+      .patch(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token3}`)
+      .send(newGroupData)
+      .expect(401)
+
+    expect(response.body.error).toEqual('only admin can update the group')
+  })
+
+  test('successful if valid', async () => {
+    let testGroup = await Group.findOne({ title: testGroups[0].title })
+
+    const response = await api
+      .patch(`/api/groups/${testGroup.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(newGroupData)
+      .expect(200)
+
+    expect(response.body.description).toEqual(newGroupData.description)
+
+    testGroup = await Group.findOne({ title: testGroups[0].title })
+    expect(testGroup.description).toEqual(newGroupData.description)
   })
 })
 
