@@ -1,8 +1,12 @@
 import axios from 'axios'
 
+/**
+ *  USERS
+ */
+
 export const registerUser = async (formData) => {
   try {
-    const response = await axios.post('/api/users/', formData) 
+    const response = await axios.post('/api/users/', formData)
     return response.data
   } catch (err) {
     return err.response.data.error
@@ -11,12 +15,25 @@ export const registerUser = async (formData) => {
 
 export const loginUser = async (formData) => {
   try {
-    const response = await axios.post('/api/users/login', formData) 
+    const response = await axios.post('/api/users/login', formData)
     return response.data
   } catch (err) {
     return err.response.data.error
   }
 }
+
+export const getUser = async (id) => {
+  try {
+    const response = await axios.get(`/api/users/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+/**
+ *  GROUPS
+ */
 
 export const createGroup = async (formData) => {
   try {
@@ -39,6 +56,100 @@ export const getMyGroups = async () => {
 export const getGroup = async (id) => {
   try {
     const response = await axios.get(`/api/groups/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const updateGroup = async (id, formData) => {
+  try {
+    const response = await axios.patch(`/api/groups/${id}`, formData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const joinGroup = async (id) => {
+  try {
+    const response = await axios.post(`/api/groups/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+/**
+ *  HANGOUTS
+ */
+
+export const createHangout = async (formData) => {
+  try {
+    const response = await axios.post('/api/hangouts', formData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const getHangoutByPath = async (path) => {
+  try {
+    const response = await axios.get(`/api/hangouts/${path}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const getMyHangouts = async () => {
+  try {
+    const response = await axios.get('/api/hangouts/')
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+
+export const joinHangout = async (id, dateVotes) => {
+  try {
+    const response = await axios.post(`/api/hangouts/${id}`, dateVotes)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const updateHangout = async (id, newHangoutData) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/${id}`, newHangoutData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const updateHangoutDateVotes = async (id, dateVotes) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/updateVotes/${id}`, dateVotes)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const leaveHangout = async (id) => {
+  try {
+    await axios.delete(`/api/hangouts/${id}`)
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const finalizeHangout = async (id, finalDate) => {
+  try {
+    const response = await axios.patch(`/api/hangouts/finalize/${id}`, finalDate)
     return response.data
   } catch (err) {
     return err.response.data.error

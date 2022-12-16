@@ -1,10 +1,10 @@
-import React from "react"
-import { Outlet, Navigate } from "react-router"
+import React from 'react'
+import { Outlet, Navigate } from 'react-router'
 
 export const ProtectedRoutes = ({ loggedIn }) => {
-  return loggedIn ? <Outlet /> : <Navigate to="/login" />;
+  return loggedIn ? <Outlet /> : <Navigate to="/" />
 }
 
 export const AuthRoutes = ({ loggedIn }) => {
-  return !loggedIn ? <Outlet /> : <Navigate to="/home" />;
+  return !loggedIn ? <Outlet /> : <Navigate to="/home" />
 }

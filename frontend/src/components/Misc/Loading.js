@@ -1,23 +1,23 @@
-import { useEffect, useContext } from "react"
-import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import { UserContext } from '../App';
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
+import { useCurrentUser } from '../../utils/hooks'
 
 export default function Loading({ redirect }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { logoutUser } = useContext(UserContext)
+  const { logoutUser } = useCurrentUser()
 
   useEffect(() => {
     if (redirect) {
       window.localStorage.removeItem('currentUser')
-      logoutUser();
+      logoutUser()
       queryClient.removeQueries()
-      navigate('/login')
+      navigate('/')
     }
   })
 
@@ -30,5 +30,5 @@ export default function Loading({ redirect }) {
         <CircularProgress color="inherit" />
       </Backdrop>
     </div>
-  );
+  )
 }

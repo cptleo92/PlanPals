@@ -5,7 +5,8 @@ const {
   joinGroup,
   leaveGroup,
   kickFromGroup,
-  getGroupByIDorPath
+  updateGroup,
+  getGroupByIDorPath,
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
 
@@ -30,12 +31,14 @@ router.post('/kick', kickFromGroup)
 // create a new group
 router.post('/', createGroup)
 
+// update a group
+router.patch('/:id', updateGroup)
+
 // join a group
 router.post('/:id', joinGroup)
 
 // leave a group
 router.delete('/:id', leaveGroup)
-
 
 module.exports = router
 

@@ -20,6 +20,15 @@ const seedGroups = async (testGroups, token) => {
   }
 }
 
+const seedHangouts = async (testHangouts, token) => {
+  for (let testHangout of testHangouts) {
+    await api
+      .post('/api/hangouts')
+      .set('Authorization', `Bearer ${token}`)
+      .send(testHangout)
+  }
+}
+
 const loginTestUser = async (testUser) => {
   const response = await api
     .post('/api/users/login')
@@ -37,6 +46,7 @@ const logDb = async () => {
 module.exports = {
   seedUsers,
   seedGroups,
+  seedHangouts,
   loginTestUser,
   logDb
 }

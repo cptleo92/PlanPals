@@ -4,9 +4,12 @@ const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 
 const getUser = async (request, response) => {
-  const user = await User.findById(request.params.id)
-  if (!user) return response.status(404).json({ error: 'user not found' })
-  response.json(user).select('-password')
+  const user = await User.findById(request.params.id, { password: 0 })
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  } else {
+    return response.json(user)
+  }
 }
 
 const registerUser = async (request, response) => {

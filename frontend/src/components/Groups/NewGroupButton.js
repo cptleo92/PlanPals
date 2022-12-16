@@ -1,16 +1,14 @@
-import Card from "@mui/material/Card";
-// import CardActions from "@mui/material/CardActions";
-// import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
 
-import AddIcon from "@mui/icons-material/Add";
-import { IconButton } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add'
+import { IconButton } from '@mui/material'
 
 import { useNavigate } from 'react-router-dom'
 
 const NewGroupButton = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleClick = () => {
     navigate('/groups/create')
@@ -25,7 +23,7 @@ const NewGroupButton = () => {
         </IconButton>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default NewGroupButton;
+export default NewGroupButton
