@@ -12,12 +12,13 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'build')))
 app.use(express.json())
 
+
 // routes
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/groups', require('./routes/groupRoutes'))
 app.use('/api/hangouts', require('./routes/hangoutRoutes'))
 
-app.get('/*', function (req, res) {
+app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
