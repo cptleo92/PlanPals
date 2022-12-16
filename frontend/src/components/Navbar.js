@@ -25,7 +25,7 @@ export default function Navbar({ landing }) {
     return (
       <>
         <Button sx={{ marginRight: 4 }} name="login" variant="outlined" color="inherit" onClick={handleUserNav}>Log In</Button>
-        <Button name="register" variant="contained" onClick={handleUserNav}>Sign Up</Button>
+        <Button name="register" variant="contained" onClick={handleUserNav}>Register</Button>
       </>
     )
   }

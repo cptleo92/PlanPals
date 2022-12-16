@@ -1,0 +1,19 @@
+{
+  "name": "planpals",
+  "version": "0.7.0",
+  "description": "PlanPals is a tool that takes all the uncertainty out of planning get-togethers, hangouts, events, and occasions!",
+  "scripts": {
+    "install:frontend": "cd frontend && npm ci",
+    "install:backend": "cd backend && npm ci",
+    "test:frontend": "npm run install:frontend && cd frontend && CI=true npm test",
+    "test:backend": "npm run install:backend && cd backend && npm test",
+    "build": "cd backend && npm run build:ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cptleo92/PlanPals.git"
+  },
+  "author": "Leo Cheng",
+  "license": "MIT",
+  "homepage": "https://github.com/cptleo92/PlanPals#readme"
+}

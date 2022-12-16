@@ -7,12 +7,10 @@ describe('renders properly based on register/login path', () => {
 
     render (<App /> )
 
-    expect(screen.getByText(/front page/i)).toBeInTheDocument()
-
-    userEvent.click(screen.getByText(/login/i))
+    userEvent.click(screen.getByText(/log in/i))
     expect(screen.getByText(/don't have an account?/i)).toBeInTheDocument()
 
-    userEvent.click(screen.getByText(/register/i))
+    userEvent.click(screen.getByText(/sign up/i))
     expect(screen.getByText(/already have an/i)).toBeInTheDocument()
   })
 })
