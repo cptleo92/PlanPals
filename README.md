@@ -36,13 +36,4 @@ My immediate short-term goal is to complete a skeleton CRUD app with user, group
 * User page to change avatars or update personal information
 * Notifications
 
-### December 2022
-
-My immediate short-term goal is to complete a skeleton CRUD app with user, group, and hangout models working together in an extremely simple fashion. I need to make sure that the foundational pieces have no bugs or issues before moving on to more specific features. 
-
-Some features to implement:
-* Date selection. A planner has the option to pick multiple dates for a hangout. Attendees should be able to select the dates that they're available based off that. 
-* Reset password functionality using Nodemailer as an email sender
-* Photo uploads
-
 

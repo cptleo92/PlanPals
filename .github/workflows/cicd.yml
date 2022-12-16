@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-<<<<<<< HEAD
-=======
-
->>>>>>> d0a65e02d83fa0ce5d6203f4d2c8e000a02fba55
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -45,7 +41,3 @@ jobs:
 
       - name: Deploy to Fly.io
         run: cd backend && flyctl deploy --remote-only
-<<<<<<< HEAD
-=======
-
->>>>>>> d0a65e02d83fa0ce5d6203f4d2c8e000a02fba55
