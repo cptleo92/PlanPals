@@ -17,7 +17,7 @@ export default function Loading({ redirect }) {
       window.localStorage.removeItem('currentUser')
       logoutUser()
       queryClient.removeQueries()
-      navigate('/login')
+      navigate('/')
     }
   })
 
