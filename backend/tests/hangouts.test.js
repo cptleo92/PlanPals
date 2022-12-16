@@ -362,10 +362,8 @@ describe('deleting a hangout', () => {
   })
 
   test('successful deletion removes hangout from parent group and planner', async () => {
-    let parentGroup = await Group.findById(testHangout.group)
     let planner = await User.findById(testHangout.planner)
 
-    const groupHangoutsCount = parentGroup.hangouts.length
     const userHangoutsCount = planner.hangouts.length
 
     testHangout = await Hangout.findOne({ title: testHangouts[1].title })
@@ -375,9 +373,7 @@ describe('deleting a hangout', () => {
       .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
-    parentGroup = await Group.findById(testHangout.group)
     planner = await User.findById(testHangout.planner)
-    expect(parentGroup.hangouts.length).toBe(groupHangoutsCount - 1)
     expect(planner.hangouts.length).toBe(userHangoutsCount - 1)
 
   })
