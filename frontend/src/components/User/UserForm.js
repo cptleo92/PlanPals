@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { registerUser, loginUser } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 
-import Navbar from '../Navbar'
+import Navbar from '../Misc/Navbar'
 
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'

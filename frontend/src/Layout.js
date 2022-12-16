@@ -1,6 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import Navbar from './components/Navbar'
+import Navbar from './components/Misc/Navbar'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Footer from './components/Misc/Footer'

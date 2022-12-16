@@ -1,4 +1,4 @@
-import Navbar from '../Navbar'
+import Navbar from '../Misc/Navbar'
 import hero from '../../assets/mason-dahl--7AxXbZekDE-unsplash.jpg'
 import LandingPageAccordion from './LandingPageAccordion'
 import LandingPageFooter from './LandingPageFooter'
@@ -14,7 +14,7 @@ const LandingPage = () => {
   return (
     <>
       <Navbar landing />
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ minHeight: '70vh' }}>
         <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
