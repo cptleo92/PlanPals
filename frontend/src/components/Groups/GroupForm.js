@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { createGroup } from '../../utils/apiHelper'
@@ -10,16 +10,12 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Fab from '@mui/material/Fab'
+import PhotoUpload from '../Misc/PhotoUpload'
 
 const GroupForm = ({ edit }) => {
   const navigate = useNavigate()
   const { groupPath } = useParams()
   const { user } = useCurrentUser()
-  const inputFile = useRef(null)
 
   const [file, setFile] = useState()
 
@@ -87,72 +83,6 @@ const GroupForm = ({ edit }) => {
     if (e.target.name === 'description') setDescriptionError('')
   }
 
-  const handleOpenFile = () => {
-    inputFile.current.click()
-  }
-
-  const handleFileInput = (e) => {
-    let file = e.target.files[0]
-    if (file) setFile(file)
-  }
-
-  const renderUploadOrImage = () => {
-    return !file
-      ?
-      (
-        <Box
-          onClick={handleOpenFile}
-          sx={{
-            marginY: 3,
-            padding: 5,
-            width: 500,
-            height: 240,
-            border: '1px solid lightgray',
-            borderRadius: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'text.disabled',
-            cursor: 'pointer'
-          }}>
-          <AddAPhotoIcon size='large' />
-          <Typography variant="h6" sx={{ marginTop: 3 }}>
-              Set a photo for your group!
-          </Typography>
-        </Box>
-      )
-      :
-      (
-        <Box sx={{
-          width: 500,
-          height: 240,
-          position: 'relative'
-        }}>
-          <img
-            src={URL.createObjectURL(file)}
-            alt="preview"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-          />
-          <Stack direction="row" spacing={2} sx={{
-            position: 'absolute',
-            right: 5,
-            bottom: 5
-          }}>
-            <Fab color="secondary" aria-label="edit" onClick={handleOpenFile}>
-              <EditIcon />
-            </Fab>
-            <Fab color="error" aria-label="edit" onClick={() => setFile(null)}>
-              <DeleteIcon />
-            </Fab>
-          </Stack>
-        </Box>
-
-
-
-      )
-
-  }
 
   useEffect(() => {
     if (group && group.admin._id !== user._id) {
@@ -196,14 +126,8 @@ const GroupForm = ({ edit }) => {
             rows={4}
             placeholder="Write a short description for your new group!"
           />
-          <input
-            onChange={handleFileInput}
-            type='file'
-            id='file'
-            ref={inputFile}
-            style={{ display: 'none' }}
-            accept="image/*" />
-          {renderUploadOrImage()}
+
+          <PhotoUpload file={file} setFile={setFile} />
 
           <Button
             type="submit"
