@@ -1,28 +1,41 @@
 const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const { nanoid } = require('nanoid')
+const { populateAvatar, setAvatar, deleteAvatar } = require('../utils/s3')
+
 
 const getMyGroups = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
-  response.json(currentUser.groups)
+
+  const userGroups = currentUser.groups
+
+  for (let group of userGroups) {
+    await populateAvatar(group)
+  }
+
+  response.json(userGroups)
 }
 
 const getGroupByIDorPath = async (request, response) => {
   const query = request.params.id
   let group
 
-  // populating here instead of the model as an experiment
   if (query.length !== 6) {
     group = await Group.findById(query)
   } else {
     group = await Group.findOne({ path: query })
   }
 
+  await populateAvatar(group)
+
   response.json(group)
 }
 
 const createGroup = async (request, response) => {
   const { title, description } = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
+  let avatar = setAvatar(avatarBuffer, mimetype)
 
   if (!title || !description) {
     return response.status(400).json({ error: 'All fields are required!' })
@@ -30,13 +43,15 @@ const createGroup = async (request, response) => {
 
   const currentUser = await User.findById(request.user.id)
 
+
   const newGroup = new Group({
     title,
     description,
     admin: currentUser.id,
     members: [],
     hangouts: [],
-    path: nanoid(6)
+    path: nanoid(6),
+    avatar
   })
 
   try {
@@ -45,6 +60,8 @@ const createGroup = async (request, response) => {
     currentUser.groups.push(newGroup.id)
     await currentUser.save()
 
+    console.log(newGroup)
+
     response.status(201).json({
       _id: newGroup.id,
       title: newGroup.title,
@@ -52,7 +69,8 @@ const createGroup = async (request, response) => {
       admin: currentUser.id,
       members: [],
       hangouts: [],
-      path: newGroup.path
+      path: newGroup.path,
+      avatar: newGroup.avatar
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -156,6 +174,8 @@ const kickFromGroup = async (request, response) => {
 const updateGroup = async (request, response) => {
   const groupId = request.params.id
   const newGroupData = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
 
   let updateThisGroup = await Group.findById(groupId)
 
@@ -165,15 +185,20 @@ const updateGroup = async (request, response) => {
   }
 
   try {
+    // delete the old avatar if applicable
+    if (updateThisGroup.avatar) {
+      deleteAvatar(updateThisGroup.avatar)
+    }
+
     updateThisGroup = await Group.findByIdAndUpdate(groupId, newGroupData, { new: true })
+
+    updateThisGroup.avatar = await setAvatar(avatarBuffer, mimetype)
+    await updateThisGroup.save()
+
     response.status(200).json(updateThisGroup)
   } catch (error) {
     response.status(400).json({ error: error.message })
   }
-}
-
-const setGroupAvatar = async (request, response) => {
-  console.log('request.file', request.file)
 }
 
 module.exports = {
@@ -184,5 +209,4 @@ module.exports = {
   kickFromGroup,
   getGroupByIDorPath,
   updateGroup,
-  setGroupAvatar
 }

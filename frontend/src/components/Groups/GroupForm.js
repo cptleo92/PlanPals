@@ -17,8 +17,6 @@ const GroupForm = ({ edit }) => {
   const { groupPath } = useParams()
   const { user } = useCurrentUser()
 
-  const [file, setFile] = useState()
-
   const { error, data: group } = useQuery({
     queryKey: ['group', groupPath],
     queryFn: () => getGroup(groupPath),
@@ -29,6 +27,8 @@ const GroupForm = ({ edit }) => {
     navigate('/error')
     console.log(error)
   }
+
+  const [file, setFile] = useState(group?.avatar)
 
   const [formData, setFormData] = useState({
     title: group ? group.title : '',
@@ -58,11 +58,16 @@ const GroupForm = ({ edit }) => {
     e.preventDefault()
 
     if (validateFields()) {
+      const newGroup = new FormData()
+      newGroup.append('title', formData.title)
+      newGroup.append('description', formData.description)
+      newGroup.append('avatar', file)
+
       try {
         if (edit) {
-          await updateGroup(group._id, formData)
+          await updateGroup(group._id, newGroup)
         } else {
-          await createGroup(formData)
+          await createGroup(newGroup)
         }
         navigate('/home')
       } catch (error) {

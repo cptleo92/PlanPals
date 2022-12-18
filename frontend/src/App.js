@@ -89,8 +89,8 @@ function App() {
                 <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
               </Route>
 
-              <Route path="/error" element={<Error />} />
             </Route>
+            <Route path="/error" element={<Error />} />
 
             <Route path="/session-expired" element={<Loading redirect />} />
             <Route path='*' element={<Error />} />

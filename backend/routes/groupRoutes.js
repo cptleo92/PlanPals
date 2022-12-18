@@ -7,7 +7,6 @@ const {
   kickFromGroup,
   updateGroup,
   getGroupByIDorPath,
-  setGroupAvatar
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
 const multer = require('multer')
@@ -29,10 +28,10 @@ router.get('/:id', getGroupByIDorPath)
 router.post('/kick', kickFromGroup)
 
 // create a new group
-router.post('/', createGroup)
+router.post('/', upload.single('avatar'), createGroup)
 
 // update a group
-router.patch('/:id', updateGroup)
+router.patch('/:id', upload.single('avatar'), updateGroup)
 
 // join a group
 router.post('/:id', joinGroup)
@@ -40,6 +39,5 @@ router.post('/:id', joinGroup)
 // leave a group
 router.delete('/:id', leaveGroup)
 
-router.post('/avatar', upload.single('avatar'), setGroupAvatar)
 
 module.exports = router

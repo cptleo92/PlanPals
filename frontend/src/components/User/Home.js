@@ -19,8 +19,8 @@ const Home = () => {
   const userHangouts = hangoutsQuery.data
 
   if (groupsQuery.isLoading || hangoutsQuery.isLoading) {
-    return <Loading />  }
-
+    return <Loading />
+  }
 
   if (groupsQuery.error || hangoutsQuery.error) return <Error />
 

@@ -54,7 +54,7 @@ const PhotoUpload = ({ file, setFile }) => {
           position: 'relative'
         }}>
           <img
-            src={URL.createObjectURL(file)}
+            src={typeof file === 'string' ? file : URL.createObjectURL(file)}
             alt="preview"
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
