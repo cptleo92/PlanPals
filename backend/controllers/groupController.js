@@ -172,6 +172,10 @@ const updateGroup = async (request, response) => {
   }
 }
 
+const setGroupAvatar = async (request, response) => {
+  console.log('request.file', request.file)
+}
+
 module.exports = {
   getMyGroups,
   createGroup,
@@ -180,4 +184,5 @@ module.exports = {
   kickFromGroup,
   getGroupByIDorPath,
   updateGroup,
+  setGroupAvatar
 }

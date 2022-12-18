@@ -41,7 +41,10 @@ const groupSchema = mongoose.Schema(
         ref: 'Hangout',
         autopopulate: { maxDepth: 1 }
       }
-    ]
+    ],
+    avatar: {
+      type: String
+    }
   },
   {
     timestamps: true

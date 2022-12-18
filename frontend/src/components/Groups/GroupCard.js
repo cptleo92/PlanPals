@@ -38,14 +38,16 @@ const GroupCard = ({ group }) => {
     }
   }
 
+  const groupAvatar = group.avatar ? group.avatar : 'https://placebear.com/270/120'
+
   return (
     <Card sx={{ width: 270, position: 'relative' }}>
       {showIfAdmin()}
       <CardMedia
         component="img"
         height="120"
-        image="https://placebear.com/270/120"
-        alt="placeholder"
+        image={groupAvatar}
+        alt="group avatar"
       />
       <CardContent>
         <Typography gutterBottom variant="h5">

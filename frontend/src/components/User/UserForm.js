@@ -203,8 +203,8 @@ export default function UserForm() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}>
-            <LockOutlinedIcon onClick={loginTest} />
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}  onClick={loginTest}>
+            <LockOutlinedIcon />
           </Avatar>
           <Typography gutterBottom component="h1" variant="h5">
             {pathname === '/login' ? 'Sign in' : 'Sign up'}

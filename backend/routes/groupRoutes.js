@@ -7,14 +7,14 @@ const {
   kickFromGroup,
   updateGroup,
   getGroupByIDorPath,
+  setGroupAvatar
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
+const multer = require('multer')
 
-// remove this in prod
-// router.get('/all', async (request, response) => {
-//   const allGroups = await Group.find({})
-//   response.json(allGroups)
-// })
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 // all routes auth protected
 router.use(auth)
 
@@ -40,6 +40,6 @@ router.post('/:id', joinGroup)
 // leave a group
 router.delete('/:id', leaveGroup)
 
-module.exports = router
+router.post('/avatar', upload.single('avatar'), setGroupAvatar)
 
-// "eXKZDe"
+module.exports = router
