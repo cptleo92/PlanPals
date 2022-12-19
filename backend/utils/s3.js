@@ -18,7 +18,7 @@ const s3 = new S3Client({
 })
 
 const setAvatar = async (avatarBuffer, mimetype) => {
-  let avatar
+  let avatar = null
 
   if (avatarBuffer) {
     try {

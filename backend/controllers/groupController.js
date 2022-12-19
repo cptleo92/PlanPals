@@ -35,14 +35,13 @@ const createGroup = async (request, response) => {
   const { title, description } = request.body
   const avatarBuffer = request.file?.buffer
   const mimetype = request.file?.mimetype
-  let avatar = setAvatar(avatarBuffer, mimetype)
+  let avatar = await setAvatar(avatarBuffer, mimetype)
 
   if (!title || !description) {
     return response.status(400).json({ error: 'All fields are required!' })
   }
 
   const currentUser = await User.findById(request.user.id)
-
 
   const newGroup = new Group({
     title,
@@ -73,6 +72,7 @@ const createGroup = async (request, response) => {
       avatar: newGroup.avatar
     })
   } catch (error) {
+    console.error(error)
     response.status(400).json({ error: error.message })
   }
 }

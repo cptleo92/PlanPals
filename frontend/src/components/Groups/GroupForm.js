@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createGroup } from '../../utils/apiHelper'
 import { getGroup, updateGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
@@ -17,10 +17,29 @@ const GroupForm = ({ edit }) => {
   const { groupPath } = useParams()
   const { user } = useCurrentUser()
 
+  const queryClient = useQueryClient()
+
   const { error, data: group } = useQuery({
     queryKey: ['group', groupPath],
     queryFn: () => getGroup(groupPath),
     enabled: !!groupPath
+  })
+
+  const updateGroupMutation = useMutation({
+    mutationFn: ({ groupId, newGroup }) => updateGroup(groupId, newGroup),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['group', group.path], data)
+      navigate(`/groups/${group.path}`)
+    },
+    onError: () => navigate('/error')
+  })
+
+  const createGroupMutation = useMutation({
+    mutationFn: (newGroup) => createGroup(newGroup),
+    onSuccess: () => {
+      navigate('/home')
+    },
+    onError: () => navigate('/error')
   })
 
   if (error) {
@@ -54,7 +73,7 @@ const GroupForm = ({ edit }) => {
     return noErrors
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
     if (validateFields()) {
@@ -63,16 +82,11 @@ const GroupForm = ({ edit }) => {
       newGroup.append('description', formData.description)
       newGroup.append('avatar', file)
 
-      try {
-        if (edit) {
-          await updateGroup(group._id, newGroup)
-        } else {
-          await createGroup(newGroup)
-        }
-        navigate('/home')
-      } catch (error) {
-        navigate('/error')
-        console.log(error)
+
+      if (edit) {
+        updateGroupMutation.mutate({ groupId: group._id, newGroup })
+      } else {
+        createGroupMutation.mutate(newGroup)
       }
 
     }
