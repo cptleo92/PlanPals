@@ -13,7 +13,6 @@ import AvatarStack from '../Misc/AvatarStack'
 import HangoutPageDateDisplay from './HangoutPageDateDisplay'
 
 import Typography from '@mui/material/Typography'
-import Stack from '@mui/material/Stack'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
 import WarningIcon from '@mui/icons-material/Warning'
