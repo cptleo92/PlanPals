@@ -2,16 +2,27 @@ const Hangout = require('../models/hangoutModel')
 const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const { nanoid } = require('nanoid')
+const { populateAvatar, setAvatar, deleteAvatar } = require('../utils/s3')
 
 const getMyHangouts = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
-  response.json(currentUser.hangouts)
+
+  const userHangouts = currentUser.hangouts
+
+  for (let hout of userHangouts) {
+    await populateAvatar(hout)
+  }
+
+  response.json(userHangouts)
 }
 
 const getHangoutByPath = async (request, response) => {
   const { path } = request.params
   try {
     const hangout = await Hangout.findOne({ path })
+
+    await populateAvatar(hangout)
+
     response.json(hangout)
   } catch (error) {
     response.status(404).json({ error: 'Hangout not found' })
@@ -20,6 +31,9 @@ const getHangoutByPath = async (request, response) => {
 
 const createHangout = async (request, response) => {
   const { title, description, location, dateOptions, groupPath } = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
+  let avatar = await setAvatar(avatarBuffer, mimetype)
 
   if (!title || !description || Object.keys(dateOptions).length === 0) {
     return response.status(400).json({ error: 'All fields are required!' })
@@ -42,7 +56,8 @@ const createHangout = async (request, response) => {
     attendees: [],
     path: nanoid(6),
     finalized,
-    finalDate
+    finalDate,
+    avatar
   })
 
   try {
@@ -64,11 +79,13 @@ const createHangout = async (request, response) => {
       dateOptions: newHangout.dateOptions,
       attendees: newHangout.attendees,
       path: newHangout.path,
-      finalDate: newHangout.finalDate
+      finalDate: newHangout.finalDate,
+      avatar: newHangout.avatar
     })
 
 
   } catch (error) {
+    console.error(error)
     response.status(400).json({ error: error.message })
   }
 }
@@ -210,6 +227,8 @@ const kickFromHangout = async (request, response) => {
 const updateHangout = async (request, response) => {
   const hangoutId = request.params.id
   const newHangoutData = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
 
   let updateThisHangout = await Hangout.findById(hangoutId)
 
@@ -219,7 +238,15 @@ const updateHangout = async (request, response) => {
   }
 
   try {
+    // delete the old avatar if applicable
+    if (updateThisHangout.avatar) {
+      deleteAvatar(updateThisHangout.avatar)
+    }
+
     updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, newHangoutData, { new: true })
+
+    updateThisHangout.avatar = await setAvatar(avatarBuffer, mimetype)
+    await updateThisHangout.save()
 
     response.status(200).json(updateThisHangout)
   } catch (error) {

@@ -59,8 +59,6 @@ const createGroup = async (request, response) => {
     currentUser.groups.push(newGroup.id)
     await currentUser.save()
 
-    console.log(newGroup)
-
     response.status(201).json({
       _id: newGroup.id,
       title: newGroup.title,

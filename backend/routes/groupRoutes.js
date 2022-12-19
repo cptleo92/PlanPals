@@ -9,8 +9,9 @@ const {
   getGroupByIDorPath,
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
-const multer = require('multer')
 
+// multer config for photo uploading
+const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 

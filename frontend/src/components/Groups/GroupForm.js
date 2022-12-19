@@ -4,13 +4,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createGroup } from '../../utils/apiHelper'
 import { getGroup, updateGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
+import PhotoUpload from '../Misc/PhotoUpload'
 
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import PhotoUpload from '../Misc/PhotoUpload'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const GroupForm = ({ edit }) => {
   const navigate = useNavigate()
@@ -25,8 +26,11 @@ const GroupForm = ({ edit }) => {
     enabled: !!groupPath
   })
 
+  const [submitting, setSubmitting] = useState(false)
+
   const updateGroupMutation = useMutation({
     mutationFn: ({ groupId, newGroup }) => updateGroup(groupId, newGroup),
+    onMutate: () => setSubmitting(true),
     onSuccess: (data) => {
       queryClient.setQueryData(['group', group.path], data)
       navigate(`/groups/${group.path}`)
@@ -36,6 +40,7 @@ const GroupForm = ({ edit }) => {
 
   const createGroupMutation = useMutation({
     mutationFn: (newGroup) => createGroup(newGroup),
+    onMutate: () => setSubmitting(true),
     onSuccess: () => {
       navigate('/home')
     },
@@ -75,6 +80,7 @@ const GroupForm = ({ edit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    if (submitting) return
 
     if (validateFields()) {
       const newGroup = new FormData()
@@ -90,6 +96,8 @@ const GroupForm = ({ edit }) => {
       }
 
     }
+
+    setSubmitting(false)
   }
 
   const handleChange = (e) => {
@@ -154,7 +162,12 @@ const GroupForm = ({ edit }) => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            {edit ? 'Update' : 'Create'}
+            {
+              submitting ? (
+                <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+              ) :
+                edit ? 'Update' : 'Create'
+            }
           </Button>
           <Button
             fullWidth

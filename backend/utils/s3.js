@@ -43,16 +43,16 @@ const setAvatar = async (avatarBuffer, mimetype) => {
   return avatar
 }
 
-const populateAvatar = async (group) => {
-  if (group.avatar) {
+const populateAvatar = async (modelType) => {
+  if (modelType.avatar) {
     const params = {
       Bucket: AWS_BUCKET_NAME,
-      Key: group.avatar
+      Key: modelType.avatar
     }
 
     const command = new GetObjectCommand(params)
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
-    group.avatar = url
+    modelType.avatar = url
   }
 }
 

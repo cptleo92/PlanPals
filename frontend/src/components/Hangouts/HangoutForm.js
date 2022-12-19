@@ -6,14 +6,15 @@ import { createHangout, updateHangout } from '../../utils/apiHelper'
 import { parseDate } from '../../utils/date'
 import { Calendar } from 'react-multi-date-picker'
 import DatePanel from 'react-multi-date-picker/plugins/date_panel'
+import { useCurrentUser } from '../../utils/hooks'
+import PhotoUpload from '../Misc/PhotoUpload'
 
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import { useCurrentUser } from '../../utils/hooks'
-import PhotoUpload from '../Misc/PhotoUpload'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -34,8 +35,6 @@ const HangoutForm = ({ edit = false }) => {
   const navigate = useNavigate()
   const { user } = useCurrentUser()
 
-  const [file, setFile] = useState()
-
   const queryClient = useQueryClient()
 
   const {
@@ -47,8 +46,12 @@ const HangoutForm = ({ edit = false }) => {
     enabled: !!hangoutPath
   })
 
+  const [file, setFile] = useState(hangout?.avatar)
+  const [submitting, setSubmitting] = useState(false)
+
   const updateHangoutMutation = useMutation({
     mutationFn: ({ hangoutId, newHangout }) => updateHangout(hangoutId, newHangout),
+    onMutate: () => setSubmitting(true),
     onSuccess: (data) => {
       queryClient.setQueryData(['hangout', hangout.path], data)
       navigate(`/groups/${groupPath}/hangouts/${hangout.path}`)
@@ -58,6 +61,7 @@ const HangoutForm = ({ edit = false }) => {
 
   const createHangoutMutation = useMutation({
     mutationFn: (newHangout) => createHangout(newHangout),
+    onMutate: () => setSubmitting(true),
     onSuccess: () => {
       navigate(`/groups/${groupPath}`)
     },
@@ -74,7 +78,6 @@ const HangoutForm = ({ edit = false }) => {
     description: hangout ? hangout.description : '',
     location: hangout ? hangout.location : '',
   }
-
 
   const [formData, setFormData] = useState(defaultForm)
   const [dateOptions, setDateOptions] = useState(hangout ? Object.keys(hangout.dateOptions) : [])
@@ -122,8 +125,10 @@ const HangoutForm = ({ edit = false }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (submitting) return
 
     if (validateFields()) {
+
       const newHangout = new FormData()
       newHangout.append('title', formData.title)
       newHangout.append('description', formData.description)
@@ -138,21 +143,9 @@ const HangoutForm = ({ edit = false }) => {
         createHangoutMutation.mutate(newHangout)
       }
 
-
-      // if (!edit) {
-      //   response = await createHangout({
-      //     ...formData,
-      //     groupPath,
-      //     dateOptions: parseDateOptions()
-      //   })
-      // } else {
-      //   response = await updateHangout( hangout._id, {
-      //     ...formData,
-      //     groupPath,
-      //   })
-      // }
-      // navigate(`/groups/${groupPath}/hangouts/${response.path}`)
     }
+
+    setSubmitting(false)
   }
 
   const handleChange = (e) => {
@@ -252,7 +245,12 @@ const HangoutForm = ({ edit = false }) => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          { edit ? 'Update' : 'Create' }
+          {
+            submitting ? (
+              <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+            ) :
+              edit ? 'Update' : 'Create'
+          }
         </Button>
         {
           edit &&

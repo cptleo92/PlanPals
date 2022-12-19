@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -10,6 +10,7 @@ import Fab from '@mui/material/Fab'
 
 const PhotoUpload = ({ type, file, setFile }) => {
   const inputFile = useRef(null)
+  const [sizeError, setSizeError] = useState(false)
 
   const handleOpenFile = () => {
     inputFile.current.click()
@@ -17,7 +18,16 @@ const PhotoUpload = ({ type, file, setFile }) => {
 
   const handleFileInput = (e) => {
     let file = e.target.files[0]
-    if (file) setFile(file)
+
+    if (file) {
+      if (file.size > 1000000) {
+        setSizeError(true)
+        return
+      }
+
+      setSizeError(false)
+      setFile(file)
+    }
   }
 
   const renderUploadOrPreview = () => {
@@ -44,6 +54,12 @@ const PhotoUpload = ({ type, file, setFile }) => {
           <Typography variant="h6" sx={{ marginTop: 3 }}>
           Set a photo for your {type}!
           </Typography>
+          {
+            sizeError &&
+          <Typography variant="subtitle2" color="error" sx={{ marginTop: 1 }}>
+          File must be less than 1MB.
+          </Typography>
+          }
         </Box>
       )
       :
