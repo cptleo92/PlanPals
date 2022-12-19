@@ -6,6 +6,7 @@ import { useCurrentUser } from '../../utils/hooks'
 import Loading from '../Misc/Loading'
 import AvatarStack from '../Misc/AvatarStack'
 import GroupHangouts from './GroupHangouts'
+import placeholder from '../../assets/Placeholder_view_vector.svg'
 
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -18,7 +19,6 @@ const GroupPage = () => {
   const { user } = useCurrentUser()
   const { groupPath } = useParams()
   const navigate = useNavigate()
-
 
   const {
     isLoading,
@@ -35,8 +35,8 @@ const GroupPage = () => {
     console.log(error)
   }
 
-  const hangouts = group.hangouts
-  const members = group.members
+  const hangouts = group.hangouts || []
+  const members = group.members || []
 
   const handleJoin = async () => {
     try {
@@ -82,13 +82,11 @@ const GroupPage = () => {
       <Box
         component="img"
         sx={{
-          height: 233,
-          width: 350,
-          maxHeight: { xs: 233, md: 167 },
-          maxWidth: { xs: 350, md: 250 },
+          height: 250,
+          maxHeight: { xs: 150, md: 200, lg: 250 },
         }}
-        alt="placeholder"
-        src="https://placebear.com/400/233"
+        alt="group avatar"
+        src={ group.avatar || placeholder}
       />
       <br />
       {user._id === group.admin._id && (

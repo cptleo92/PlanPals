@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createGroup } from '../../utils/apiHelper'
 import { getGroup, updateGroup } from '../../utils/apiHelper'
+import { useCurrentUser } from '../../utils/hooks'
+import PhotoUpload from '../Misc/PhotoUpload'
 
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import { useCurrentUser } from '../../utils/hooks'
+import CircularProgress from '@mui/material/CircularProgress'
 
 const GroupForm = ({ edit }) => {
   const navigate = useNavigate()
   const { groupPath } = useParams()
   const { user } = useCurrentUser()
+
+  const queryClient = useQueryClient()
 
   const { error, data: group } = useQuery({
     queryKey: ['group', groupPath],
@@ -22,10 +26,33 @@ const GroupForm = ({ edit }) => {
     enabled: !!groupPath
   })
 
+  const [submitting, setSubmitting] = useState(false)
+
+  const updateGroupMutation = useMutation({
+    mutationFn: ({ groupId, newGroup }) => updateGroup(groupId, newGroup),
+    onMutate: () => setSubmitting(true),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['group', group.path], data)
+      navigate(`/groups/${group.path}`)
+    },
+    onError: () => navigate('/error')
+  })
+
+  const createGroupMutation = useMutation({
+    mutationFn: (newGroup) => createGroup(newGroup),
+    onMutate: () => setSubmitting(true),
+    onSuccess: () => {
+      navigate('/home')
+    },
+    onError: () => navigate('/error')
+  })
+
   if (error) {
     navigate('/error')
     console.log(error)
   }
+
+  const [file, setFile] = useState(group?.avatar)
 
   const [formData, setFormData] = useState({
     title: group ? group.title : '',
@@ -51,23 +78,26 @@ const GroupForm = ({ edit }) => {
     return noErrors
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
+    if (submitting) return
 
     if (validateFields()) {
-      try {
-        if (edit) {
-          await updateGroup(group._id, formData)
-        } else {
-          await createGroup(formData)
-        }
-        navigate('/home')
-      } catch (error) {
-        navigate('/error')
-        console.log(error)
+      const newGroup = new FormData()
+      newGroup.append('title', formData.title)
+      newGroup.append('description', formData.description)
+      newGroup.append('avatar', file)
+
+
+      if (edit) {
+        updateGroupMutation.mutate({ groupId: group._id, newGroup })
+      } else {
+        createGroupMutation.mutate(newGroup)
       }
 
     }
+
+    setSubmitting(false)
   }
 
   const handleChange = (e) => {
@@ -80,6 +110,7 @@ const GroupForm = ({ edit }) => {
     if (e.target.name === 'description') setDescriptionError('')
   }
 
+
   useEffect(() => {
     if (group && group.admin._id !== user._id) {
       navigate('/error')
@@ -89,7 +120,7 @@ const GroupForm = ({ edit }) => {
   return (
     <>
       <Typography variant="h3" component="h2" mt={3}>
-        { edit ? 'Edit Your Group!' : 'Create a new group!' }
+        {edit ? 'Edit Your Group!' : 'Create a new group!'}
       </Typography>
       <Box
         component="form"
@@ -122,13 +153,21 @@ const GroupForm = ({ edit }) => {
             rows={4}
             placeholder="Write a short description for your new group!"
           />
+
+          <PhotoUpload type={'group'} file={file} setFile={setFile} />
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            { edit ? 'Update' : 'Create' }
+            {
+              submitting ? (
+                <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+              ) :
+                edit ? 'Update' : 'Create'
+            }
           </Button>
           <Button
             fullWidth

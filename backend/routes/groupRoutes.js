@@ -10,11 +10,11 @@ const {
 } = require('../controllers/groupController')
 const { auth } = require('../utils/middleware')
 
-// remove this in prod
-// router.get('/all', async (request, response) => {
-//   const allGroups = await Group.find({})
-//   response.json(allGroups)
-// })
+// multer config for photo uploading
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
 // all routes auth protected
 router.use(auth)
 
@@ -29,10 +29,10 @@ router.get('/:id', getGroupByIDorPath)
 router.post('/kick', kickFromGroup)
 
 // create a new group
-router.post('/', createGroup)
+router.post('/', upload.single('avatar'), createGroup)
 
 // update a group
-router.patch('/:id', updateGroup)
+router.patch('/:id', upload.single('avatar'), updateGroup)
 
 // join a group
 router.post('/:id', joinGroup)
@@ -40,6 +40,5 @@ router.post('/:id', joinGroup)
 // leave a group
 router.delete('/:id', leaveGroup)
 
-module.exports = router
 
-// "eXKZDe"
+module.exports = router

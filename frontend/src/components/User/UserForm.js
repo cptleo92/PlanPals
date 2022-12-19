@@ -17,8 +17,8 @@ import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
+import CircularProgress from '@mui/material/CircularProgress'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { CircularProgress } from '@mui/material'
 
 const theme = createTheme()
 
@@ -203,8 +203,8 @@ export default function UserForm() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}>
-            <LockOutlinedIcon onClick={loginTest} />
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}  onClick={loginTest}>
+            <LockOutlinedIcon />
           </Avatar>
           <Typography gutterBottom component="h1" variant="h5">
             {pathname === '/login' ? 'Sign in' : 'Sign up'}

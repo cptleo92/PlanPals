@@ -14,11 +14,12 @@ const {
 const { auth } = require('../utils/middleware')
 const Hangout = require('../models/hangoutModel')
 
-// remove this in prod
-router.get('/all', async (request, response) => {
-  const allHangouts = await Hangout.find({})
-  response.json(allHangouts)
-})
+// multer config for photo uploading
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+
+
 // all routes auth protected
 router.use(auth)
 
@@ -37,13 +38,13 @@ router.get('/:id', async (request, response) => {
 })
 
 // create a new hangout
-router.post('/', createHangout)
+router.post('/', upload.single('avatar'), createHangout)
 
 // join a hangout
 router.post('/:id', joinHangout)
 
 // update a hangout
-router.patch('/:id', updateHangout)
+router.patch('/:id', upload.single('avatar'), updateHangout)
 
 // add votes for a hangout's dateOptions
 router.patch('/updatevotes/:id', updateHangoutDateVotes)

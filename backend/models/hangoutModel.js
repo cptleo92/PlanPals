@@ -60,6 +60,9 @@ const hangoutSchema = mongoose.Schema(
     },
     finalDate: {
       type: Date
+    },
+    avatar: {
+      type: String
     }
   },
   {

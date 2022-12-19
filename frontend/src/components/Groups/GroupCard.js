@@ -1,5 +1,6 @@
 import { useCurrentUser } from '../../utils/hooks'
 import { useNavigate } from 'react-router-dom'
+import placeholder from '../../assets/Placeholder_view_vector.svg'
 
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -38,14 +39,16 @@ const GroupCard = ({ group }) => {
     }
   }
 
+  const groupAvatar = group.avatar ? group.avatar : placeholder
+
   return (
     <Card sx={{ width: 270, position: 'relative' }}>
       {showIfAdmin()}
       <CardMedia
         component="img"
         height="120"
-        image="https://placebear.com/270/120"
-        alt="placeholder"
+        image={groupAvatar}
+        alt="group avatar"
       />
       <CardContent>
         <Typography gutterBottom variant="h5">
