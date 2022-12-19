@@ -4,13 +4,14 @@ import { useCurrentUser } from '../../utils/hooks'
 
 import HomeSelector from './HomeSelector'
 import Loading from '../Misc/Loading'
-import Error from '../Misc/Error'
 
 import Typography from '@mui/material/Typography'
+import { useNavigate } from 'react-router-dom'
 
 
 const Home = () => {
   const { user } = useCurrentUser()
+  const navigate = useNavigate()
 
   const groupsQuery = useQuery(['myGroups', user._id], getMyGroups)
   const hangoutsQuery = useQuery(['myHangouts', user._id], getMyHangouts)
@@ -22,7 +23,9 @@ const Home = () => {
     return <Loading />
   }
 
-  if (groupsQuery.error || hangoutsQuery.error) return <Error />
+  if (groupsQuery.error || hangoutsQuery.error) {
+    navigate('/error')
+  }
 
   return (
     <>
