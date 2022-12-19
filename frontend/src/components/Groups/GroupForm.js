@@ -146,7 +146,7 @@ const GroupForm = ({ edit }) => {
             placeholder="Write a short description for your new group!"
           />
 
-          <PhotoUpload file={file} setFile={setFile} />
+          <PhotoUpload type={'group'} file={file} setFile={setFile} />
 
           <Button
             type="submit"

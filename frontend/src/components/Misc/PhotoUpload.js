@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Fab from '@mui/material/Fab'
 
-const PhotoUpload = ({ file, setFile }) => {
+const PhotoUpload = ({ type, file, setFile }) => {
   const inputFile = useRef(null)
 
   const handleOpenFile = () => {
@@ -42,7 +42,7 @@ const PhotoUpload = ({ file, setFile }) => {
           }}>
           <AddAPhotoIcon size='large' />
           <Typography variant="h6" sx={{ marginTop: 3 }}>
-          Set a photo for your group!
+          Set a photo for your {type}!
           </Typography>
         </Box>
       )

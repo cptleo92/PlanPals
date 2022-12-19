@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
+import placeholder from '../../assets/Placeholder_view_vector.svg'
 
 import Loading from '../Misc/Loading'
 import BackArrow from '../Misc/BackArrow'
@@ -12,6 +13,7 @@ import AvatarStack from '../Misc/AvatarStack'
 import HangoutPageDateDisplay from './HangoutPageDateDisplay'
 
 import Typography from '@mui/material/Typography'
+import Stack from '@mui/material/Stack'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
 import WarningIcon from '@mui/icons-material/Warning'
@@ -107,12 +109,7 @@ const HangoutPage = () => {
   }
 
   return (
-    <Box
-      mt={3}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+    <Box mt={3}
     >
       <BackArrow link={`/groups/${hangout.groupPath}`} />
 
@@ -124,17 +121,17 @@ const HangoutPage = () => {
         <LocationOnIcon fontSize="inherit" /> {hangout.location}
       </Typography>
 
+      <br />
       <Box
         component="img"
         sx={{
-          height: 233,
-          width: 350,
-          maxHeight: { xs: 233, md: 167 },
-          maxWidth: { xs: 350, md: 250 },
+          height: 250,
+          maxHeight: { xs: 150, md: 200, lg: 250 },
         }}
-        alt="placeholder"
-        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+        alt="hangout avatar"
+        src={ hangout.avatar || placeholder }
       />
+      <br />
 
       {user._id === hangout.planner._id && (
         <Link

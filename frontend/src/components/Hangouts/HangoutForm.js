@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getHangoutByPath } from '../../utils/apiHelper'
 import { createHangout, updateHangout } from '../../utils/apiHelper'
 import { parseDate } from '../../utils/date'
@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import { useCurrentUser } from '../../utils/hooks'
+import PhotoUpload from '../Misc/PhotoUpload'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -29,10 +30,13 @@ const datePickerStyles = {
 }
 
 const HangoutForm = ({ edit = false }) => {
-  // const [hangout, setHangout] = useState(null)
   const { hangoutPath, groupPath } = useParams()
   const navigate = useNavigate()
   const { user } = useCurrentUser()
+
+  const [file, setFile] = useState()
+
+  const queryClient = useQueryClient()
 
   const {
     error,
@@ -41,6 +45,23 @@ const HangoutForm = ({ edit = false }) => {
     queryKey: ['hangout', hangoutPath],
     queryFn: () => getHangoutByPath(hangoutPath),
     enabled: !!hangoutPath
+  })
+
+  const updateHangoutMutation = useMutation({
+    mutationFn: ({ hangoutId, newHangout }) => updateHangout(hangoutId, newHangout),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['hangout', hangout.path], data)
+      navigate(`/groups/${groupPath}/hangouts/${hangout.path}`)
+    },
+    onError: () => navigate('/error')
+  })
+
+  const createHangoutMutation = useMutation({
+    mutationFn: (newHangout) => createHangout(newHangout),
+    onSuccess: () => {
+      navigate(`/groups/${groupPath}`)
+    },
+    onError: () => navigate('/error')
   })
 
   if (error) {
@@ -102,22 +123,35 @@ const HangoutForm = ({ edit = false }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    let response
     if (validateFields()) {
-      if (!edit) {
-        response = await createHangout({
-          ...formData,
-          // description: formData.description.split('\n').join('\n'),
-          groupPath,
-          dateOptions: parseDateOptions()
-        })
+      const newHangout = new FormData()
+      newHangout.append('title', formData.title)
+      newHangout.append('description', formData.description)
+      newHangout.append('location', formData.location)
+      newHangout.append('avatar', file)
+      newHangout.append('groupPath', groupPath)
+
+      if (edit) {
+        updateHangoutMutation.mutate({ hangoutId: hangout._id, newHangout })
       } else {
-        response = await updateHangout( hangout._id, {
-          ...formData,
-          groupPath,
-        })
+        newHangout.append('dateOptions', parseDateOptions())
+        createHangoutMutation.mutate(newHangout)
       }
-      navigate(`/groups/${groupPath}/hangouts/${response.path}`)
+
+
+      // if (!edit) {
+      //   response = await createHangout({
+      //     ...formData,
+      //     groupPath,
+      //     dateOptions: parseDateOptions()
+      //   })
+      // } else {
+      //   response = await updateHangout( hangout._id, {
+      //     ...formData,
+      //     groupPath,
+      //   })
+      // }
+      // navigate(`/groups/${groupPath}/hangouts/${response.path}`)
     }
   }
 
@@ -208,6 +242,8 @@ const HangoutForm = ({ edit = false }) => {
             {datesError !== '' && <span style={errorStyle}>{datesError}</span>}
           </>
           }
+          <PhotoUpload type={'hangout'} file={file} setFile={setFile} />
+
         </Stack>
 
         <Button

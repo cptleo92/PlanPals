@@ -85,7 +85,7 @@ const GroupPage = () => {
           height: 250,
           maxHeight: { xs: 150, md: 200, lg: 250 },
         }}
-        alt="placeholder"
+        alt="group avatar"
         src={ group.avatar || placeholder}
       />
       <br />

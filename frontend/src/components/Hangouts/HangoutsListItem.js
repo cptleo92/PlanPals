@@ -3,8 +3,9 @@ import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
 import { getUser } from '../../utils/apiHelper'
 import { useQuery } from '@tanstack/react-query'
-import Skeleton from '@mui/material/Skeleton'
+import placeholder from '../../assets/Placeholder_view_vector.svg'
 
+import Skeleton from '@mui/material/Skeleton'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
@@ -74,8 +75,8 @@ const HangoutsListItem = ({ hangout, past }) => {
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
-          alt="placeholder"
+          image={ hangout.avatar || placeholder }
+          alt="hangout avatar"
         />
         {isPlanner && (
           <Tooltip title="You are the planner!">
