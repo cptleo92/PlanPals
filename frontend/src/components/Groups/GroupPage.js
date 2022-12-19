@@ -82,6 +82,7 @@ const GroupPage = () => {
       <Box
         component="img"
         sx={{
+          height: 250,
           maxHeight: { xs: 150, md: 200, lg: 250 },
         }}
         alt="placeholder"
