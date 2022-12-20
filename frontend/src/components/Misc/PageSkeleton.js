@@ -1,9 +1,9 @@
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import BackArrow from '../Misc/BackArrow'
+import BackArrow from './BackArrow'
 
-const GroupPageSkeleton = () => {
+const PageSkeleton = () => {
   return (
     <Stack mt={3}>
       <BackArrow link={'/home'} />
@@ -33,4 +33,4 @@ const GroupPageSkeleton = () => {
   )
 }
 
-export default GroupPageSkeleton
+export default PageSkeleton

@@ -6,7 +6,7 @@ import placeholder from '../../assets/Placeholder_view_vector.svg'
 
 import AvatarStack from '../Misc/AvatarStack'
 import GroupHangouts from './GroupHangouts'
-import GroupPageSkeleton from './GroupPageSkeleton'
+import PageSkeleton from '../Misc/PageSkeleton'
 
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -20,13 +20,15 @@ const GroupPage = () => {
   const { groupPath } = useParams()
   const navigate = useNavigate()
 
-  const test = true
-
   const {
     isLoading,
     error,
     data: group,
   } = useQuery(['group', groupPath], () => getGroup(groupPath))
+
+  if (isLoading) {
+    return <PageSkeleton />
+  }
 
   if (error) {
     navigate('/error')
@@ -68,59 +70,55 @@ const GroupPage = () => {
   }
 
   return (
-    isLoading
-      ?
-      <GroupPageSkeleton />
-      :
-      <Box mt={3}>
-        <BackArrow link={'/home'} />
-        <Typography variant="h3" component="h2" mt={3} mb={6}>
-          {group?.title}
-        </Typography>
+    <Box mt={3}>
+      <BackArrow link={'/home'} />
+      <Typography variant="h3" component="h2" mt={3} mb={6}>
+        {group?.title}
+      </Typography>
 
-        <Box
-          component="img"
-          sx={{
-            height: 250,
-            maxHeight: { xs: 150, md: 200, lg: 250 },
+      <Box
+        component="img"
+        sx={{
+          height: 250,
+          maxHeight: { xs: 150, md: 200, lg: 250 },
+        }}
+        alt="group avatar"
+        src={ group.avatar || placeholder}
+      />
+      <br />
+      {user._id === group.admin._id && (
+        <Link
+          to="./edit"
+          style={{
+            color: 'blue',
+            fontWeight: 500,
+            textDecoration: 'underline',
           }}
-          alt="group avatar"
-          src={ group.avatar || placeholder}
-        />
-        <br />
-        {user._id === group.admin._id && (
-          <Link
-            to="./edit"
-            style={{
-              color: 'blue',
-              fontWeight: 500,
-              textDecoration: 'underline',
-            }}
-          >
+        >
           Edit group details
-          </Link>
-        )}
+        </Link>
+      )}
 
-        <Typography gutterBottom variant="h6" mt={4}>
+      <Typography gutterBottom variant="h6" mt={4}>
         Description
-        </Typography>
-        <Typography gutterBottom variant="subtitle1" mt={3}>
-          {group?.description}
-        </Typography>
+      </Typography>
+      <Typography gutterBottom variant="subtitle1" mt={3}>
+        {group?.description}
+      </Typography>
 
-        <Container sx={{ marginLeft: 0 }} disableGutters maxWidth="sm">
-          <Typography gutterBottom variant="h5" mt={6} mb={3}>
+      <Container sx={{ marginLeft: 0 }} disableGutters maxWidth="sm">
+        <Typography gutterBottom variant="h5" mt={6} mb={3}>
         Members ({group.members.length + 1})
-          </Typography>
+        </Typography>
 
-          <AvatarStack
-            peopleList={group.members}
-            admin={group.admin}
-          />
+        <AvatarStack
+          peopleList={group.members}
+          admin={group.admin}
+        />
 
-          {renderInfo()}
-        </Container>
-      </Box>
+        {renderInfo()}
+      </Container>
+    </Box>
   )
 }
 
