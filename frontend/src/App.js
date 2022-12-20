@@ -8,7 +8,7 @@ import UserForm from './components/User/UserForm'
 import Layout from './Layout'
 import Home from './components/User/Home'
 import GroupForm from './components/Groups/GroupForm'
-import Loading from './components/Misc/Loading'
+import Logout from './components/Misc/Logout'
 import HangoutPage from './components/Hangouts/HangoutPage'
 
 // history router, used for redirecting in axios interceptors
@@ -42,7 +42,7 @@ axios.interceptors.response.use(
       error.response.data.error === 'Token expired'
     ) {
       console.log('Token expired. Redirecting...')
-      history.replace('/session-expired')
+      history.replace('/logout')
     }
     return Promise.reject(error)
   }
@@ -91,8 +91,8 @@ function App() {
 
             </Route>
             <Route path="/error" element={<Error />} />
+            <Route path="/logout" element={<Logout />} />
 
-            <Route path="/session-expired" element={<Loading redirect />} />
             <Route path='*' element={<Error />} />
           </Routes>
         </HistoryRouter>

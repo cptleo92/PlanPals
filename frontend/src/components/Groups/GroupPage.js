@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 
-import Loading from '../Misc/Loading'
 import AvatarStack from '../Misc/AvatarStack'
 import GroupHangouts from './GroupHangouts'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
@@ -27,7 +26,7 @@ const GroupPage = () => {
   } = useQuery(['group', groupPath], () => getGroup(groupPath))
 
   if (isLoading) {
-    return <Loading />
+    return
   }
 
   if (error) {

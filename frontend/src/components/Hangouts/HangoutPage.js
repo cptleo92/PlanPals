@@ -5,7 +5,6 @@ import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
 
-import Loading from '../Misc/Loading'
 import BackArrow from '../Misc/BackArrow'
 import HangoutAttend from './HangoutAttend'
 import HangoutPageFinalDetails from './HangoutPageFinalDetails'
@@ -31,7 +30,7 @@ const HangoutPage = () => {
   } = useQuery(['hangout', hangoutPath], () => getHangoutByPath(hangoutPath))
 
   if (isLoading) {
-    return <Loading />
+    return
   }
 
   if (error) {

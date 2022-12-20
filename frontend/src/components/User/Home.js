@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import { useCurrentUser } from '../../utils/hooks'
 
 import HomeSelector from './HomeSelector'
-import Loading from '../Misc/Loading'
 
 import Typography from '@mui/material/Typography'
 import { useNavigate } from 'react-router-dom'
@@ -20,7 +19,7 @@ const Home = () => {
   const userHangouts = hangoutsQuery.data
 
   if (groupsQuery.isLoading || hangoutsQuery.isLoading) {
-    return <Loading />
+    return
   }
 
   if (groupsQuery.error || hangoutsQuery.error) {
