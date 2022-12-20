@@ -54,6 +54,7 @@ const HangoutForm = ({ edit = false, setDisplayType }) => {
     onMutate: () => setSubmitting(true),
     onSuccess: (data) => {
       queryClient.setQueryData(['hangout', hangout.path], data)
+      queryClient.invalidateQueries(['group'])
       navigate(`/groups/${groupPath}/hangouts/${hangout.path}`)
     },
     onError: () => navigate('/error')
@@ -62,9 +63,9 @@ const HangoutForm = ({ edit = false, setDisplayType }) => {
   const createHangoutMutation = useMutation({
     mutationFn: (newHangout) => createHangout(newHangout),
     onMutate: () => setSubmitting(true),
-    onSuccess: () => {
-      setDisplayType('pendingHangouts')
-      window.scrollTo(0, 0)
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['group'])
+      navigate(`/groups/${groupPath}/hangouts/${data.path}`)
     },
     onError: () => navigate('/error')
   })

@@ -248,6 +248,7 @@ const updateHangout = async (request, response) => {
     updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, newHangoutData, { new: true })
 
     updateThisHangout.avatar = await setAvatar(avatarBuffer, mimetype)
+
     await updateThisHangout.save()
 
     response.status(200).json(updateThisHangout)

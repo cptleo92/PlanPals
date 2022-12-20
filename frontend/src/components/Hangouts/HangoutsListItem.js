@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
-import { getUser } from '../../utils/apiHelper'
+import { getHangoutByPath } from '../../utils/apiHelper'
 import { useQuery } from '@tanstack/react-query'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
 
@@ -18,21 +18,11 @@ import Tooltip from '@mui/material/Tooltip'
 import Person from '@mui/icons-material/Person'
 import PeopleIcon from '@mui/icons-material/People'
 
-const HangoutsListItem = ({ hangout, past }) => {
+const HangoutsListItem = ({ hangoutPath, past }) => {
   const { user } = useCurrentUser()
   const navigate = useNavigate()
 
-  const isPlanner = user._id === hangout.planner
-  const isAttending = hangout.attendees.includes(user._id)
-
-  const {
-    error,
-    isLoading,
-    data: planner,
-  } = useQuery({
-    queryKey: ['planner', hangout.planner],
-    queryFn: () => getUser(hangout.planner),
-  })
+  const { error, isLoading, data: hangout } = useQuery(['hangout', hangoutPath], () => getHangoutByPath(hangoutPath))
 
   if (error) {
     navigate('/error')
@@ -56,6 +46,9 @@ const HangoutsListItem = ({ hangout, past }) => {
   const handleClick = () => {
     navigate(`/groups/${hangout.groupPath}/hangouts/${hangout.path}`)
   }
+
+  const isPlanner = user._id === hangout?.planner
+  const isAttending = hangout?.attendees.includes(user._id)
 
   return (
     isLoading
@@ -125,7 +118,7 @@ const HangoutsListItem = ({ hangout, past }) => {
           { getDate() }
 
           <Typography variant="subtitle2" color={past ? 'text.disabled' : 'text.primary'}>
-            <Person fontSize="inherit" /> {planner.name}
+            <Person fontSize="inherit" /> {hangout.planner.name}
           </Typography>
           <Typography variant="button" color={past ? 'text.disabled' : 'text.primary'}>
             <PeopleIcon fontSize="inherit" /> {hangout.attendees.length + 1}

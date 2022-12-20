@@ -5,7 +5,7 @@ const HangoutsList = ({ hangouts, past }) => {
     <>
 
       {
-        hangouts.map(hangout => <HangoutsListItem past={past} hangout={hangout} key={hangout._id} />)
+        hangouts.map(hangout => <HangoutsListItem past={past} hangoutPath={hangout.path} key={hangout._id} />)
       }
 
     </>
