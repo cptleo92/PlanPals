@@ -63,6 +63,7 @@ function App() {
   }, [])
 
   const logoutUser = () => {
+    queryClient.removeQueries()
     window.localStorage.removeItem('currentUser')
     setUser(null)
   }

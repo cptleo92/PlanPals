@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { useCurrentUser } from '../../utils/hooks'
 
 import Navbar from './Navbar'
@@ -10,14 +9,12 @@ import Link from '@mui/material/Link'
 import { useEffect } from 'react'
 
 export default function Logout() {
-  const queryClient = useQueryClient()
 
   const { logoutUser } = useCurrentUser()
 
   useEffect(() => {
     logoutUser()
-    queryClient.removeQueries()
-  }, [logoutUser, queryClient])
+  }, [logoutUser])
 
   return (
     <>
