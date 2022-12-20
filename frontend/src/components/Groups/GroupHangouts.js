@@ -21,7 +21,7 @@ const GroupHangouts = ({ hangouts }) => {
     } else if (displayType === 'pastHangouts') {
       return <HangoutsList hangouts={pastHangouts} past />
     } else if (displayType === 'newHangout') {
-      return <HangoutForm />
+      return <HangoutForm setDisplayType={setDisplayType} />
     }
   }
 
