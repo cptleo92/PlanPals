@@ -30,7 +30,7 @@ const datePickerStyles = {
   width: '100%',
 }
 
-const HangoutForm = ({ edit = false }) => {
+const HangoutForm = ({ edit = false, setDisplayType }) => {
   const { hangoutPath, groupPath } = useParams()
   const navigate = useNavigate()
   const { user } = useCurrentUser()
@@ -54,6 +54,7 @@ const HangoutForm = ({ edit = false }) => {
     onMutate: () => setSubmitting(true),
     onSuccess: (data) => {
       queryClient.setQueryData(['hangout', hangout.path], data)
+      queryClient.invalidateQueries(['group'])
       navigate(`/groups/${groupPath}/hangouts/${hangout.path}`)
     },
     onError: () => navigate('/error')
@@ -62,8 +63,9 @@ const HangoutForm = ({ edit = false }) => {
   const createHangoutMutation = useMutation({
     mutationFn: (newHangout) => createHangout(newHangout),
     onMutate: () => setSubmitting(true),
-    onSuccess: () => {
-      navigate(`/groups/${groupPath}`)
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['group'])
+      navigate(`/groups/${groupPath}/hangouts/${data.path}`)
     },
     onError: () => navigate('/error')
   })
@@ -139,7 +141,8 @@ const HangoutForm = ({ edit = false }) => {
       if (edit) {
         updateHangoutMutation.mutate({ hangoutId: hangout._id, newHangout })
       } else {
-        newHangout.append('dateOptions', parseDateOptions())
+        newHangout.append('dateOptions', JSON.stringify(parseDateOptions()))
+
         createHangoutMutation.mutate(newHangout)
       }
 
@@ -227,7 +230,7 @@ const HangoutForm = ({ edit = false }) => {
               sort
               value={dateOptions}
               onChange={handleDateChange}
-              minDate={Date.now()}
+              minDate={new Date(new Date().setDate(new Date().getDate() + 3))}
               name="dateOptions"
               id="dateOptions"
               plugins={[<DatePanel />]}

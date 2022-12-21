@@ -30,10 +30,12 @@ const getHangoutByPath = async (request, response) => {
 }
 
 const createHangout = async (request, response) => {
-  const { title, description, location, dateOptions, groupPath } = request.body
+  let { title, description, location, dateOptions, groupPath } = request.body
   const avatarBuffer = request.file?.buffer
   const mimetype = request.file?.mimetype
   let avatar = await setAvatar(avatarBuffer, mimetype)
+
+  dateOptions = JSON.parse(dateOptions)
 
   if (!title || !description || Object.keys(dateOptions).length === 0) {
     return response.status(400).json({ error: 'All fields are required!' })
@@ -246,6 +248,7 @@ const updateHangout = async (request, response) => {
     updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, newHangoutData, { new: true })
 
     updateThisHangout.avatar = await setAvatar(avatarBuffer, mimetype)
+
     await updateThisHangout.save()
 
     response.status(200).json(updateThisHangout)

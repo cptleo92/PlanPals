@@ -5,7 +5,6 @@ import { useCurrentUser } from '../../utils/hooks'
 import { parseDate } from '../../utils/date'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
 
-import Loading from '../Misc/Loading'
 import BackArrow from '../Misc/BackArrow'
 import HangoutAttend from './HangoutAttend'
 import HangoutPageFinalDetails from './HangoutPageFinalDetails'
@@ -16,8 +15,7 @@ import Typography from '@mui/material/Typography'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
 import WarningIcon from '@mui/icons-material/Warning'
-
-
+import PageSkeleton from '../Misc/PageSkeleton'
 
 const HangoutPage = () => {
   const { user } = useCurrentUser()
@@ -31,7 +29,7 @@ const HangoutPage = () => {
   } = useQuery(['hangout', hangoutPath], () => getHangoutByPath(hangoutPath))
 
   if (isLoading) {
-    return <Loading />
+    return <PageSkeleton />
   }
 
   if (error) {

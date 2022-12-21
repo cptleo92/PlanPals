@@ -54,12 +54,6 @@ const PhotoUpload = ({ type, file, setFile }) => {
           <Typography variant="h6" sx={{ marginTop: 3 }}>
           Set a photo for your {type}!
           </Typography>
-          {
-            sizeError &&
-          <Typography variant="subtitle2" color="error" sx={{ marginTop: 1 }}>
-          File must be less than 1MB.
-          </Typography>
-          }
         </Box>
       )
       :
@@ -100,6 +94,12 @@ const PhotoUpload = ({ type, file, setFile }) => {
         style={{ display: 'none' }}
         accept="image/*" />
       { renderUploadOrPreview() }
+      {
+        sizeError &&
+          <Typography variant="subtitle2" color="error" sx={{ marginTop: 1 }}>
+          File must be less than 1MB.
+          </Typography>
+      }
     </>
   )
 }

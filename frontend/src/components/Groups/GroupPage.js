@@ -2,17 +2,17 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
+import placeholder from '../../assets/Placeholder_view_vector.svg'
 
-import Loading from '../Misc/Loading'
 import AvatarStack from '../Misc/AvatarStack'
 import GroupHangouts from './GroupHangouts'
-import placeholder from '../../assets/Placeholder_view_vector.svg'
+import PageSkeleton from '../Misc/PageSkeleton'
 
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
 import Button from '@mui/material/Button'
-import { Container } from '@mui/material'
+import Container from '@mui/material/Container'
 
 
 const GroupPage = () => {
@@ -27,16 +27,13 @@ const GroupPage = () => {
   } = useQuery(['group', groupPath], () => getGroup(groupPath))
 
   if (isLoading) {
-    return <Loading />
+    return <PageSkeleton />
   }
 
   if (error) {
     navigate('/error')
     console.log(error)
   }
-
-  const hangouts = group.hangouts || []
-  const members = group.members || []
 
   const handleJoin = async () => {
     try {
@@ -56,7 +53,7 @@ const GroupPage = () => {
 
     if (isMemberOrPlanner()) {
       return (
-        <GroupHangouts hangouts={hangouts} />
+        <GroupHangouts hangouts={group.hangouts} />
       )
     } else {
       return (
@@ -111,7 +108,7 @@ const GroupPage = () => {
 
       <Container sx={{ marginLeft: 0 }} disableGutters maxWidth="sm">
         <Typography gutterBottom variant="h5" mt={6} mb={3}>
-        Members ({members.length + 1})
+        Members ({group.members.length + 1})
         </Typography>
 
         <AvatarStack
