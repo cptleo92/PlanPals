@@ -9,6 +9,10 @@ describe('The Home Page', () => {
 })
 
 describe('Creating a new user', () => {
+  before(() => {
+    cy.exec('npm run db:wipe:test')
+  })
+
   it('fails if fields are invalid', () => {
     cy.visit('/register')
 
