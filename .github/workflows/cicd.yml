@@ -36,7 +36,7 @@ jobs:
         run: npm run test:backend
 
       - name: Build and run Cypress
-        uses: cypress-io/github-action@v5.x.x
+        uses: cypress-io/github-action@v5
         with:
           build: npm run build
           start: npm run test:e2e
