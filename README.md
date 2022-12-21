@@ -22,6 +22,8 @@ This project is built on the MERN stack: MongoDB (Mongoose), Express, React, and
 
 ## Update Log
 
+### December 20, 2022
+Photo uploading functionality implemented using AWS S3. I also refactored away from loading backdrops into skeletons to smoothen the overall experience.
 
 ### December 15, 2022
 With the basic app more or less complete, I'll be setting up a simple CI/CD pipeline as I continue to work on more features. 
