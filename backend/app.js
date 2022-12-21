@@ -16,7 +16,7 @@ app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/groups', require('./routes/groupRoutes'))
 app.use('/api/hangouts', require('./routes/hangoutRoutes'))
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
   const root = path.join(__dirname, 'build')
 
   app.use(express.static(root))

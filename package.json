@@ -11,16 +11,16 @@
     "db:wipe:dev": "cd backend && NODE_ENV=development node config/wipe",
     "db:wipe:prod": "cd backend && NODE_ENV=production node config/wipe",
     "db:wipe:test": "cd backend && NODE_ENV=test node config/wipe",
-    "db:seed:dev": "cd backend && NODE_ENV=development node config/seed",    
+    "db:seed:dev": "cd backend && NODE_ENV=development node config/seed",
     "db:seed:prod": "cd backend && NODE_ENV=production node config/seed",
-    "db:seed:test": "cd backend && NODE_ENV=test node config/seed",    
-    "db:reset:dev": "npm run db:wipe:dev && npm run db:seed:dev",    
+    "db:seed:test": "cd backend && NODE_ENV=test node config/seed",
+    "db:reset:dev": "npm run db:wipe:dev && npm run db:seed:dev",
     "db:reset:prod": "npm run db:wipe:prod && npm run db:seed:prod",
     "db:reset:test": "npm run db:wipe:test && npm run db:seed:test",
     "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "start:test": "cd backend && npm run start:test",
-    "test:e2e": "npm run start:test && npm run cypress:open"
-
+    "test:e2e": "start-server-and-test start:test http://localhost:3001 cypress:open"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "author": "Leo Cheng",
   "license": "MIT",
   "devDependencies": {
-    "cypress": "^12.2.0"
+    "cypress": "^12.2.0",
+    "start-server-and-test": "^1.15.2"
   }
 }
