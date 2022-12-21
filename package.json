@@ -3,7 +3,6 @@
   "version": "0.7.0",
   "description": "PlanPals is a tool that takes all the uncertainty out of planning get-togethers, hangouts, events, and occasions!",
   "scripts": {
-    "cypress:open": "cypress open",
     "install:frontend": "cd frontend && npm ci",
     "install:backend": "cd backend && npm ci",
     "test:frontend": "npm run install:frontend && cd frontend && CI=true npm test",
@@ -17,7 +16,11 @@
     "db:seed:test": "cd backend && NODE_ENV=test node config/seed",    
     "db:reset:dev": "npm run db:wipe:dev && npm run db:seed:dev",    
     "db:reset:prod": "npm run db:wipe:prod && npm run db:seed:prod",
-    "db:reset:test": "npm run db:wipe:test && npm run db:seed:test"
+    "db:reset:test": "npm run db:wipe:test && npm run db:seed:test",
+    "cypress:open": "cypress open",
+    "start:test": "cd backend && npm run start:test",
+    "test:e2e": "npm run start:test && npm run cypress:open"
+
   },
   "repository": {
     "type": "git",
