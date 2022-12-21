@@ -236,10 +236,6 @@ try {
 }
 
 const seedDb = async () => {
-  await User.deleteMany()
-  await Group.deleteMany()
-  await Hangout.deleteMany()
-
   // seeding a handful of users first to be group admins
   for (let i = 0; i < GROUPSCOUNT; i++) {
     await createSeedUser(i)
