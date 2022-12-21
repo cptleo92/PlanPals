@@ -79,11 +79,15 @@ describe('creating a new hangout', () => {
 
   test('successful creation returns proper json and adds new hangout to user and group', async () => {
     for (let testHangout of testHangouts) {
+      testHangout.dateOptions = JSON.stringify(testHangout.dateOptions)
+
       await api
         .post('/api/hangouts')
         .set('Authorization', `Bearer ${token}`)
         .send(testHangout)
+
     }
+
 
     const allHangouts = await Hangout.find({})
     expect(allHangouts.length).toEqual(testHangouts.length)
