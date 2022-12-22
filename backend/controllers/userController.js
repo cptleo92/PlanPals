@@ -13,14 +13,18 @@ const getUser = async (request, response) => {
 }
 
 const registerUser = async (request, response) => {
-  const { name, email, password, rememberUser } = request.body
+  const { firstName, lastName, email, password, rememberUser } = request.body
 
-  if (!name || !email || !password) {
+  if (!firstName || !lastName || !email || !password) {
     return response.status(400).json({ error: 'All fields are required!' })
   }
 
   // don't allow numbers or special characters
-  if (!isAlpha(name, 'en-US', { ignore: ' -' })) {
+  if (!isAlpha(firstName, 'en-US', { ignore: '-' })) {
+    return response.status(400).json({ error: 'Name is invalid' })
+  }
+
+  if (!isAlpha(lastName, 'en-US', { ignore: '-' })) {
     return response.status(400).json({ error: 'Name is invalid' })
   }
 
@@ -39,17 +43,23 @@ const registerUser = async (request, response) => {
   const salt = await bcrypt.genSalt(10)
   const passwordHash = await bcrypt.hash(password, salt)
 
-  const newUser = new User({
-    name,
+  let newUser = new User({
+    firstName,
+    lastName,
     email,
     password: passwordHash,
   })
 
   try {
     await newUser.save()
+
+    newUser = await User.findOne({ email })
+
     response.status(201).json({
       _id: newUser.id,
-      name: newUser.name,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      fullName: newUser.fullName,
       email: newUser.email,
       token: generateToken(newUser.id, rememberUser)
     })
@@ -65,7 +75,9 @@ const loginUser = async (request, response) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     response.status(201).json({
       _id: user.id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: user.fullName,
       email: user.email,
       token: generateToken(user.id, rememberUser)
     })

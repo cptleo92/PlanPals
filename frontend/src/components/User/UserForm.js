@@ -6,6 +6,7 @@ import { useCurrentUser } from '../../utils/hooks'
 import Navbar from '../Misc/Navbar'
 
 import Avatar from '@mui/material/Avatar'
+import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
@@ -23,7 +24,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 const theme = createTheme()
 
 const emptyForm = {
-  name: '',
+  firstName: '',
+  lastName: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -38,7 +40,8 @@ export default function UserForm() {
 
   const [formData, setFormData] = useState(emptyForm)
 
-  const [nameError, setNameError] = useState('')
+  const [firstNameError, setFirstNameError] = useState('')
+  const [lastNameError, setLastNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
@@ -69,8 +72,13 @@ export default function UserForm() {
       }
 
       // set error if any field is empty
-      if (formData.name === '') {
-        setNameError('Name is required.')
+      if (formData.firstName === '') {
+        setFirstNameError('First name is required.')
+        noErrors = false
+      }
+
+      if (formData.lastName === '') {
+        setLastNameError('Last name is required.')
         noErrors = false
       }
     }
@@ -122,7 +130,8 @@ export default function UserForm() {
   // reset everything on switching form type
   useEffect(() => {
     setFormData(emptyForm)
-    setNameError('')
+    setFirstNameError('')
+    setLastNameError('')
     setEmailError('')
     setPasswordError('')
     setConfirmPasswordError('')
@@ -146,7 +155,8 @@ export default function UserForm() {
       [e.target.name]: e.target.value,
     }))
 
-    if (e.target.name === 'name') setNameError('')
+    if (e.target.name === 'firstName') setFirstNameError('')
+    if (e.target.name === 'lastName') setLastNameError('')
     if (e.target.name === 'email') setEmailError('')
     if (e.target.name === 'confirmPassword') setConfirmPasswordError('')
     if (e.target.name === 'password') setPasswordError('')
@@ -175,6 +185,8 @@ export default function UserForm() {
 
   /**
    * REMOVE IN PROD!!
+   *
+   * EDIT: I've decided to leave this in as a demo feature
    */
   const loginTest = async () => {
     let response = await loginUser({
@@ -219,19 +231,32 @@ export default function UserForm() {
             sx={{ mt: 1 }}
           >
             {pathname === '/register' && (
-              <TextField
-                error={nameError !== ''}
-                helperText={nameError}
-                margin="normal"
-                required
-                fullWidth
-                id="name"
-                label="Name"
-                name="name"
-                value={formData.name}
-                autoComplete="name"
-                onChange={handleChange}
-              />
+              <Stack spacing={3} direction='row' alignItems='baseline'>
+                <TextField
+                  error={firstNameError !== ''}
+                  helperText={firstNameError}
+                  margin="normal"
+                  required
+                  id="firstName"
+                  label="First Name"
+                  name="firstName"
+                  value={formData.firstName}
+                  autoComplete="given-name"
+                  onChange={handleChange}
+                />
+                <TextField
+                  error={lastNameError !== ''}
+                  helperText={lastNameError}
+                  margin="normal"
+                  required
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  value={formData.lastName}
+                  autoComplete="family-name"
+                  onChange={handleChange}
+                />
+              </Stack>
             )}
             <TextField
               error={emailError !== ''}

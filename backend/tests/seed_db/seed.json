@@ -1,17 +1,20 @@
 {
   "testUsers": {
     "user1": {
-      "name": "Alan",
+      "firstName": "Alan",
+      "lastName": "Apple",
       "email": "alan@test.com",
       "password": "password"
     },
     "user2": {
-      "name": "Bob",
+      "firstName": "Bob",
+      "lastName": "Builder",
       "email": "ben@test.com",
       "password": "password"
     },
     "user3": {
-      "name": "Cora",
+      "firstName": "Cora",
+      "lastName": "Zon",
       "email": "cora@test.com",
       "password": "password"
     }

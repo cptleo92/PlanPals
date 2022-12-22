@@ -37,7 +37,8 @@ const createSeedUser = async (i) => {
   const password = await bcrypt.hash('password', salt)
 
   const newUser = new User({
-    name: `${firstName} ${lastName}`,
+    firstName,
+    lastName,
     email,
     password,
   })

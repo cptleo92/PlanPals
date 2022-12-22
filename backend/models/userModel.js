@@ -3,10 +3,15 @@ const { isEmail } = require('validator')
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       trim: true,
-      required: true
+      required: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      required: true,
     },
     email: {
       type: String,
@@ -42,6 +47,17 @@ const userSchema = mongoose.Schema(
     timestamps: true,
   }
 )
+
+userSchema.virtual('fullName').get(function() {
+  return this.firstName + ' ' + this.lastName
+})
+
+// properly capitalizes firstName and lastName
+userSchema.pre('save', function (next) {
+  this.firstName = this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1)
+  this.lastName = this.lastName.charAt(0).toUpperCase() + this.lastName.slice(1)
+  next()
+})
 
 userSchema.plugin(require('mongoose-autopopulate'))
 

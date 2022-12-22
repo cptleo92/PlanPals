@@ -45,7 +45,7 @@ const Home = () => {
       :
       <>
         <Typography gutterBottom variant="h3" component="h2" mt={3}>
-          Hello there, {user.name}!
+          Hello there, {user.firstName}!
         </Typography>
         <HomeSelector userGroups={userGroups} userHangouts={userHangouts} />
       </>

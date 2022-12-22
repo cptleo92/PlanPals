@@ -63,7 +63,7 @@ describe('creating a new group', () => {
     const allGroups = await Group.find({})
     expect(allGroups.length).toEqual(testGroups.length)
 
-    const currentUser = await User.findOne({ name: testUsers[0].name })
+    const currentUser = await User.findOne({ firstName: testUsers[0].firstName })
 
     const group = allGroups[0]
 
@@ -108,7 +108,7 @@ describe('joining a group', () => {
     expect(response.body.members.length).toEqual(originalMembersAmount + 1)
 
     testGroup = await Group.findOne({ title: testGroups[0].title })
-    const testUser = await User.findOne({ name: newUser.name })
+    const testUser = await User.findOne({ firstName: newUser.firstName })
     expect(testUser.groups[0].id).toEqual(testGroup.id)
     expect(testGroup.members.length).toEqual(originalMembersAmount + 1)
   })
@@ -132,7 +132,7 @@ describe('leaving a group', () => {
     let testGroup = await Group.findOne({ title: testGroups[1].title })
 
     // this user should not be admin of any groups
-    let testUser = await User.findOne({ name: testUsers[1].name })
+    let testUser = await User.findOne({ firstName: testUsers[1].firstName })
     let token2 = await loginTestUser(testUsers[1])
     const startingGroupsLength = testUser.groups.length
 
@@ -144,7 +144,7 @@ describe('leaving a group', () => {
 
     testGroup = await Group.findOne({ title: testGroups[1].title })
     expect(testGroup.members.length).toEqual(1)
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
     expect(testUser.groups.length).toEqual(startingGroupsLength + 1)
 
     // leaving the group
@@ -155,7 +155,7 @@ describe('leaving a group', () => {
 
     testGroup = await Group.findOne({ title: testGroups[1].title })
     expect(testGroup.members.length).toEqual(0)
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
     expect(testUser.groups.length).toEqual(startingGroupsLength)
   })
 
@@ -189,7 +189,7 @@ describe('leaving a group', () => {
     // double check user and group
     testGroup = await Group.findOne({ title: testGroups[1].title })
     expect(testGroup.members.length).toEqual(0)
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
     expect(testUser.groups.length).toEqual(0)
   })
 })
