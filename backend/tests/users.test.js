@@ -6,7 +6,8 @@ const api = supertest(app)
 const User = require('../models/userModel')
 
 const testUser = {
-  name: 'Test',
+  firstName: 'Test',
+  lastName: 'Best',
   email: 'test@test.com',
   password: 'password'
 }
@@ -19,19 +20,28 @@ beforeEach(async () => {
 describe('user creation', () => {
   test('fails if invalid', async () => {
     const badEmail = {
-      name: 'no good',
+      firstName: 'No',
+      lastName: 'Good',
       email: 'nothing@',
       password: 'password'
     }
 
     const badPassword = {
-      name: 'also no good',
+      firstName: 'also',
+      lastName: 'nogood',
       email: 'bad@password.com',
       password: 'abcde'
     }
 
+    const badName = {
+      firstName: 'also',
+      lastName: ' no good',
+      email: 'bad@name.com',
+      password: 'password'
+    }
+
     const testUserCopy = {
-      name: 'Test',
+      firstName: 'Test',
       email: 'test@test.com',
       password: 'password'
     }
@@ -48,6 +58,11 @@ describe('user creation', () => {
 
     await api
       .post('/api/users')
+      .send(badName)
+      .expect(400)
+
+    await api
+      .post('/api/users')
       .send(testUserCopy)
       .expect(400)
 
@@ -57,7 +72,8 @@ describe('user creation', () => {
 
   test('successful if valid', async () => {
     const newUser = {
-      name: 'Leo',
+      firstName: 'Leo',
+      lastName: 'Cheng',
       email: 'leo@leo.com',
       password: 'password'
     }
@@ -71,7 +87,23 @@ describe('user creation', () => {
 
     const allUsers = await User.find({})
     expect(allUsers.length).toEqual(2)
-    expect(allUsers.map(user => user.name)).toContain('Leo')
+    expect(allUsers.map(user => user.fullName)).toContain('Leo Cheng')
+  })
+
+  test('capitalizes name properly', async () => {
+    const newUser = {
+      firstName: 'lower',
+      lastName: 'upper',
+      email: 'lower@upper.com',
+      password: 'password'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+
+    expect(response.body.fullName).toEqual('Lower Upper')
   })
 })
 
