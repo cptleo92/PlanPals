@@ -22,13 +22,13 @@ const AvatarStack = ({ peopleList, admin }) => {
   }
 
   const generateAvatars = () => {
-    return peopleList.map((att) => <Avatar key={att._id}>{att.name[0]}</Avatar>)
+    return peopleList.map((att) => <Avatar key={att._id}>{att.firstName[0] + att.lastName[0]}</Avatar>)
   }
 
   return (
     <Stack direction="row" spacing={2} mb={3}>
       <Avatar sx={{ width: 75, height: 75 }}>
-        {admin.name[0]}
+        {admin.firstName[0] + admin.lastName[0]}
       </Avatar>
       {generateAvatars()}
     </Stack>

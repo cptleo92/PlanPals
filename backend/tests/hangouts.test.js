@@ -92,7 +92,7 @@ describe('creating a new hangout', () => {
     const allHangouts = await Hangout.find({})
     expect(allHangouts.length).toEqual(testHangouts.length)
 
-    const currentUser = await User.findOne({ name: testUsers[0].name })
+    const currentUser = await User.findOne({ firstName: testUsers[0].firstName })
 
     const hangout = allHangouts[0]
 
@@ -133,7 +133,7 @@ describe('attending a handout', () => {
   })
 
   test('successfully attending a hangout updates models correctly', async () => {
-    let testUser = await User.findOne({ name: testUsers[1].name })
+    let testUser = await User.findOne({ firstName: testUsers[1].firstName })
     let token2 = await loginTestUser(testUsers[1])
 
     const hangoutsCount = testUser.hangouts.length
@@ -149,7 +149,7 @@ describe('attending a handout', () => {
     expect(attendees).toContain(testUser.id)
 
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
 
     expect(testHangout.attendees.length).toEqual(attendeesCount + 1)
     expect(testUser.hangouts.length).toEqual(hangoutsCount + 1)
@@ -215,7 +215,7 @@ describe('attending a handout', () => {
 describe('leaving a hangout', () => {
   test('fails under invalid conditions', async () => {
     // user who is not attending and trying to leave should throw an error
-    const testUser = await User.findOne({ name: testUsers[1].name })
+    const testUser = await User.findOne({ firstName: testUsers[1].firstName })
     const token2 = await loginTestUser(testUsers[1])
 
     const testHangout = await Hangout.findOne({ title: testHangouts[2].title })
@@ -232,7 +232,7 @@ describe('leaving a hangout', () => {
 
   test('successfully leaving a hangout updates models correctly', async () => {
     // using the success case from the 'attending a hangout' block
-    let testUser = await User.findOne({ name: testUsers[1].name })
+    let testUser = await User.findOne({ firstName: testUsers[1].firstName })
     const token2 = await loginTestUser(testUsers[1])
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
 
@@ -244,7 +244,7 @@ describe('leaving a hangout', () => {
       .set('Authorization', `Bearer ${token2}`)
       .expect(204)
 
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees.length).toEqual(attendeesCount - 1)
     expect(testUser.hangouts.length).toEqual(hangoutsCount - 1)
@@ -256,7 +256,7 @@ describe('leaving a hangout', () => {
 
   test('kicking someone out of a hangout', async () => {
     // start by having a user attend
-    let testUser = await User.findOne({ name: testUsers[1].name })
+    let testUser = await User.findOne({ firstName: testUsers[1].firstName })
     let token2 = await loginTestUser(testUsers[1])
     let testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     let dateVotes = Array.from(testHangout.dateOptions.keys())
@@ -292,7 +292,7 @@ describe('leaving a hangout', () => {
       .expect(204)
 
     // counts should have gone up 1 then back down 1
-    testUser = await User.findOne({ name: testUsers[1].name })
+    testUser = await User.findOne({ firstName: testUsers[1].firstName })
     testHangout = await Hangout.findOne({ title: testHangouts[0].title })
     expect(testHangout.attendees.length).toEqual(attendeesCount)
     expect(testUser.hangouts.length).toEqual(hangoutsCount)

@@ -36,7 +36,8 @@ Cypress.Commands.add('login', () => {
 Cypress.Commands.add('register', () => { 
   cy.visit('/register')
 
-  cy.get('input[name=name]').type('Cypress')
+  cy.get('input[name=firstName]').type('Cypress')
+  cy.get('input[name=lastName]').type('Io')
   cy.get('input[name=email]').type('cypress@test.com')      
   cy.get('input[name=password]').clear().type('password')
   cy.get('input[name=confirmPassword]').clear().type('password')

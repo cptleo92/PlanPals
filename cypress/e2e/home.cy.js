@@ -16,7 +16,12 @@ describe('Creating a new user', () => {
   it('fails if fields are invalid', () => {
     cy.visit('/register')
 
-    cy.get('input[name=name]').type('Cypress')
+    cy.get('input[name=firstName]').type('Cypress')
+    cy.get('button[type=submit]').click()
+
+    cy.contains('Last name is required')
+
+    cy.get('input[name=lastName]').type('Io')
     cy.get('button[type=submit]').click()
     
     cy.contains('Email address is required')
@@ -36,7 +41,8 @@ describe('Creating a new user', () => {
   it('navigates to the user home page on successful registration', () => {
     cy.visit('/register')
 
-    cy.get('input[name=name]').type('Cypress')
+    cy.get('input[name=firstName]').type('Cypress')
+    cy.get('input[name=lastName]').type('Io')
     cy.get('input[name=email]').type('cypress@test.com')      
     cy.get('input[name=password]').clear().type('password')
     cy.get('input[name=confirmPassword]').clear().type('password')
@@ -49,7 +55,8 @@ describe('Creating a new user', () => {
   it('fails if the user already exists', () => {
     cy.visit('/register')
 
-    cy.get('input[name=name]').type('Cypress')
+    cy.get('input[name=firstName]').type('Cypress')
+    cy.get('input[name=lastName]').type('Cypress')
     cy.get('input[name=email]').type('cypress@test.com')      
     cy.get('input[name=password]').clear().type('password')
     cy.get('input[name=confirmPassword]').clear().type('password')

@@ -118,7 +118,7 @@ const HangoutsListItem = ({ hangoutPath, past }) => {
           { getDate() }
 
           <Typography variant="subtitle2" color={past ? 'text.disabled' : 'text.primary'}>
-            <Person fontSize="inherit" /> {hangout.planner.name}
+            <Person fontSize="inherit" /> {hangout.planner.firstName} {hangout.planner.lastName}
           </Typography>
           <Typography variant="button" color={past ? 'text.disabled' : 'text.primary'}>
             <PeopleIcon fontSize="inherit" /> {hangout.attendees.length + 1}
