@@ -29,8 +29,8 @@ jobs:
             backend/package-lock.json
             frontend/package-lock.json
 
-      - name: Install and test frontend
-        run: npm run test:frontend
+      - name: Install frontend
+        run: npm run install:frontend
 
       - name: Install and test backend
         run: npm run test:backend
