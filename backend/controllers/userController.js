@@ -88,6 +88,20 @@ const loginUser = async (request, response) => {
   }
 }
 
+const forgotPassword = async (request, response) => {
+  const { email } = request.body
+
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  }
+
+
+}
+
+const resetPassword = async () => {}
+
 const generateToken = (id, rememberUser) => {
   return jwt.sign(
     { id },
@@ -96,4 +110,4 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
-module.exports = { registerUser, loginUser, getUser }
+module.exports = { registerUser, loginUser, getUser, forgotPassword, resetPassword }

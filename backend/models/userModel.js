@@ -41,7 +41,9 @@ const userSchema = mongoose.Schema(
           maxDepth: 1
         }
       }
-    ]
+    ],
+    resetPasswordToken: String,
+    resetPasswordExpiry: Date,
   },
   {
     timestamps: true,
