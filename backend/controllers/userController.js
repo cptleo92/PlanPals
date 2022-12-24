@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
+const sendEmail = require('../utils/email/sendEmail')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -97,6 +98,23 @@ const forgotPassword = async (request, response) => {
     return response.status(404).json({ error: 'user not found' })
   }
 
+  const resetPasswordToken = await user.getResetPasswordToken()
+
+  user.save()
+
+  const resetPasswordUrl = `https://${request.get('host')}/passwordReset?token=${resetPasswordToken}&id=${user.id}`
+
+  try {
+    sendEmail(
+      user.email,
+      'Reset Password Request',
+      { firstName: user.firstName, resetPasswordUrl, },
+      './template/requestResetPassword.handlebars')
+
+    response.status(200).json(resetPasswordUrl)
+  } catch (error) {
+    console.error(error)
+  }
 
 }
 
