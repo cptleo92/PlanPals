@@ -115,13 +115,13 @@ const forgotPassword = async (request, response) => {
     response.status(200).json({ success: 'true' })
   } catch (error) {
     console.error(error)
+    response.status(500).json({ error })
   }
 
 }
 
 const resetPassword = async (request, response) => {
-  const { token, id } = request.params
-  const { password } = request.body
+  const { token, id, password } = request.body
 
   const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex')
 
@@ -138,16 +138,21 @@ const resetPassword = async (request, response) => {
   }
 
   try {
-    user.password = password
+    // generate password hash
+    const salt = await bcrypt.genSalt(10)
+    const passwordHash = await bcrypt.hash(password, salt)
+
+    user.password = passwordHash
     user.resetPasswordToken = undefined
     user.resetPasswordExpiry = undefined
 
     await user.save()
 
-    response.sendStatus(200)
+    response.status(200).json({ success: 'true' })
 
   } catch (error) {
     console.error(error)
+    response.status(500).json({ error })
   }
 
 }

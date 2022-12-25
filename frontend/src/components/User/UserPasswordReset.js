@@ -25,6 +25,7 @@ const UserPasswordReset = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (submitting) return
 
     if (!email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
       setEmailError('Email address is invalid.')

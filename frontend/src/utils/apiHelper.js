@@ -40,6 +40,15 @@ export const forgotPassword = async (email) => {
   }
 }
 
+export const resetPassword = async (resetData) => {
+  try {
+    const response = await axios.post('/api/users/password/reset/', resetData)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 /**
  *  GROUPS
  */
