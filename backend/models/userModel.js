@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const crypto = require('crypto')
 const { isEmail } = require('validator')
 
 const userSchema = mongoose.Schema(
@@ -41,7 +42,9 @@ const userSchema = mongoose.Schema(
           maxDepth: 1
         }
       }
-    ]
+    ],
+    resetPasswordToken: String,
+    resetPasswordExpiry: Date,
   },
   {
     timestamps: true,
@@ -58,6 +61,16 @@ userSchema.pre('save', function (next) {
   this.lastName = this.lastName.charAt(0).toUpperCase() + this.lastName.slice(1)
   next()
 })
+
+userSchema.methods.getResetPasswordToken = async function() {
+
+  const resetToken = crypto.randomBytes(20).toString('hex')
+
+  this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+  this.resetPasswordExpiry = Date.now() + 15 * 60 * 1000
+
+  return resetToken
+}
 
 userSchema.plugin(require('mongoose-autopopulate'))
 

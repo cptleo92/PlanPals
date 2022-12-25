@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
+const sendEmail = require('../utils/email/sendEmail')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -88,6 +90,73 @@ const loginUser = async (request, response) => {
   }
 }
 
+const forgotPassword = async (request, response) => {
+  const { email } = request.body
+
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  }
+
+  const resetPasswordToken = await user.getResetPasswordToken()
+
+  user.save()
+
+  const resetPasswordUrl = `https://${request.get('host')}/passwordReset/${resetPasswordToken}/${user.id}`
+
+  try {
+    sendEmail(
+      user.email,
+      'Reset Password Request',
+      { firstName: user.firstName, resetPasswordUrl, },
+      './template/requestResetPassword.handlebars')
+
+    response.status(200).json({ success: 'true' })
+  } catch (error) {
+    console.error(error)
+    response.status(500).json({ error })
+  }
+
+}
+
+const resetPassword = async (request, response) => {
+  const { token, id, password } = request.body
+
+  const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex')
+
+  const user = await User.findById(id)
+
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  }
+
+  // confirm that tokens match and has not expired
+  if (user.resetPasswordToken !== resetPasswordToken ||
+      user.resetPasswordExpiry < Date.now() ) {
+    return response.status(401).json({ error: 'invalid reset token' })
+  }
+
+  try {
+    // generate password hash
+    const salt = await bcrypt.genSalt(10)
+    const passwordHash = await bcrypt.hash(password, salt)
+
+    user.password = passwordHash
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpiry = undefined
+
+    await user.save()
+
+    response.status(200).json({ success: 'true' })
+
+  } catch (error) {
+    console.error(error)
+    response.status(500).json({ error })
+  }
+
+}
+
 const generateToken = (id, rememberUser) => {
   return jwt.sign(
     { id },
@@ -96,4 +165,4 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
-module.exports = { registerUser, loginUser, getUser }
+module.exports = { registerUser, loginUser, getUser, forgotPassword, resetPassword }
