@@ -10,6 +10,7 @@ import Home from './components/User/Home'
 import GroupForm from './components/Groups/GroupForm'
 import Logout from './components/Misc/Logout'
 import HangoutPage from './components/Hangouts/HangoutPage'
+import UserPasswordReset from './components/User/UserPasswordReset'
 
 // history router, used for redirecting in axios interceptors
 import { createBrowserHistory } from 'history'
@@ -77,6 +78,7 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<UserForm />} />
               <Route path="/register" element={<UserForm />} />
+              <Route path="/passwordReset" element={<UserPasswordReset />} />
             </Route>
 
             <Route element={<Layout />}>

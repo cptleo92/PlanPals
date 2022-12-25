@@ -315,7 +315,7 @@ export default function UserForm() {
 
             <Grid container>
               <Grid item xs>
-                {/* <Link variant="body2">Forgot password?</Link> */}
+                <Link variant="body2" onClick={() => navigate('/passwordReset')}>Forgot password?</Link>
               </Grid>
               <Grid item>{renderSwitchType()}</Grid>
             </Grid>

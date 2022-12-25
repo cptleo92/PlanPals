@@ -112,7 +112,7 @@ const forgotPassword = async (request, response) => {
       { firstName: user.firstName, resetPasswordUrl, },
       './template/requestResetPassword.handlebars')
 
-    response.status(200).json(resetPasswordUrl)
+    response.status(200).json({ success: 'true' })
   } catch (error) {
     console.error(error)
   }
