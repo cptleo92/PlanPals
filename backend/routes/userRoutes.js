@@ -7,7 +7,7 @@ router.post('/', registerUser)
 router.post('/login', loginUser)
 
 router.post('/password/forgot', forgotPassword)
-router.post('/password/reset/:token', resetPassword)
+router.post('/passwordReset/:token/:id', resetPassword)
 
 
 module.exports = router

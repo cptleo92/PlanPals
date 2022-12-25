@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 const sendEmail = require('../utils/email/sendEmail')
@@ -102,7 +103,7 @@ const forgotPassword = async (request, response) => {
 
   user.save()
 
-  const resetPasswordUrl = `https://${request.get('host')}/passwordReset?token=${resetPasswordToken}&id=${user.id}`
+  const resetPasswordUrl = `https://${request.get('host')}/passwordReset/${resetPasswordToken}/${user.id}`
 
   try {
     sendEmail(
@@ -118,7 +119,38 @@ const forgotPassword = async (request, response) => {
 
 }
 
-const resetPassword = async () => {}
+const resetPassword = async (request, response) => {
+  const { token, id } = request.params
+  const { password } = request.body
+
+  const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex')
+
+  const user = await User.findById(id)
+
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  }
+
+  // confirm that tokens match and has not expired
+  if (user.resetPasswordToken !== resetPasswordToken ||
+      user.resetPasswordExpiry < Date.now() ) {
+    return response.status(401).json({ error: 'invalid reset token' })
+  }
+
+  try {
+    user.password = password
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpiry = undefined
+
+    await user.save()
+
+    response.sendStatus(200)
+
+  } catch (error) {
+    console.error(error)
+  }
+
+}
 
 const generateToken = (id, rememberUser) => {
   return jwt.sign(

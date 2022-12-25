@@ -23,7 +23,7 @@ const sendEmail = async (email, subject, payload, template) => {
 
     const options = () => {
       return {
-        from: 'noreply@planpals.com',
+        from: 'Leo @ PlanPals <noreply@planpals.com>',
         to: email,
         subject: subject,
         html: compiledTemplate(payload),
