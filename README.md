@@ -21,6 +21,8 @@ Making plans these days is difficult! Trying to maneuver around schedules, espec
 This project is built on the MERN stack: MongoDB (Mongoose), Express, React, and Node. I'm using the MaterialUI component library, React Query for fetching, and Jest for testing. Also essential to this project is [this multi-date picker library](https://shahabyazdi.github.io/react-multi-date-picker/).
 
 ## Update Log
+### December 25, 2022
+Passwords can now be reset via emails. Due to the complexity and potential cost of having a dedicated mail server, I'm temporarily using Gmail as a transport. 
 
 ### December 20, 2022
 Photo uploading functionality implemented using AWS S3. I also refactored away from loading backdrops into skeletons to smoothen the overall experience.
@@ -34,7 +36,7 @@ My immediate short-term goal is to complete a skeleton CRUD app with user, group
 
 ### List of features to implement:
 * ~~Date selection. A planner has the option to pick multiple dates for a hangout. Attendees should be able to select the dates that they're available based off that.~~ (Completed: 12/15/2022)
-* Reset password functionality using Nodemailer as an email sender
+* ~~Reset password functionality using Nodemailer as an email sender~~ (Completed: 12/25/2022 🎄)
 * ~~Photo uploads~~ (Completed: 12/19/2022)
 * Privacy and security. All groups should be invite-only. Admin-type users should be able to remove other users.
 * User page to change avatars or update personal information
