@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { registerUser, loginUser } from '../../utils/apiHelper'
+import { registerUser, loginUser, loginUserOauth } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 import { GoogleLogin } from '@react-oauth/google'
-import jwt_decode from 'jwt-decode'
 
 import Navbar from '../Misc/Navbar'
 
@@ -22,6 +21,7 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+
 
 const theme = createTheme()
 
@@ -204,6 +204,21 @@ export default function UserForm() {
 
   }
 
+  const handleGoogle = async (token) => {
+    try {
+      const response = await loginUserOauth(token)
+
+      if (response.token) {
+        window.localStorage.setItem('currentUser', JSON.stringify(response))
+        setUser(response)
+        navigate('/')
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Navbar landing />
@@ -318,7 +333,7 @@ export default function UserForm() {
 
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <GoogleLogin
-                onSuccess={(res) => console.log(jwt_decode(res.credential))}
+                onSuccess={(res) => handleGoogle(res)}
                 width="400"
               />
             </Box>
