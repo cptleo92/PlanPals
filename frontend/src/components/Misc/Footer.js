@@ -20,7 +20,7 @@ const LandingPageFooter = () => {
           justifyContent: 'space-around',
           marginTop: 3
         }}>
-          <Box sx={{ width: '30%' }}>
+          {/* <Box sx={{ width: '30%' }}>
             <Link mx={2} href="#" color="inherit" underline="none">
                 Features
             </Link>
@@ -33,17 +33,17 @@ const LandingPageFooter = () => {
             <Link mx={2} href="#" color="inherit" underline="none">
                 Careers
             </Link>
-          </Box>
+          </Box> */}
 
 
-          <Typography variant="body2" color="text.secondary" sx={{ marginLeft: 'auto', marginRight: 'auto' }}>
+          <Typography variant="body2" color="text.secondary" sx={{ marginRight: 'auto' }}>
             {'Copyright © Leo Cheng '}
             {new Date().getFullYear()}
             {'.'}
           </Typography>
 
 
-          <Box textAlign="right" sx={{ width: '30%', minWidth: 100 }}>
+          <Box textAlign="right" sx={{ width: '30%', minWidth: 200 }}>
             <Link href="mailto:leo.cheng92@gmail.com" color="inherit" sx={{ marginRight: 8 }}>
               <EmailIcon />
             </Link>
