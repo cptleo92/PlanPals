@@ -16,9 +16,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Create env file'
+      - name: 'Create backend env file'
         run: |
-          echo "${{ secrets.ENV_FILE }}" > backend/.env
+          echo "${{ secrets.SERVER_ENV_FILE }}" > backend/.env
+      
+      - name: 'Create frontend env file'
+        run: |
+          echo "${{ secrets.CLIENT_ENV_FILE }}" > frontend/.env
 
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
