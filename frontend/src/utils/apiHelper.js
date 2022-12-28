@@ -22,6 +22,15 @@ export const loginUser = async (formData) => {
   }
 }
 
+export const loginUserOauth = async (token) => {
+  try {
+    const response = await axios.post('/api/users/oauth2', token)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 export const getUser = async (id) => {
   try {
     const response = await axios.get(`/api/users/${id}`)

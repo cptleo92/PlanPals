@@ -4,6 +4,7 @@ const crypto = require('crypto')
 const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 const sendEmail = require('../utils/email/sendEmail')
+const { OAuth2Client } = require('google-auth-library')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -90,6 +91,60 @@ const loginUser = async (request, response) => {
   }
 }
 
+const loginOrCreateUserOauth = async (request, response) => {
+
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: request.body.credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+
+    const { email, family_name, given_name, sub } = ticket.getPayload()
+
+    const user = await User.findOne({ email })
+
+    if (user) {
+      response.status(201).json({
+        _id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fullName: user.fullName,
+        email: user.email,
+        token: generateToken(user.id)
+      })
+    } else {
+      const salt = await bcrypt.genSalt(10)
+      const password = await bcrypt.hash(sub, salt)
+
+      let newUser = new User({
+        firstName: given_name,
+        lastName: family_name,
+        email,
+        password
+      })
+
+      await newUser.save()
+
+      newUser = await User.findOne({ email })
+
+      response.status(201).json({
+        _id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        token: generateToken(newUser.id)
+      })
+
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const forgotPassword = async (request, response) => {
   const { email } = request.body
 
@@ -165,4 +220,4 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
-module.exports = { registerUser, loginUser, getUser, forgotPassword, resetPassword }
+module.exports = { registerUser, loginUser, getUser, forgotPassword, resetPassword, loginOrCreateUserOauth }
