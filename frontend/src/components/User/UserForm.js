@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { registerUser, loginUser } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
+import { GoogleLogin } from '@react-oauth/google'
+import jwt_decode from 'jwt-decode'
 
 import Navbar from '../Misc/Navbar'
 
@@ -311,9 +313,18 @@ export default function UserForm() {
               }
               label="Remember me"
             />
+
             {renderSubmit()}
 
-            <Grid container>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <GoogleLogin
+                onSuccess={(res) => console.log(jwt_decode(res.credential))}
+                width="400"
+              />
+            </Box>
+
+
+            <Grid container mt={2}>
               <Grid item xs>
                 <Link variant="body2" onClick={() => navigate('/passwordReset')}>Forgot password?</Link>
               </Grid>

@@ -16,7 +16,7 @@ const LandingPageFooter = () => {
     >
       <Container maxWidth="lg">
         <Stack spacing={3} mt={3}>
-          <Box textAlign="center">
+          {/* <Box textAlign="center">
             <Link mx={5} href="#" color="inherit" underline="none">
                 Features
             </Link>
@@ -29,9 +29,9 @@ const LandingPageFooter = () => {
             <Link mx={5} href="#" color="inherit" underline="none">
                 Careers
             </Link>
-          </Box>
+          </Box> */}
 
-          <Box textAlign="center">
+          <Box textAlign="center" sx={{ minWidth: 200 }}>
             <Link href="mailto:leo.cheng92@gmail.com" color="inherit" sx={{ marginRight: 8 }}>
               <EmailIcon />
             </Link>
