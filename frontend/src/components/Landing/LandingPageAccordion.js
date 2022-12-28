@@ -43,10 +43,10 @@ const LandingPageAccordion = () => {
           <Typography sx={accordionSummaryStyle}>That sounds more complicated!</Typography>
         </AccordionSummary>
         <AccordionDetails sx={accordionDetailsStyle}>
-          <Typography gutterBottom>
-            It sure did as I was writing that out! The problem PlanPals hopes to solve is a specific one.
+          <Typography mb={3}>
+            The problem PlanPals hopes to solve is a specific one.
             Let's say it's summer, and you want to hit the beach with your friends. You ask everyone if
-            hey're available and interested, but the conversations never result in anything concrete.
+            they're available and interested, but the conversations never result in anything concrete.
             And suddenly, the seasons change and you've missed your opportunity to enjoy a nice beach day.
           </Typography>
           <Typography>
