@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { AuthRoutes, ProtectedRoutes } from './utils/routesAuth'
 import axios from 'axios'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import UserForm from './components/User/UserForm'
 import Layout from './Layout'
@@ -74,32 +75,36 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <UserContext.Provider value={{ user, setUser, logoutUser }}>
         <HistoryRouter history={history}>
-          <Routes>
-            <Route element={<AuthRoutes loggedIn={loggedIn} />}>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<UserForm />} />
-              <Route path="/register" element={<UserForm />} />
-              <Route path="/passwordReset" element={<UserPasswordReset />} />
-              <Route path="/passwordReset/:token/:id" element={<UserPasswordResetNewForm />} />
-            </Route>
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
 
-            <Route element={<Layout />}>
-              <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
-                <Route path="/home" element={<Home />} />
-                <Route path="/groups/create" element={<GroupForm />} />
-                <Route path="/groups/:groupPath" element={<GroupPage />} />
-                <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
-                <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
-                <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
-                <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
+            <Routes>
+              <Route element={<AuthRoutes loggedIn={loggedIn} />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<UserForm />} />
+                <Route path="/register" element={<UserForm />} />
+                <Route path="/passwordReset" element={<UserPasswordReset />} />
+                <Route path="/passwordReset/:token/:id" element={<UserPasswordResetNewForm />} />
               </Route>
 
-            </Route>
-            <Route path="/error" element={<Error />} />
-            <Route path="/logout" element={<Logout />} />
+              <Route element={<Layout />}>
+                <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/groups/create" element={<GroupForm />} />
+                  <Route path="/groups/:groupPath" element={<GroupPage />} />
+                  <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
+                  <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
+                  <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
+                  <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
+                </Route>
 
-            <Route path='*' element={<Error />} />
-          </Routes>
+              </Route>
+              <Route path="/error" element={<Error />} />
+              <Route path="/logout" element={<Logout />} />
+
+              <Route path='*' element={<Error />} />
+            </Routes>
+
+          </GoogleOAuthProvider>
         </HistoryRouter>
       </UserContext.Provider>
     </QueryClientProvider>
