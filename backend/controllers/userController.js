@@ -5,6 +5,7 @@ const User = require('../models/userModel')
 const { isAlpha } = require('validator')
 const sendEmail = require('../utils/email/sendEmail')
 const { OAuth2Client } = require('google-auth-library')
+const { GOOGLE_CLIENT_ID, JWT_SECRET } = require('../utils/config')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -93,12 +94,12 @@ const loginUser = async (request, response) => {
 
 const loginOrCreateUserOauth = async (request, response) => {
 
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+  const client = new OAuth2Client(GOOGLE_CLIENT_ID)
 
   try {
     const ticket = await client.verifyIdToken({
       idToken: request.body.credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: GOOGLE_CLIENT_ID,
     })
 
     const { email, family_name, given_name, sub } = ticket.getPayload()
@@ -215,7 +216,7 @@ const resetPassword = async (request, response) => {
 const generateToken = (id, rememberUser) => {
   return jwt.sign(
     { id },
-    process.env.SECRET,
+    JWT_SECRET,
     { expiresIn: rememberUser ? '30d' : '1h' }
   )
 }

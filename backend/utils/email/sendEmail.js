@@ -3,7 +3,7 @@ const handlebars = require('handlebars')
 const fs = require('fs')
 const path = require('path')
 
-require('dotenv').config()
+const { GMAIL_PASS, GMAIL_USER } = require('../config')
 
 const sendEmail = async (email, subject, payload, template) => {
   try {
@@ -13,8 +13,8 @@ const sendEmail = async (email, subject, payload, template) => {
       port: 465,
       secure: true, // use SSL
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+        user: GMAIL_USER,
+        pass: GMAIL_PASS
       }
     })
 

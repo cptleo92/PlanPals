@@ -2,13 +2,11 @@ const express = require('express')
 require('express-async-errors')
 const app = express()
 const path = require('path')
-const cors = require('cors')
 const middleware = require('./utils/middleware')
 const connectDB = require('./config/db')
 
 connectDB()
 
-app.use(cors())
 app.use(express.json())
 
 // routes
@@ -29,7 +27,6 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
 app.use(middleware.requestLogger)
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
-
 
 
 module.exports = app

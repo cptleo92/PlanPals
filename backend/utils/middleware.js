@@ -1,6 +1,7 @@
 const logger = require('./logger')
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
+const { JWT_SECRET } = require('../utils/config')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -11,7 +12,6 @@ const requestLogger = (request, response, next) => {
 }
 
 const unknownEndpoint = (request, response) => {
-  logger.error(request)
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
@@ -39,7 +39,7 @@ const auth = async (request, response, next) => {
     try {
       token = request.headers.authorization.split(' ')[1]
 
-      const decoded = jwt.verify(token, process.env.SECRET)
+      const decoded = jwt.verify(token, JWT_SECRET)
 
       // token expiration check
       // if (decoded.exp < Date.now() / 1000) {
