@@ -89,9 +89,9 @@ export const getGroup = async (id) => {
   }
 }
 
-export const updateGroup = async (id, formData) => {
+export const updateGroup = async (id, newGroup) => {
   try {
-    const response = await axios.patch(`/api/groups/${id}`, formData)
+    const response = await axios.patch(`/api/groups/${id}`, newGroup)
     return response.data
   } catch (err) {
     return err.response.data.error

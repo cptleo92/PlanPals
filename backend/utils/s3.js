@@ -62,8 +62,12 @@ const deleteAvatar = (avatar) => {
     Key: avatar
   }
 
-  s3.send(new DeleteObjectCommand(params))
+  try {
+    s3.send(new DeleteObjectCommand(params))
 
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 module.exports = {

@@ -47,8 +47,8 @@ const HangoutsListItem = ({ hangoutPath, past }) => {
     navigate(`/groups/${hangout.groupPath}/hangouts/${hangout.path}`)
   }
 
-  const isPlanner = user._id === hangout?.planner
-  const isAttending = hangout?.attendees.includes(user._id)
+  const isPlanner = user._id === hangout?.planner._id
+  const isAttending = hangout?.attendees.map(att => att._id).includes(user._id)
 
   return (
     isLoading

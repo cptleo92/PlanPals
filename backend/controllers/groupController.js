@@ -171,11 +171,13 @@ const kickFromGroup = async (request, response) => {
 
 const updateGroup = async (request, response) => {
   const groupId = request.params.id
-  const newGroupData = request.body
+  const { title, description, fileChanged } = request.body
   const avatarBuffer = request.file?.buffer
   const mimetype = request.file?.mimetype
 
   let updateThisGroup = await Group.findById(groupId)
+
+  const previousAvatar = updateThisGroup.avatar
 
   // only group's admin can update
   if (request.user.id !== updateThisGroup.admin.id) {
@@ -183,14 +185,21 @@ const updateGroup = async (request, response) => {
   }
 
   try {
-    // delete the old avatar if applicable
-    if (updateThisGroup.avatar) {
-      deleteAvatar(updateThisGroup.avatar)
+    updateThisGroup = await Group.findByIdAndUpdate(groupId, { title, description }, { new: true })
+
+    if (request.file) {
+
+      if (previousAvatar) deleteAvatar(previousAvatar)
+      updateThisGroup.avatar = await setAvatar(avatarBuffer, mimetype)
+
+    } else if (fileChanged !== 'false' && previousAvatar) {
+
+      // if group has an avatar but no file is attached, avatar will be deleted
+      deleteAvatar(previousAvatar)
+      updateThisGroup.avatar = null
+
     }
 
-    updateThisGroup = await Group.findByIdAndUpdate(groupId, newGroupData, { new: true })
-
-    updateThisGroup.avatar = await setAvatar(avatarBuffer, mimetype)
     await updateThisGroup.save()
 
     response.status(200).json(updateThisGroup)

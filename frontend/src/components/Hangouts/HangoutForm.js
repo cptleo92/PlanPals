@@ -30,7 +30,7 @@ const datePickerStyles = {
   width: '100%',
 }
 
-const HangoutForm = ({ edit = false, setDisplayType }) => {
+const HangoutForm = ({ edit = false }) => {
   const { hangoutPath, groupPath } = useParams()
   const navigate = useNavigate()
   const { user } = useCurrentUser()
@@ -47,6 +47,7 @@ const HangoutForm = ({ edit = false, setDisplayType }) => {
   })
 
   const [file, setFile] = useState(hangout?.avatar)
+  const [fileChanged, setFileChanged] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
   const updateHangoutMutation = useMutation({
@@ -137,6 +138,7 @@ const HangoutForm = ({ edit = false, setDisplayType }) => {
       newHangout.append('location', formData.location)
       newHangout.append('avatar', file)
       newHangout.append('groupPath', groupPath)
+      newHangout.append('fileChanged', fileChanged)
 
       if (edit) {
         updateHangoutMutation.mutate({ hangoutId: hangout._id, newHangout })
@@ -238,7 +240,7 @@ const HangoutForm = ({ edit = false, setDisplayType }) => {
             {datesError !== '' && <span style={errorStyle}>{datesError}</span>}
           </>
           }
-          <PhotoUpload type={'hangout'} file={file} setFile={setFile} />
+          <PhotoUpload type={'hangout'} file={file} setFile={setFile} setFileChanged={setFileChanged}/>
 
         </Stack>
 

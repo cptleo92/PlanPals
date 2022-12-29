@@ -228,11 +228,13 @@ const kickFromHangout = async (request, response) => {
 
 const updateHangout = async (request, response) => {
   const hangoutId = request.params.id
-  const newHangoutData = request.body
+  const { title, description, location, fileChanged } = request.body
   const avatarBuffer = request.file?.buffer
   const mimetype = request.file?.mimetype
 
   let updateThisHangout = await Hangout.findById(hangoutId)
+
+  const previousAvatar = updateThisHangout.avatar
 
   // only hangout planner can update
   if (request.user.id !== updateThisHangout.planner.id) {
@@ -240,19 +242,26 @@ const updateHangout = async (request, response) => {
   }
 
   try {
-    // delete the old avatar if applicable
-    if (updateThisHangout.avatar) {
-      deleteAvatar(updateThisHangout.avatar)
+    updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, { title, description, location }, { new: true })
+
+    if (request.file) {
+
+      if (previousAvatar) deleteAvatar(previousAvatar)
+      updateThisHangout.avatar = await setAvatar(avatarBuffer, mimetype)
+
+    } else if (fileChanged !== 'false' && previousAvatar) {
+
+      // if hangout has an avatar but no file is attached, avatar will be deleted
+      deleteAvatar(previousAvatar)
+      updateThisHangout.avatar = null
+
     }
-
-    updateThisHangout = await Hangout.findByIdAndUpdate(hangoutId, newHangoutData, { new: true })
-
-    updateThisHangout.avatar = await setAvatar(avatarBuffer, mimetype)
 
     await updateThisHangout.save()
 
     response.status(200).json(updateThisHangout)
   } catch (error) {
+    console.error(error)
     response.status(400).json({ error: error.message })
   }
 }

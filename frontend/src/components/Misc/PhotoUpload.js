@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Fab from '@mui/material/Fab'
 
-const PhotoUpload = ({ type, file, setFile }) => {
+const PhotoUpload = ({ type, file, setFile, setFileChanged }) => {
   const inputFile = useRef(null)
   const [sizeError, setSizeError] = useState(false)
 
@@ -27,6 +27,7 @@ const PhotoUpload = ({ type, file, setFile }) => {
 
       setSizeError(false)
       setFile(file)
+      setFileChanged(true)
     }
   }
 
@@ -76,7 +77,10 @@ const PhotoUpload = ({ type, file, setFile }) => {
             <Fab color="secondary" aria-label="edit" onClick={handleOpenFile}>
               <EditIcon />
             </Fab>
-            <Fab color="error" aria-label="edit" onClick={() => setFile(null)}>
+            <Fab color="error" aria-label="edit" onClick={() => {
+              setFile(null)
+              setFileChanged(true)
+            }}>
               <DeleteIcon />
             </Fab>
           </Stack>

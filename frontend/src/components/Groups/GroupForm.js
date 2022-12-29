@@ -52,7 +52,13 @@ const GroupForm = ({ edit }) => {
     console.log(error)
   }
 
+  /**
+   *  if the group is new or does not have an avatar, file should be undefined
+   *  if the group does have an avatar, file will be set as a link to the avatar image
+   *
+   */
   const [file, setFile] = useState(group?.avatar)
+  const [fileChanged, setFileChanged] = useState(false)
 
   const [formData, setFormData] = useState({
     title: group ? group.title : '',
@@ -87,10 +93,13 @@ const GroupForm = ({ edit }) => {
       newGroup.append('title', formData.title)
       newGroup.append('description', formData.description)
       newGroup.append('avatar', file)
-
+      newGroup.append('fileChanged', fileChanged)
 
       if (edit) {
-        updateGroupMutation.mutate({ groupId: group._id, newGroup })
+        updateGroupMutation.mutate({
+          groupId: group._id,
+          newGroup,
+        })
       } else {
         createGroupMutation.mutate(newGroup)
       }
@@ -154,7 +163,12 @@ const GroupForm = ({ edit }) => {
             placeholder="Write a short description for your new group!"
           />
 
-          <PhotoUpload type={'group'} file={file} setFile={setFile} />
+          <PhotoUpload
+            type={'group'}
+            file={file}
+            setFile={setFile}
+            setFileChanged={setFileChanged}
+          />
 
           <Button
             type="submit"
@@ -164,7 +178,7 @@ const GroupForm = ({ edit }) => {
           >
             {
               submitting ? (
-                <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+                <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }} />
               ) :
                 edit ? 'Update' : 'Create'
             }

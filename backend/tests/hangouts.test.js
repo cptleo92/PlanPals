@@ -32,16 +32,20 @@ const formatHangouts = async (hangouts) => {
 }
 
 beforeAll(async () => {
-  await User.deleteMany({})
-  await Group.deleteMany({})
-  await Hangout.deleteMany({})
+  try {
+    await User.deleteMany({})
+    await Group.deleteMany({})
+    await Hangout.deleteMany({})
 
-  await seedUsers(testUsers)
-  token = await loginTestUser(testUsers[0])
+    await seedUsers(testUsers)
+    token = await loginTestUser(testUsers[0])
 
-  await seedGroups(testGroups, token)
+    await seedGroups(testGroups, token)
 
-  await formatHangouts(testHangouts)
+    await formatHangouts(testHangouts)
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 describe('creating a new hangout', () => {
