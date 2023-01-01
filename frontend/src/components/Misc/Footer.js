@@ -17,6 +17,7 @@ const LandingPageFooter = () => {
         <Divider />
         <Box sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'space-around',
           marginTop: 3
         }}>
