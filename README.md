@@ -21,6 +21,9 @@ Making plans these days is difficult! Trying to maneuver around schedules, espec
 This project is built on the MERN stack: MongoDB (Mongoose), Express, React, and Node. I'm using the MaterialUI component library, React Query for fetching, and Jest for testing. Also essential to this project is [this multi-date picker library](https://shahabyazdi.github.io/react-multi-date-picker/).
 
 ## Update Log
+### January 3, 2023
+I expect that the app will be used quite a bit on mobile phones. Rather than ship new features, I decided to switch gears and focus on making the app more user friendly. I've integrated Google sign-in and refactored all components to be responsive. 
+
 ### December 25, 2022
 Passwords can now be reset via emails. Due to the complexity and potential cost of having a dedicated mail server, I'm temporarily using Gmail as a transport. 
 
