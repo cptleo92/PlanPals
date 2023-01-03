@@ -14,7 +14,7 @@ const GroupHangouts = ({ hangouts }) => {
 
   const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(hangouts)
 
-  const isSmall = useMediaQuery('(min-width:600px)')
+  const isSmall = useMediaQuery('(max-width:600px)')
 
   const renderListType = () => {
     if (displayType === 'pendingHangouts') {
@@ -42,7 +42,8 @@ const GroupHangouts = ({ hangouts }) => {
         exclusive
         onChange={handleChange}
         sx={{ marginBottom: 2 }}
-        orientation={isSmall ? 'horizontal' : 'vertical'}
+        orientation={isSmall ? 'vertical' : 'horizontal'}
+        fullWidth={isSmall ? true : false }
       >
         <ToggleButton value="pendingHangouts">Pending Hangouts</ToggleButton>
         <ToggleButton value="upcomingHangouts">Upcoming Hangouts</ToggleButton>

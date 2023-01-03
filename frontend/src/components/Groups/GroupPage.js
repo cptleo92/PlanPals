@@ -79,9 +79,9 @@ const GroupPage = () => {
       <Box
         component="img"
         sx={{
-          width: '100%',
-          height: 250,
-          maxHeight: { xs: 150, md: 200, lg: 250 },
+          height: 'auto',
+          maxHeight: 300,
+          maxWidth: '100%'
         }}
         alt="group avatar"
         src={ group.avatar || placeholder}

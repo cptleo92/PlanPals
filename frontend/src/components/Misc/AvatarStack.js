@@ -49,7 +49,6 @@ const AvatarStack = ({ peopleList, admin }) => {
   const { width } = useWindowDimensions()
   const numberAvatars = Math.floor(width / 80)
 
-  // if list > 8, shuffle and truncate
   if (peopleList.length > numberAvatars) {
     peopleList = shuffle(peopleList).slice(0, numberAvatars)
   }

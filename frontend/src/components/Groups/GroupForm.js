@@ -128,7 +128,7 @@ const GroupForm = ({ edit }) => {
   }, [group, navigate, user._id])
 
   return (
-    <Container>
+    <Container maxWidth='sm'>
       <Typography variant="h3" component="h2" mt={3}>
         {edit ? 'Edit Your Group!' : 'Create a new group!'}
       </Typography>
@@ -136,7 +136,7 @@ const GroupForm = ({ edit }) => {
         component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ mt: 3, width: 2 / 3 }}
+        sx={{ mt: 3 }}
       >
         <Stack spacing={3}>
           <TextField
