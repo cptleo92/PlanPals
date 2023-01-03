@@ -3,8 +3,11 @@ import { Container, Box, Link, Typography, Divider } from '@mui/material'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import EmailIcon from '@mui/icons-material/Email'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
-const LandingPageFooter = () => {
+const Footer = () => {
+  const isSmall = useMediaQuery('(max-width:600px)')
+
   return (
 
     <Box
@@ -18,7 +21,7 @@ const LandingPageFooter = () => {
         <Box sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          justifyContent: 'space-around',
+          justifyContent: isSmall ? 'space-around' : 'space-between',
           marginTop: 3
         }}>
           {/* <Box sx={{ width: '30%' }}>
@@ -37,7 +40,7 @@ const LandingPageFooter = () => {
           </Box> */}
 
 
-          <Typography variant="body2" color="text.secondary" sx={{ marginRight: 'auto' }}>
+          <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 3 }}>
             {'Copyright © Leo Cheng '}
             {new Date().getFullYear()}
             {'.'}
@@ -62,4 +65,4 @@ const LandingPageFooter = () => {
   )
 }
 
-export default LandingPageFooter
+export default Footer
