@@ -6,6 +6,10 @@ import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
+import Badge from '@mui/material/Badge'
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import IconButton from '@mui/material/IconButton'
 
 export default function Navbar({ landing }) {
   const navigate = useNavigate()
@@ -19,7 +23,23 @@ export default function Navbar({ landing }) {
   const userButtons = () => {
     if (user) {
       return (
-        <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
+        <Box sx={{
+          minWidth: 200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <IconButton>
+            <Badge badgeContent={3} color="secondary">
+              <NotificationsIcon sx={{ color: 'white' }}/>
+            </Badge>
+          </IconButton>
+
+          <Avatar sx={{ width: 35, height: 35, mr: -1 }}>
+          </Avatar>
+
+          <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
+        </Box>
       )
     }
     return (
