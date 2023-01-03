@@ -22,7 +22,7 @@ const HangoutPageDateDisplay = ({ dateOptions }) => {
   }
 
   return (
-    <TableContainer component={Paper} sx={{ width: 450, marginY: 4 }}>
+    <TableContainer component={Paper} sx={{ width: '100%', marginY: 4 }}>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>

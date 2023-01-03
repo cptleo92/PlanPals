@@ -12,6 +12,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
+import Container from '@mui/material/Container'
 
 const GroupForm = ({ edit }) => {
   const navigate = useNavigate()
@@ -127,7 +128,7 @@ const GroupForm = ({ edit }) => {
   }, [group, navigate, user._id])
 
   return (
-    <>
+    <Container maxWidth='sm'>
       <Typography variant="h3" component="h2" mt={3}>
         {edit ? 'Edit Your Group!' : 'Create a new group!'}
       </Typography>
@@ -135,7 +136,7 @@ const GroupForm = ({ edit }) => {
         component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ mt: 3, width: 2 / 3 }}
+        sx={{ mt: 3 }}
       >
         <Stack spacing={3}>
           <TextField
@@ -192,7 +193,7 @@ const GroupForm = ({ edit }) => {
           </Button>
         </Stack>
       </Box>
-    </>
+    </Container>
   )
 }
 

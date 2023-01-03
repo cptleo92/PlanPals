@@ -245,7 +245,7 @@ export default function UserForm() {
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: '100%' }}
           >
             {pathname === '/register' && (
               <Stack spacing={3} direction='row' alignItems='baseline'>
@@ -334,7 +334,7 @@ export default function UserForm() {
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <GoogleLogin
                 onSuccess={(res) => handleGoogle(res)}
-                width="400"
+                width='100%'
               />
             </Box>
 

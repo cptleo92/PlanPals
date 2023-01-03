@@ -17,11 +17,12 @@ const LandingPage = () => {
       <Container maxWidth="lg" sx={{ minHeight: '70vh' }}>
         <Box sx={{
           display: 'flex',
+          flexWrap: 'wrap',
           justifyContent: 'space-between',
           marginY: 8
         }}>
           <Fade in timeout={1000}>
-            <Stack spacing={10} mr={10}>
+            <Stack spacing={10} mr={8} mb={5}>
               <Box>
                 <Typography variant="h1" sx={{ fontFamily: 'Reem Kufi', fontSize: 70 }}>
                   Event planning
@@ -42,10 +43,11 @@ const LandingPage = () => {
               alt="friends"
               sx={{
                 height: 650,
-                maxHeight: { xs: 350, md: 500, lg: 650 },
+                maxHeight: { xs: 450, sm: 450, md: 450, lg: 650 },
               }}
             >
             </Box>
+
           </Fade>
         </Box>
         <LandingPageAccordion />

@@ -40,7 +40,7 @@ const PhotoUpload = ({ type, file, setFile, setFileChanged }) => {
           sx={{
             marginY: 3,
             padding: 5,
-            width: 500,
+            width: '100%',
             height: 240,
             border: '1px solid lightgray',
             borderRadius: 2,
@@ -60,7 +60,7 @@ const PhotoUpload = ({ type, file, setFile, setFileChanged }) => {
       :
       (
         <Box sx={{
-          width: 500,
+          width: '100%',
           height: 240,
           position: 'relative'
         }}>

@@ -4,6 +4,7 @@ import { splitHangouts } from '../../utils/hangouts'
 import HangoutForm from '../Hangouts/HangoutForm'
 import HangoutsList from '../Hangouts/HangoutsList'
 
+import useMediaQuery from '@mui/material/useMediaQuery'
 import Box from '@mui/material/Box'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
@@ -12,6 +13,8 @@ const GroupHangouts = ({ hangouts }) => {
   const [displayType, setDisplayType] = useState('pendingHangouts')
 
   const { pastHangouts, pendingHangouts, upcomingHangouts } = splitHangouts(hangouts)
+
+  const isSmall = useMediaQuery('(max-width:600px)')
 
   const renderListType = () => {
     if (displayType === 'pendingHangouts') {
@@ -39,6 +42,8 @@ const GroupHangouts = ({ hangouts }) => {
         exclusive
         onChange={handleChange}
         sx={{ marginBottom: 2 }}
+        orientation={isSmall ? 'vertical' : 'horizontal'}
+        fullWidth={isSmall ? true : false }
       >
         <ToggleButton value="pendingHangouts">Pending Hangouts</ToggleButton>
         <ToggleButton value="upcomingHangouts">Upcoming Hangouts</ToggleButton>

@@ -14,6 +14,7 @@ import HangoutPageDateDisplay from './HangoutPageDateDisplay'
 import Typography from '@mui/material/Typography'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 import WarningIcon from '@mui/icons-material/Warning'
 import PageSkeleton from '../Misc/PageSkeleton'
 
@@ -83,7 +84,7 @@ const HangoutPage = () => {
           paddingY: 4,
           paddingX: 3,
           border: '1px solid lightgray',
-          width: '70%',
+          display: 'inline-block'
         }}>
           <Typography gutterBottom variant="h6" color="error" sx={{ display: 'inline-flex', verticalAlign: 'bottom' }}>
             <WarningIcon sx={{ marginRight: 1 }} /> It's almost time to hang out!
@@ -106,8 +107,7 @@ const HangoutPage = () => {
   }
 
   return (
-    <Box mt={3}
-    >
+    <Container sx={{ mt: 3 }}>
       <BackArrow link={`/groups/${hangout.groupPath}`} />
 
       <Typography variant="h3" component="h2" mt={3}>
@@ -122,8 +122,9 @@ const HangoutPage = () => {
       <Box
         component="img"
         sx={{
-          height: 250,
-          maxHeight: { xs: 150, md: 200, lg: 250 },
+          height: 'auto',
+          maxHeight: 300,
+          maxWidth: '100%'
         }}
         alt="hangout avatar"
         src={ hangout.avatar || placeholder }
@@ -166,7 +167,7 @@ const HangoutPage = () => {
       }
 
       {renderButtonOrFinalDetails()}
-    </Box>
+    </Container>
   )
 }
 

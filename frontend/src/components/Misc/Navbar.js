@@ -23,15 +23,15 @@ export default function Navbar({ landing }) {
       )
     }
     return (
-      <>
+      <Box sx={{ minWidth: 200 }}>
         <Button sx={{ marginRight: 4 }} name="login" variant="outlined" color="inherit" onClick={handleUserNav}>Log In</Button>
         <Button name="register" variant="contained" onClick={handleUserNav}>Register</Button>
-      </>
+      </Box>
     )
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, minWidth: 300 }}>
       <AppBar position="static" color={ landing ? 'transparent' : 'primary' } elevation={landing ? 0 : 1}>
         <Toolbar>
           <Typography variant="h5" component="div" sx={{ fontFamily: 'Reem Kufi', fontWeight: 500 }}>
