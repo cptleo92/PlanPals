@@ -1,3 +1,4 @@
+
 import { useCurrentUser } from '../../utils/hooks'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -7,9 +8,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
-import Badge from '@mui/material/Badge'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import IconButton from '@mui/material/IconButton'
+import NotificationBell from './NotificationBell'
 
 export default function Navbar({ landing }) {
   const navigate = useNavigate()
@@ -20,6 +19,8 @@ export default function Navbar({ landing }) {
     navigate(`/${e.target.name}`)
   }
 
+
+
   const userButtons = () => {
     if (user) {
       return (
@@ -29,11 +30,8 @@ export default function Navbar({ landing }) {
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <IconButton>
-            <Badge badgeContent={3} color="secondary">
-              <NotificationsIcon sx={{ color: 'white' }}/>
-            </Badge>
-          </IconButton>
+
+          <NotificationBell />
 
           <Avatar sx={{ width: 35, height: 35, mr: -1 }}>
           </Avatar>
