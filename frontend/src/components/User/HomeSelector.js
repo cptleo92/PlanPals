@@ -5,6 +5,7 @@ import { splitHangouts } from '../../utils/hangouts'
 
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const HomeSelector = ({ userGroups, userHangouts }) => {
   const [displayType, setDisplayType] = useState('groups')
@@ -16,6 +17,8 @@ const HomeSelector = ({ userGroups, userHangouts }) => {
       setDisplayType(newDisplayType)
     }
   }
+
+  const isSmall = useMediaQuery('(min-width:600px)')
 
   const renderListType = () => {
     if (displayType === 'groups') {
@@ -37,6 +40,7 @@ const HomeSelector = ({ userGroups, userHangouts }) => {
         exclusive
         onChange={handleChange}
         sx={{ marginBottom: 2 }}
+        orientation={isSmall ? 'horizontal' : 'vertical'}
       >
         <ToggleButton value="groups">My Groups</ToggleButton>
         <ToggleButton value="pendingHangouts">My Pending Hangouts</ToggleButton>

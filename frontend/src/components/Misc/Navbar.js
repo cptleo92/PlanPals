@@ -31,7 +31,7 @@ export default function Navbar({ landing }) {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, minWidth: 350 }}>
+    <Box sx={{ flexGrow: 1, minWidth: 300 }}>
       <AppBar position="static" color={ landing ? 'transparent' : 'primary' } elevation={landing ? 0 : 1}>
         <Toolbar>
           <Typography variant="h5" component="div" sx={{ fontFamily: 'Reem Kufi', fontWeight: 500 }}>

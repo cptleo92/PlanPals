@@ -70,7 +70,7 @@ const GroupPage = () => {
   }
 
   return (
-    <Box mt={3}>
+    <Container sx={{ mt: 3 }}>
       <BackArrow link={'/home'} />
       <Typography variant="h3" component="h2" mt={3} mb={6}>
         {group?.title}
@@ -79,6 +79,7 @@ const GroupPage = () => {
       <Box
         component="img"
         sx={{
+          width: '100%',
           height: 250,
           maxHeight: { xs: 150, md: 200, lg: 250 },
         }}
@@ -106,7 +107,7 @@ const GroupPage = () => {
         {group?.description}
       </Typography>
 
-      <Container sx={{ marginLeft: 0 }} disableGutters maxWidth="sm">
+      <Container sx={{ marginLeft: 0 }} disableGutters>
         <Typography gutterBottom variant="h5" mt={6} mb={3}>
         Members ({group.members.length + 1})
         </Typography>
@@ -118,7 +119,7 @@ const GroupPage = () => {
 
         {renderInfo()}
       </Container>
-    </Box>
+    </Container>
   )
 }
 

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import Avatar from '@mui/material/Avatar'
 import Stack from '@mui/material/Stack'
 
@@ -14,11 +16,42 @@ function shuffle(a) {
   }
   return a
 }
+/**
+ *  https://stackoverflow.com/questions/36862334/get-viewport-window-height-in-reactjs
+ *
+ *  gets window size to dynamically set how many avatars to render
+ */
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window
+  return {
+    width,
+    height
+  }
+}
+
+function useWindowDimensions() {
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  return windowDimensions
+}
+
 
 const AvatarStack = ({ peopleList, admin }) => {
+  const { width } = useWindowDimensions()
+  const numberAvatars = Math.floor(width / 80)
+
   // if list > 8, shuffle and truncate
-  if (peopleList.length > 8) {
-    peopleList = shuffle(peopleList).slice(0, 8)
+  if (peopleList.length > numberAvatars) {
+    peopleList = shuffle(peopleList).slice(0, numberAvatars)
   }
 
   const generateAvatars = () => {
@@ -27,7 +60,7 @@ const AvatarStack = ({ peopleList, admin }) => {
 
   return (
     <Stack direction="row" spacing={2} mb={3}>
-      <Avatar sx={{ width: 75, height: 75 }}>
+      <Avatar sx={{ width: 75, height: 75, marginBottom: 3 }}>
         {admin.firstName[0] + admin.lastName[0]}
       </Avatar>
       {generateAvatars()}

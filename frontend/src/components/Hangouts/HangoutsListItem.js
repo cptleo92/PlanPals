@@ -17,6 +17,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Tooltip from '@mui/material/Tooltip'
 import Person from '@mui/icons-material/Person'
 import PeopleIcon from '@mui/icons-material/People'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 const HangoutsListItem = ({ hangoutPath, past }) => {
   const { user } = useCurrentUser()
@@ -50,27 +51,32 @@ const HangoutsListItem = ({ hangoutPath, past }) => {
   const isPlanner = user._id === hangout?.planner._id
   const isAttending = hangout?.attendees.map(att => att._id).includes(user._id)
 
+  const isSmall = useMediaQuery('(max-width:600px)')
+
   return (
     isLoading
-      ? <Skeleton variant="rectangular" sx={{ width: 500, height: 150, marginBottom: 3 }} />
+      ? <Skeleton variant="rectangular" sx={{ width: isSmall ? '80%' : 500, height: 150, marginBottom: 3 }} />
       :
       (<Card
         sx={{
           display: 'flex',
           marginBottom: 3,
-          width: 500,
+          width: isSmall ? '80%' : 500,
           height: 150,
           cursor: 'pointer',
           position: 'relative',
         }}
         onClick={handleClick}
       >
-        <CardMedia
-          component="img"
-          sx={{ width: 151 }}
-          image={ hangout.avatar || placeholder }
-          alt="hangout avatar"
-        />
+        {
+          !isSmall &&
+          <CardMedia
+            component="img"
+            sx={{ width: 151 }}
+            image={ hangout.avatar || placeholder }
+            alt="hangout avatar"
+          />
+        }
         {isPlanner && (
           <Tooltip title="You are the planner!">
             <StarIcon
@@ -103,7 +109,7 @@ const HangoutsListItem = ({ hangoutPath, past }) => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: '70%',
+            width: isSmall ? '100%' : '70%',
             justifyContent: 'space-between'
           }}
         >
