@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useCurrentUser } from '../../utils/hooks'
+import { useQuery } from '@tanstack/react-query'
 
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
@@ -9,38 +11,55 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import IconButton from '@mui/material/IconButton'
 
 import NotificationItem from './NotificationItem'
-
-const testNotifications = [
-  'Jason is going to your hangout!.',
-  'Jason is going to your hangout!.',
-  'Jason is going to your hangout!.',
-]
+import { getUserNotifications, markNotificationsRead } from '../../utils/apiHelper'
 
 const NotificationBell = () => {
   // menu stuff
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
+    markNotificationsRead(user._id, notifications)
+    setBadgeContent(0)
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
     setAnchorEl(null)
   }
 
+  const { user } = useCurrentUser()
+  const [badgeContent, setBadgeContent] = useState(null)
+
+  const {
+    isLoading,
+    data: notifications,
+  } = useQuery(['notifs', user._id], async () => {
+    const notifs = await getUserNotifications(user._id)
+    let count = 0
+
+    for (let notif of notifs) {
+      if (notif.unread === 'true') count++
+    }
+
+    setBadgeContent(count)
+    return notifs
+  }
+  )
+
   return (
     <>
       <IconButton onClick={handleClick} >
-        <Badge badgeContent={3} color="secondary">
+        <Badge badgeContent={isLoading ? null : badgeContent} color="secondary">
           <NotificationsIcon sx={{ color: 'white' }} />
         </Badge>
       </IconButton>
+
       <Popover
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        sx={{
-          // maxWidth: 300
-        }}
+        // sx={{
+        //   minWidth: 600
+        // }}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'center',
@@ -53,7 +72,8 @@ const NotificationBell = () => {
         <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          p: 1
+          p: 2,
+          width: 350,
         }}>
           <Typography variant="subtitle2">
             Notifications
@@ -66,7 +86,7 @@ const NotificationBell = () => {
         <Divider />
 
         {
-          testNotifications.map((notif, idx) => (
+          notifications?.map((notif, idx) => (
             <NotificationItem notif={notif} key={idx} />
           ))
         }

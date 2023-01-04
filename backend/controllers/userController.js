@@ -16,6 +16,29 @@ const getUser = async (request, response) => {
   }
 }
 
+const getUserNotifications = async (request, response) => {
+  const user = await User.findById(request.params.id)
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  } else {
+    return response.json(user.notifications)
+  }
+}
+
+const markNotificationsRead = async (request, response) => {
+  const user = await User.findById(request.params.id)
+
+  if (!user) {
+    return response.status(404).json({ error: 'user not found' })
+  } else {
+    const notifications = request.body
+
+    await User.findByIdAndUpdate(request.params.id, { notifications }, { new: true })
+
+    return response.json(user.notifications)
+  }
+}
+
 const registerUser = async (request, response) => {
   const { firstName, lastName, email, password, rememberUser } = request.body
 
@@ -65,7 +88,7 @@ const registerUser = async (request, response) => {
       lastName: newUser.lastName,
       fullName: newUser.fullName,
       email: newUser.email,
-      token: generateToken(newUser.id, rememberUser)
+      token: generateToken(newUser.id, rememberUser),
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -83,7 +106,7 @@ const loginUser = async (request, response) => {
       lastName: user.lastName,
       fullName: user.fullName,
       email: user.email,
-      token: generateToken(user.id, rememberUser)
+      token: generateToken(user.id, rememberUser),
     })
   } else {
     response.status(400).json({
@@ -189,7 +212,7 @@ const resetPassword = async (request, response) => {
 
   // confirm that tokens match and has not expired
   if (user.resetPasswordToken !== resetPasswordToken ||
-      user.resetPasswordExpiry < Date.now() ) {
+    user.resetPasswordExpiry < Date.now()) {
     return response.status(401).json({ error: 'invalid reset token' })
   }
 
@@ -221,4 +244,13 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
-module.exports = { registerUser, loginUser, getUser, forgotPassword, resetPassword, loginOrCreateUserOauth }
+module.exports = {
+  registerUser,
+  loginUser,
+  getUser,
+  getUserNotifications,
+  markNotificationsRead,
+  forgotPassword,
+  resetPassword,
+  loginOrCreateUserOauth
+}

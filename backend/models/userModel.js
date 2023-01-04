@@ -45,6 +45,12 @@ const userSchema = mongoose.Schema(
     ],
     resetPasswordToken: String,
     resetPasswordExpiry: Date,
+    notifications: [
+      {
+        type: Map,
+        of: String
+      }
+    ]
   },
   {
     timestamps: true,

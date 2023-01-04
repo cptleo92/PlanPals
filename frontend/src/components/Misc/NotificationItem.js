@@ -1,11 +1,19 @@
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import { lightBlue } from '@mui/material/colors'
+import { useNavigate } from 'react-router-dom'
 
 const NotificationItem = ({ notif }) => {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    console.log(notif.href)
+    navigate(notif.href)
+  }
+
   return (
     <Box sx={{
-      // width: '100%',
+      width: 350,
       margin: 1,
       padding: 1,
       borderRadius: 1,
@@ -13,10 +21,12 @@ const NotificationItem = ({ notif }) => {
       '&:hover': {
         backgroundColor: lightBlue[50],
       }
-    }}>
+    }}
+    onClick={handleClick}
+    >
 
-      <Typography variant="body2">
-        {notif}
+      <Typography noWrap variant="body2" >
+        {notif.text}
       </Typography>
     </Box>
   )
