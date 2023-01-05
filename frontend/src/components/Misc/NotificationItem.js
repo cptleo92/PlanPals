@@ -23,9 +23,11 @@ const NotificationItem = ({ notif }) => {
     }}
     onClick={handleClick}
     >
-
-      <Typography noWrap variant="body2" >
-        {notif.text}
+      <Typography variant="body2" >
+        <strong>{notif.user}</strong> {notif.text}
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        {notif.subject}
       </Typography>
     </Box>
   )

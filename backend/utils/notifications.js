@@ -8,7 +8,9 @@ const sendNewMemberNotification = async (newUser, group) => {
   }
 
   const newNotif = {
-    text: `${newUser.firstName} has joined your group: ${group.title}!`,
+    user: newUser.firstName,
+    text: ' has joined your group!',
+    subject: group.title,
     creationDate: new Date(),
     unread: 'true',
     href: `/groups/${group.path}`
@@ -37,7 +39,9 @@ const sendNewAttendeeNotification = async (newUser, hangout) => {
   }
 
   const newNotif = {
-    text: `${newUser.firstName} is attending: ${hangout.title}!`,
+    user: newUser.firstName,
+    text: ' is attending!',
+    subject: hangout.title,
     creationDate: new Date(),
     unread: 'true',
     href: `/groups/${hangout.groupPath}/hangouts/${hangout.path}`
@@ -68,7 +72,9 @@ const sendNewHangoutNotification = async (newHangout, group) => {
   }
 
   const newNotif = {
-    text: `${newHangout.planner.firstName} is hosting a new hangout: ${newHangout.title}!`,
+    user: newHangout.planner.firstName,
+    text: ' is hosting a new hangout!',
+    subject: newHangout.title,
     creationDate: new Date(),
     unread: 'true',
     href: `/groups/${newHangout.groupPath}/hangouts/${newHangout.path}`
@@ -97,7 +103,8 @@ const sendFinalizedHangoutNotification = async (hangout, notifyPlanner = false) 
   }
 
   const newNotif = {
-    text: `Save the date for your upcoming hangout! ${hangout.title}`,
+    subject: hangout.title,
+    text: 'Your hangout has been officially scheduled!',
     creationDate: new Date(),
     unread: 'true',
     href: `/groups/${hangout.groupPath}/hangouts/${hangout.path}`
@@ -119,7 +126,8 @@ const sendFinalizedHangoutNotification = async (hangout, notifyPlanner = false) 
 
   if (notifyPlanner) {
     const plannerNotif = {
-      text: `Your hangout has been automaticlaly finalized: ${hangout.title}`,
+      subject: hangout.title,
+      text: 'Your hangout has been automatically finalized.',
       creationDate: new Date(),
       unread: 'true',
       href: `/groups/${hangout.groupPath}/hangouts/${hangout.path}`
