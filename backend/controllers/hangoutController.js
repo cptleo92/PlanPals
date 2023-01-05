@@ -3,6 +3,7 @@ const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const { nanoid } = require('nanoid')
 const { populateAvatar, setAvatar, deleteAvatar } = require('../utils/s3')
+const { sendNewAttendeeNotification, sendNewHangoutNotification, sendFinalizedHangoutNotification } = require('../utils/notifications')
 
 const getMyHangouts = async (request, response) => {
   const currentUser = await User.findById(request.user.id)
@@ -71,6 +72,8 @@ const createHangout = async (request, response) => {
     group.hangouts.push(newHangout.id)
     await group.save()
 
+    sendNewHangoutNotification(newHangout, group)
+
     response.status(201).json({
       _id: newHangout.id,
       title: newHangout.title,
@@ -84,7 +87,6 @@ const createHangout = async (request, response) => {
       finalDate: newHangout.finalDate,
       avatar: newHangout.avatar
     })
-
 
   } catch (error) {
     console.error(error)
@@ -137,6 +139,8 @@ const joinHangout = async (request, response) => {
     }
 
     await hangoutToJoin.save()
+
+    sendNewAttendeeNotification(currentUser, hangoutToJoin)
 
     response.status(200).json(hangoutToJoin)
   } catch (error) {
@@ -373,6 +377,8 @@ const finalizeHangout = async (request, response) => {
     hangout.finalDate = new Date(finalDate)
 
     await hangout.save()
+
+    sendFinalizedHangoutNotification(hangout)
 
     response.status(200).json(hangout)
   } catch (error) {

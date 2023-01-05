@@ -1,6 +1,7 @@
 const app = require('./app')
 const CronJob = require('cron').CronJob
 const Hangout = require('./models/hangoutModel')
+const { sendFinalizedHangoutNotification } = require('./utils/notifications')
 
 /**
  * CronJob for hangouts
@@ -41,6 +42,8 @@ new CronJob('00 00 00 * * *', async function() {
 
       try {
         hout.save()
+
+        sendFinalizedHangoutNotification(hout, true)
         console.log('Finalized hangout: ', hout)
       } catch (error) {
         console.log(error)

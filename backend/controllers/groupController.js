@@ -108,7 +108,7 @@ const joinGroup = async (request, response) => {
     groupToJoin.members.push(currentUser.id)
     await groupToJoin.save()
 
-    sendNewMemberNotification(request, currentUser, groupToJoin)
+    sendNewMemberNotification(currentUser, groupToJoin)
 
     response.json(groupToJoin)
   } catch (error) {

@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { getGroup, joinGroup, leaveGroup } from '../../utils/apiHelper'
+import { getGroup, joinGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
 
@@ -45,15 +45,15 @@ const GroupPage = () => {
     }
   }
 
-  const handleLeave = async () => {
-    try {
-      await leaveGroup(group._id)
-      navigate(0)
-    } catch (error) {
-      navigate('/error')
-      console.log(error)
-    }
-  }
+  // const handleLeave = async () => {
+  //   try {
+  //     await leaveGroup(group._id)
+  //     navigate(0)
+  //   } catch (error) {
+  //     navigate('/error')
+  //     console.log(error)
+  //   }
+  // }
 
   const renderInfo = () => {
     const isMemberOrPlanner = () => {
@@ -66,7 +66,7 @@ const GroupPage = () => {
       return (
         <>
           <GroupHangouts hangouts={group.hangouts} />
-          <Button onClick={handleLeave}>Leave</Button>
+          {/* <Button onClick={handleLeave}>Leave</Button> */}
         </>
       )
     } else {

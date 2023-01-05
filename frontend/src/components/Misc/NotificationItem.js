@@ -7,7 +7,6 @@ const NotificationItem = ({ notif }) => {
   const navigate = useNavigate()
 
   const handleClick = () => {
-    console.log(notif.href)
     navigate(notif.href)
   }
 
@@ -15,7 +14,7 @@ const NotificationItem = ({ notif }) => {
     <Box sx={{
       width: 350,
       margin: 1,
-      padding: 1,
+      padding: 2,
       borderRadius: 1,
       cursor: 'pointer',
       '&:hover': {

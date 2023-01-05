@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useCurrentUser } from '../../utils/hooks'
 import { useQuery } from '@tanstack/react-query'
 
@@ -45,6 +45,9 @@ const NotificationBell = () => {
   }
   )
 
+  // truncate notifs
+  const slicedNotifs = notifications?.slice(0, 9)
+
   return (
     <>
       <IconButton onClick={handleClick} >
@@ -72,23 +75,31 @@ const NotificationBell = () => {
         <Box sx={{
           display: 'flex',
           justifyContent: 'space-between',
-          p: 2,
+          px: 3,
+          py: 2,
           width: 350,
         }}>
           <Typography variant="subtitle2">
             Notifications
-          </Typography>
-          <Typography variant="subtitle2">
-            See All
           </Typography>
         </Box>
 
         <Divider />
 
         {
-          notifications?.map((notif, idx) => (
+          slicedNotifs?.map((notif, idx) => (
             <NotificationItem notif={notif} key={idx} />
           ))
+        }
+
+        {
+          notifications?.length > 9 &&
+          <>
+            <Divider variant='middle' />
+            <Typography m={1} textAlign='center' variant='subtitle2' color='text.disabled'>
+            See All
+            </Typography>
+          </>
         }
 
       </Popover>
