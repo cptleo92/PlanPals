@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useCurrentUser } from '../../utils/hooks'
 import { useQuery } from '@tanstack/react-query'
+import { getUserNotifications, markNotificationsRead } from '../../utils/apiHelper'
+import { Link, useNavigate } from 'react-router-dom'
+import { useMediaQuery } from '@mui/material'
 
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
@@ -11,16 +14,24 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import IconButton from '@mui/material/IconButton'
 
 import NotificationItem from './NotificationItem'
-import { getUserNotifications, markNotificationsRead } from '../../utils/apiHelper'
 
 const NotificationBell = () => {
+  const navigate = useNavigate()
+
   // menu stuff
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
+
   const handleClick = (event) => {
     markNotificationsRead(user._id, notifications)
     setBadgeContent(0)
-    setAnchorEl(event.currentTarget)
+
+    if (isSmall) {
+      navigate('/notifications')
+    } else {
+      setAnchorEl(event.currentTarget)
+    }
+
   }
   const handleClose = () => {
     setAnchorEl(null)
@@ -28,6 +39,8 @@ const NotificationBell = () => {
 
   const { user } = useCurrentUser()
   const [badgeContent, setBadgeContent] = useState(null)
+
+  const isSmall = useMediaQuery('(max-width:600px)')
 
   const {
     isLoading,
@@ -46,7 +59,7 @@ const NotificationBell = () => {
   )
 
   // truncate notifs
-  const slicedNotifs = notifications?.slice(0, 9)
+  const slicedNotifs = notifications?.slice(0, 8)
 
   return (
     <>
@@ -60,9 +73,6 @@ const NotificationBell = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        // sx={{
-        //   minWidth: 600
-        // }}
         anchorOrigin={{
           vertical: 'center',
           horizontal: 'center',
@@ -73,35 +83,38 @@ const NotificationBell = () => {
         }}
       >
         <Box sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          px: 3,
-          py: 2,
-          width: 350,
+          maxWidth: 400
         }}>
-          <Typography variant="subtitle2">
+
+          <Typography px={3} py={2} variant="h6">
             Notifications
           </Typography>
+
+          <Divider />
+
+          {
+            slicedNotifs?.map((notif, idx) => (
+              <NotificationItem notif={notif} key={idx} />
+            ))
+          }
+
+          {
+            notifications?.length > 8 &&
+            <>
+              <Divider variant='middle' />
+              <Link to="/notifications" onClick={handleClose}>
+                <Typography m={1} textAlign='center' variant='subtitle2' color='text.disabled' sx={{
+                  '&:hover': {
+                    color: 'text.primary'
+                  }
+                }}>
+                  See All
+                </Typography>
+              </Link>
+            </>
+          }
+
         </Box>
-
-        <Divider />
-
-        {
-          slicedNotifs?.map((notif, idx) => (
-            <NotificationItem notif={notif} key={idx} />
-          ))
-        }
-
-        {
-          notifications?.length > 9 &&
-          <>
-            <Divider variant='middle' />
-            <Typography m={1} textAlign='center' variant='subtitle2' color='text.disabled'>
-            See All
-            </Typography>
-          </>
-        }
-
       </Popover>
     </>
   )

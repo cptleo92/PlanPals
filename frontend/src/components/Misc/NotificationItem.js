@@ -6,7 +6,7 @@ import { daysAgo } from '../../utils/date'
 
 
 
-const NotificationItem = ({ notif }) => {
+const NotificationItem = ({ handleClose, notif }) => {
   const navigate = useNavigate()
 
   const handleClick = () => {
@@ -15,11 +15,12 @@ const NotificationItem = ({ notif }) => {
 
   return (
     <Box sx={{
-      width: 350,
+      // width: 350,
       margin: 1,
       padding: 2,
       borderRadius: 1,
       cursor: 'pointer',
+      backgroundColor: notif.unread === 'true' ? lightBlue[50] : null,
       '&:hover': {
         backgroundColor: lightBlue[50],
       }
