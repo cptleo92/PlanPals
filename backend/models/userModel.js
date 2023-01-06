@@ -45,6 +45,12 @@ const userSchema = mongoose.Schema(
     ],
     resetPasswordToken: String,
     resetPasswordExpiry: Date,
+    notifications: [
+      {
+        type: Map,
+        of: String
+      }
+    ]
   },
   {
     timestamps: true,
@@ -70,6 +76,12 @@ userSchema.methods.getResetPasswordToken = async function() {
   this.resetPasswordExpiry = Date.now() + 15 * 60 * 1000
 
   return resetToken
+}
+
+userSchema.methods.notify = function (notification) {
+  this.notifications.unshift(notification)
+
+  if (this.notifications.length > 50) this.notifications.pop()
 }
 
 userSchema.plugin(require('mongoose-autopopulate'))

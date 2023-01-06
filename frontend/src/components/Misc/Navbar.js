@@ -1,3 +1,4 @@
+
 import { useCurrentUser } from '../../utils/hooks'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -6,6 +7,8 @@ import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
+import NotificationBell from './NotificationBell'
 
 export default function Navbar({ landing }) {
   const navigate = useNavigate()
@@ -16,10 +19,25 @@ export default function Navbar({ landing }) {
     navigate(`/${e.target.name}`)
   }
 
+
+
   const userButtons = () => {
     if (user) {
       return (
-        <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
+        <Box sx={{
+          minWidth: 200,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+
+          <NotificationBell />
+
+          <Avatar sx={{ width: 35, height: 35, mr: -1 }}>
+          </Avatar>
+
+          <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
+        </Box>
       )
     }
     return (

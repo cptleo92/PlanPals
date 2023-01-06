@@ -21,6 +21,7 @@ import GroupPage from './components/Groups/GroupPage'
 import Error from './components/Misc/Error'
 import HangoutForm from './components/Hangouts/HangoutForm'
 import LandingPage from './components/Landing/LandingPage'
+import NotificationPage from './components/Misc/NotificationPage'
 
 let history = createBrowserHistory()
 
@@ -89,6 +90,7 @@ function App() {
               <Route element={<Layout />}>
                 <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
                   <Route path="/home" element={<Home />} />
+                  <Route path="/notifications" element={<NotificationPage />} />
                   <Route path="/groups/create" element={<GroupForm />} />
                   <Route path="/groups/:groupPath" element={<GroupPage />} />
                   <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />

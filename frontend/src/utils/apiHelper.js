@@ -58,6 +58,26 @@ export const resetPassword = async (resetData) => {
   }
 }
 
+export const getUserNotifications = async (id) => {
+  try {
+    const response = await axios.get(`/api/users/${id}/notifs`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const markNotificationsRead = async (id, notifications) => {
+  try {
+    for (let notif of notifications) notif.unread = 'false'
+
+    const response = await axios.patch(`/api/users/${id}/notifs`, notifications)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 /**
  *  GROUPS
  */
@@ -101,6 +121,15 @@ export const updateGroup = async (id, newGroup) => {
 export const joinGroup = async (id) => {
   try {
     const response = await axios.post(`/api/groups/${id}`)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
+export const leaveGroup = async (id) => {
+  try {
+    const response = await axios.delete(`/api/groups/${id}`)
     return response.data
   } catch (err) {
     return err.response.data.error

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { parseDate } from '../../utils/date'
 import { useCurrentUser } from '../../utils/hooks'
 import { leaveHangout, joinHangout } from '../../utils/apiHelper'
@@ -12,7 +13,10 @@ const HangoutPageFinalDetails = ({ hangout }) => {
   const { user } = useCurrentUser()
   const navigate = useNavigate()
 
+  const [submitting, setSubmitting] = useState(false)
+
   const handleLeave = async () => {
+    setSubmitting(true)
     try {
       await leaveHangout(hangout._id)
       navigate(0)
@@ -23,6 +27,7 @@ const HangoutPageFinalDetails = ({ hangout }) => {
   }
 
   const handleAttend = async () => {
+    setSubmitting(true)
     try {
       await joinHangout(hangout._id, [parseDate(hangout.finalDate)])
       navigate(0)
@@ -49,7 +54,7 @@ const HangoutPageFinalDetails = ({ hangout }) => {
         <Typography gutterBottom variant="body1">
           {text}
         </Typography>
-        <Button variant="contained" color={buttonColor} onClick={buttonClick}>
+        <Button variant="contained" color={buttonColor} onClick={buttonClick} disabled={submitting}>
           {buttonText}
         </Button>
       </Box>

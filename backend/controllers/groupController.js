@@ -2,6 +2,7 @@ const Group = require('../models/groupModel')
 const User = require('../models/userModel')
 const { nanoid } = require('nanoid')
 const { populateAvatar, setAvatar, deleteAvatar } = require('../utils/s3')
+const { sendNewMemberNotification } = require('../utils/notifications')
 
 
 const getMyGroups = async (request, response) => {
@@ -106,6 +107,8 @@ const joinGroup = async (request, response) => {
 
     groupToJoin.members.push(currentUser.id)
     await groupToJoin.save()
+
+    sendNewMemberNotification(currentUser, groupToJoin)
 
     response.json(groupToJoin)
   } catch (error) {

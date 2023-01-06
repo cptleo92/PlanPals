@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
@@ -20,6 +21,8 @@ const GroupPage = () => {
   const { groupPath } = useParams()
   const navigate = useNavigate()
 
+  const [submitting, setSubmitting] = useState(false)
+
   const {
     isLoading,
     error,
@@ -35,7 +38,9 @@ const GroupPage = () => {
     console.log(error)
   }
 
+
   const handleJoin = async () => {
+    setSubmitting(true)
     try {
       await joinGroup(group._id)
       navigate(0)
@@ -44,6 +49,17 @@ const GroupPage = () => {
       console.log(error)
     }
   }
+
+  // const handleLeave = async () => {
+  //   try {
+  //     await leaveGroup(group._id)
+  //     navigate(0)
+  //   } catch (error) {
+  //     navigate('/error')
+  //     console.log(error)
+  //   }
+  // }
+
   const renderInfo = () => {
     const isMemberOrPlanner = () => {
       if (group.admin._id === user._id) return true
@@ -53,7 +69,10 @@ const GroupPage = () => {
 
     if (isMemberOrPlanner()) {
       return (
-        <GroupHangouts hangouts={group.hangouts} />
+        <>
+          <GroupHangouts hangouts={group.hangouts} />
+          {/* <Button onClick={handleLeave}>Leave</Button> */}
+        </>
       )
     } else {
       return (
@@ -62,6 +81,7 @@ const GroupPage = () => {
           variant="contained"
           color="secondary"
           onClick={handleJoin}
+          disabled={submitting}
         >
           Join Group
         </Button>
@@ -119,6 +139,7 @@ const GroupPage = () => {
 
         {renderInfo()}
       </Container>
+
     </Container>
   )
 }

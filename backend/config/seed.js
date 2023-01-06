@@ -12,6 +12,7 @@ const mongoose = require('mongoose')
 const config = require('../utils/config')
 const logger = require('../utils/logger')
 const { nanoid } = require('nanoid')
+const { sendNewHangoutNotification, sendNewMemberNotification, sendNewAttendeeNotification } = require('../utils/notifications')
 
 const USERSCOUNT = 10
 const GROUPSCOUNT = (USERSCOUNT / 2)
@@ -95,17 +96,22 @@ const createSeedHangout = async () => {
       }
     }
 
-    let initialDate = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
+    // generates a random date, no sooner than 3 days from now
+    const generateDate = () => {
+      const threeDaysFromNow = new Date(new Date().setDate(new Date().getDate() + 3))
+      const randomDate = faker.date.soon(30, threeDaysFromNow)
+      return new Date(randomDate).toLocaleDateString(undefined, options)
+    }
 
     // make sure there's 1 date minimum
     const fakeDates = {
-      [initialDate]: []
+      [generateDate()]: []
     }
 
     // 8 times, 50% chance each time of adding a new date with no duplicates
     for (let i = 0; i < 8; i++) {
       if (Math.random() < 0.5) {
-        let date = new Date(faker.date.soon(30)).toLocaleDateString(undefined, options)
+        let date = generateDate()
         if (!(date in fakeDates)) fakeDates[date] = []
 
         // 10% chance the hangout will be finalized
@@ -115,8 +121,6 @@ const createSeedHangout = async () => {
         }
       }
     }
-
-    // 30% chance that the hangout will be finalized
 
     return fakeDates
   }
@@ -142,6 +146,9 @@ const createSeedHangout = async () => {
 
   randomGroup.hangouts.push(newHangout.id)
   await randomGroup.save()
+
+  // send out notifications
+  await sendNewHangoutNotification(newHangout, randomGroup)
 }
 
 /**
@@ -170,6 +177,8 @@ const seedMemberships = async () => {
 
     randomGroup.members.push(randomUser.id)
     await randomGroup.save()
+
+    await sendNewMemberNotification(randomUser, randomGroup)
   }
 }
 
@@ -225,6 +234,8 @@ const seedAttendances = async () => {
     }
 
     await randomHangout.save()
+
+    await sendNewAttendeeNotification(randomUser, randomHangout)
   }
 }
 
