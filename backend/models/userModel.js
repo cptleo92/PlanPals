@@ -78,6 +78,12 @@ userSchema.methods.getResetPasswordToken = async function() {
   return resetToken
 }
 
+userSchema.methods.notify = function (notification) {
+  this.notifications.unshift(notification)
+
+  if (this.notifications.length > 50) this.notifications.pop()
+}
+
 userSchema.plugin(require('mongoose-autopopulate'))
 
 module.exports = mongoose.model('User', userSchema)
