@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { getGroup, joinGroup } from '../../utils/apiHelper'
@@ -20,6 +21,8 @@ const GroupPage = () => {
   const { groupPath } = useParams()
   const navigate = useNavigate()
 
+  const [submitting, setSubmitting] = useState(false)
+
   const {
     isLoading,
     error,
@@ -35,7 +38,9 @@ const GroupPage = () => {
     console.log(error)
   }
 
+
   const handleJoin = async () => {
+    setSubmitting(true)
     try {
       await joinGroup(group._id)
       navigate(0)
@@ -76,6 +81,7 @@ const GroupPage = () => {
           variant="contained"
           color="secondary"
           onClick={handleJoin}
+          disabled={submitting}
         >
           Join Group
         </Button>

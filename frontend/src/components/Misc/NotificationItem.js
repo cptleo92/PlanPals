@@ -12,8 +12,6 @@ const NotificationItem = ({ notif }) => {
     navigate(notif.href)
   }
 
-  if (notif.unread === 'true') console.log('unread! ', notif.text)
-
   return (
     <Box sx={{
       width: 'auto',
