@@ -13,13 +13,11 @@ const NotificationPage = () => {
   const {
     isLoading,
     data: notifications,
-  } = useQuery(['notifs', user._id], async () => {
-    const notifications = await getUserNotifications(user._id)
+  } = useQuery(['notifs', user._id],  () => getUserNotifications(user._id))
 
+  setTimeout(() => {
     markNotificationsRead(user._id, notifications)
-
-    return notifications
-  })
+  }, 2000)
 
   return (
     <Container maxWidth='sm'>

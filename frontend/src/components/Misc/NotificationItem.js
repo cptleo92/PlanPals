@@ -5,17 +5,18 @@ import { useNavigate } from 'react-router-dom'
 import { daysAgo } from '../../utils/date'
 
 
-
-const NotificationItem = ({ handleClose, notif }) => {
+const NotificationItem = ({ notif }) => {
   const navigate = useNavigate()
 
   const handleClick = () => {
     navigate(notif.href)
   }
 
+  if (notif.unread === 'true') console.log('unread! ', notif.text)
+
   return (
     <Box sx={{
-      // width: 350,
+      width: 'auto',
       margin: 1,
       padding: 2,
       borderRadius: 1,

@@ -23,10 +23,8 @@ const NotificationBell = () => {
   const open = Boolean(anchorEl)
 
   const handleClick = (event) => {
-    markNotificationsRead(user._id, notifications)
-    setBadgeContent(0)
-
     if (isSmall) {
+      setBadgeContent(0)
       navigate('/notifications')
     } else {
       setAnchorEl(event.currentTarget)
@@ -34,6 +32,8 @@ const NotificationBell = () => {
 
   }
   const handleClose = () => {
+    markNotificationsRead(user._id, notifications)
+    setBadgeContent(0)
     setAnchorEl(null)
   }
 
@@ -83,7 +83,7 @@ const NotificationBell = () => {
         }}
       >
         <Box sx={{
-          maxWidth: 400
+          minWidth: 400,
         }}>
 
           <Typography px={3} py={2} variant="h6">

@@ -22,7 +22,7 @@ const sendNewMemberNotification = async (newUser, group) => {
 
       const user = await User.findById(userId)
       user.notifications.unshift(newNotif)
-      user.save()
+      await user.save()
 
     } catch (error) {
       console.error(error)
@@ -53,7 +53,7 @@ const sendNewAttendeeNotification = async (newUser, hangout) => {
 
       const user = await User.findById(userId)
       user.notifications.unshift(newNotif)
-      user.save()
+      await user.save()
 
     } catch (error) {
       console.error(error)
@@ -86,7 +86,7 @@ const sendNewHangoutNotification = async (newHangout, group) => {
 
       const user = await User.findById(userId)
       user.notifications.unshift(newNotif)
-      user.save()
+      await user.save()
 
     } catch (error) {
       console.error(error)
@@ -116,7 +116,7 @@ const sendFinalizedHangoutNotification = async (hangout, notifyPlanner = false) 
 
       const user = await User.findById(userId)
       user.notifications.unshift(newNotif)
-      user.save()
+      await user.save()
 
     } catch (error) {
       console.error(error)
