@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { registerUser, loginUser, loginUserOauth } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 import { GoogleLogin } from '@react-oauth/google'
@@ -35,6 +35,7 @@ const emptyForm = {
 }
 
 export default function UserForm() {
+  const { groupPath } = useParams()
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
@@ -60,7 +61,7 @@ export default function UserForm() {
     }
 
     // validations specific for registering
-    if (pathname === '/register') {
+    if (pathname.startsWith('/register')) {
       // set error if passowrds do not match
       if (formData.password !== formData.confirmPassword) {
         setConfirmPasswordError('Passwords do not match.')
@@ -106,7 +107,7 @@ export default function UserForm() {
 
     if (validateFields()) {
       let response
-      if (pathname === '/login') {
+      if (pathname.startsWith('/login')) {
         response = await loginUser(formData)
       } else {
         response = await registerUser(formData)
@@ -122,7 +123,7 @@ export default function UserForm() {
       if (response.token) {
         window.localStorage.setItem('currentUser', JSON.stringify(response))
         setUser(response)
-        navigate('/')
+        groupPath ? navigate(`/groups/${groupPath}`) : navigate('/home')
       }
     }
 
@@ -140,12 +141,12 @@ export default function UserForm() {
   }, [pathname])
 
   const renderSwitchType = () => {
-    return pathname === '/login' ? (
-      <Link variant="body2" onClick={() => navigate('/register')}>
+    return pathname.startsWith('/login') ? (
+      <Link variant="body2" onClick={() => navigate(`/register/${groupPath}`)}>
         "Don't have an account? Sign Up"
       </Link>
     ) : (
-      <Link variant="body2" onClick={() => navigate('/login')}>
+      <Link variant="body2" onClick={() => navigate(`/login/${groupPath}`)}>
         "Already have an account? Sign In"
       </Link>
     )
@@ -176,7 +177,7 @@ export default function UserForm() {
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         {submitting ? (
           <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
-        ) : pathname === '/login' ? (
+        ) : pathname.startsWith('/login') ? (
           'Sign In'
         ) : (
           'Sign Up'
@@ -199,7 +200,7 @@ export default function UserForm() {
     if (response.token) {
       window.localStorage.setItem('currentUser', JSON.stringify(response))
       setUser(response)
-      navigate('/')
+      groupPath ? navigate(`/groups/${groupPath}`) : navigate('/home')
     }
 
   }
@@ -211,7 +212,7 @@ export default function UserForm() {
       if (response.token) {
         window.localStorage.setItem('currentUser', JSON.stringify(response))
         setUser(response)
-        navigate('/')
+        groupPath ? navigate(`/groups/${groupPath}`) : navigate('/home')
       }
 
     } catch (error) {
@@ -236,7 +237,7 @@ export default function UserForm() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography gutterBottom component="h1" variant="h5">
-            {pathname === '/login' ? 'Sign in' : 'Sign up'}
+            {pathname.startsWith('/login') ? 'Sign in' : 'Sign up'}
           </Typography>
           <Typography variant="subtitle2" color="text.secondary">
             Click on the Lock icon above to log in as a demo user!
@@ -247,7 +248,7 @@ export default function UserForm() {
             noValidate
             sx={{ mt: 1, width: '100%' }}
           >
-            {pathname === '/register' && (
+            {pathname.startsWith('/register') && (
               <Stack spacing={3} direction='row' alignItems='baseline'>
                 <TextField
                   error={firstNameError !== ''}
@@ -302,7 +303,7 @@ export default function UserForm() {
               autoComplete="current-password"
               onChange={handleChange}
             />
-            {pathname === '/register' && (
+            {pathname.startsWith('/register') && (
               <TextField
                 error={confirmPasswordError !== ''}
                 helperText={confirmPasswordError}

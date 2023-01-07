@@ -70,6 +70,7 @@ function App() {
     queryClient.removeQueries()
     window.localStorage.removeItem('currentUser')
     setUser(null)
+    history.push('/')
   }
 
   return (
@@ -83,6 +84,8 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<UserForm />} />
                 <Route path="/register" element={<UserForm />} />
+                <Route path="/login/:groupPath" element={<UserForm />} />
+                <Route path="/register/:groupPath" element={<UserForm />} />
                 <Route path="/passwordReset" element={<UserPasswordReset />} />
                 <Route path="/passwordReset/:token/:id" element={<UserPasswordResetNewForm />} />
               </Route>
@@ -92,12 +95,12 @@ function App() {
                   <Route path="/home" element={<Home />} />
                   <Route path="/notifications" element={<NotificationPage />} />
                   <Route path="/groups/create" element={<GroupForm />} />
-                  <Route path="/groups/:groupPath" element={<GroupPage />} />
                   <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
                   <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
                   <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
                   <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
                 </Route>
+                <Route path="/groups/:groupPath" element={<GroupPage />} />
 
               </Route>
               <Route path="/error" element={<Error />} />
