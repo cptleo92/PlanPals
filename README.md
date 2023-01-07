@@ -46,7 +46,7 @@ My immediate short-term goal is to complete a skeleton CRUD app with user, group
 * ~~Photo uploads~~ (Completed: 12/19/2022)
 * Privacy and security. All groups should be invite-only. Admin-type users should be able to remove other users.
 * User page to change avatars or update personal information
-* Notifications
+* ~~Notifications~~ (Completed: 1/6/2022) 
 * ~~OAuth~~ (Completed: 12/28/2022)
 
 
