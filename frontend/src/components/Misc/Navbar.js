@@ -19,8 +19,6 @@ export default function Navbar({ landing }) {
     navigate(`/${e.target.name}`)
   }
 
-
-
   const userButtons = () => {
     if (user) {
       return (

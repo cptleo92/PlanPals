@@ -40,6 +40,10 @@ const GroupPage = () => {
 
 
   const handleJoin = async () => {
+    if (!user) {
+      navigate(`/login/${groupPath}`)
+    }
+
     setSubmitting(true)
     try {
       await joinGroup(group._id)
@@ -62,9 +66,9 @@ const GroupPage = () => {
 
   const renderInfo = () => {
     const isMemberOrPlanner = () => {
-      if (group.admin._id === user._id) return true
+      if (group.admin._id === user?._id) return true
 
-      return group.members.some((mem) => mem._id === user._id)
+      return group.members.some((mem) => mem._id === user?._id)
     }
 
     if (isMemberOrPlanner()) {
@@ -107,7 +111,7 @@ const GroupPage = () => {
         src={ group.avatar || placeholder}
       />
       <br />
-      {user._id === group.admin._id && (
+      {user?._id === group.admin._id && (
         <Link
           to="./edit"
           style={{
