@@ -19,7 +19,8 @@ export const daysAgo = (date) => {
   const dateObject = new Date(date)
 
   const seconds = Math.floor((dateObject - new Date()) / 1000)
-  const days = seconds / 864000
 
-  return rtf.format(Math.trunc(days), 'day')
+  const days = Math.trunc(seconds / 86400)
+
+  return rtf.format(days, 'day')
 }
