@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { getGroup, joinGroup } from '../../utils/apiHelper'
+import { getGroup, joinGroup, leaveGroup } from '../../utils/apiHelper'
 import { useCurrentUser } from '../../utils/hooks'
 import placeholder from '../../assets/Placeholder_view_vector.svg'
 
@@ -13,8 +13,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
 import Button from '@mui/material/Button'
+import Modal from '@mui/material/Modal'
 import Container from '@mui/material/Container'
-
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
@@ -22,6 +22,12 @@ const GroupPage = () => {
   const navigate = useNavigate()
 
   const [submitting, setSubmitting] = useState(false)
+  const [leaving, setLeaving] = useState(false)
+
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
 
   const {
     isLoading,
@@ -54,15 +60,16 @@ const GroupPage = () => {
     }
   }
 
-  // const handleLeave = async () => {
-  //   try {
-  //     await leaveGroup(group._id)
-  //     navigate(0)
-  //   } catch (error) {
-  //     navigate('/error')
-  //     console.log(error)
-  //   }
-  // }
+  const handleLeave = async () => {
+    setLeaving(true)
+    try {
+      await leaveGroup(group._id)
+      navigate(0)
+    } catch (error) {
+      navigate('/error')
+      console.log(error)
+    }
+  }
 
   const renderInfo = () => {
     const isMemberOrPlanner = () => {
@@ -75,7 +82,36 @@ const GroupPage = () => {
       return (
         <>
           <GroupHangouts hangouts={group.hangouts} />
-          {/* <Button onClick={handleLeave}>Leave</Button> */}
+          <Button variant="contained" onClick={handleOpen} color="error">Leave Group</Button>
+
+          <Modal
+            open={open}
+            onClose={handleClose}
+          >
+            <Box sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 400,
+              bgcolor: 'background.paper',
+              border: '2px solid #000',
+              boxShadow: 24,
+              p: 4,
+            }}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Are you sure you want to leave the group?
+              </Typography>
+
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'right'
+              }}>
+                <Button disabled={leaving} onClick={handleLeave}>Leave Group</Button>
+                <Button sx={{ marginLeft: 1 }} onClick={handleClose}>Cancel</Button>
+              </Box>
+            </Box>
+          </Modal>
         </>
       )
     } else {
@@ -108,7 +144,7 @@ const GroupPage = () => {
           maxWidth: '100%'
         }}
         alt="group avatar"
-        src={ group.avatar || placeholder}
+        src={group.avatar || placeholder}
       />
       <br />
       {user?._id === group.admin._id && (
@@ -133,7 +169,7 @@ const GroupPage = () => {
 
       <Container sx={{ marginLeft: 0 }} disableGutters>
         <Typography gutterBottom variant="h5" mt={6} mb={3}>
-        Members ({group.members.length + 1})
+          Members ({group.members.length + 1})
         </Typography>
 
         <AvatarStack
