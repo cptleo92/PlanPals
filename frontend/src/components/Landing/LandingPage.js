@@ -43,7 +43,7 @@ const LandingPage = () => {
               alt="friends"
               sx={{
                 height: 650,
-                maxHeight: { xs: 450, sm: 450, md: 450, lg: 650 },
+                maxHeight: { xs: 400, sm: 450, md: 450, lg: 650 },
               }}
             >
             </Box>
