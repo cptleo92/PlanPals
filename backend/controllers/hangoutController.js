@@ -24,6 +24,12 @@ const getHangoutByPath = async (request, response) => {
 
     await populateAvatar(hangout)
 
+    for (let att of hangout.attendees) {
+      att.avatar = await populateAvatar(att)
+    }
+
+    hangout.planner.avatar = await populateAvatar(hangout.planner)
+
     response.json(hangout)
   } catch (error) {
     response.status(404).json({ error: 'Hangout not found' })

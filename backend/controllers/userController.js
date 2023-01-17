@@ -6,6 +6,7 @@ const { isAlpha } = require('validator')
 const sendEmail = require('../utils/email/sendEmail')
 const { OAuth2Client } = require('google-auth-library')
 const { GOOGLE_CLIENT_ID, JWT_SECRET } = require('../utils/config')
+const { deleteAvatar, setAvatar, populateAvatar } = require('../utils/s3')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -82,6 +83,8 @@ const registerUser = async (request, response) => {
 
     newUser = await User.findOne({ email })
 
+    await populateAvatar(newUser)
+
     response.status(201).json({
       _id: newUser.id,
       firstName: newUser.firstName,
@@ -89,6 +92,7 @@ const registerUser = async (request, response) => {
       fullName: newUser.fullName,
       email: newUser.email,
       token: generateToken(newUser.id, rememberUser),
+      avatar: newUser.avatar
     })
   } catch (error) {
     response.status(400).json({ error: error.message })
@@ -100,6 +104,9 @@ const loginUser = async (request, response) => {
 
   const user = await User.findOne({ email })
   if (user && (await bcrypt.compare(password, user.password))) {
+
+    await populateAvatar(user)
+
     response.status(201).json({
       _id: user.id,
       firstName: user.firstName,
@@ -107,6 +114,7 @@ const loginUser = async (request, response) => {
       fullName: user.fullName,
       email: user.email,
       token: generateToken(user.id, rememberUser),
+      avatar: user.avatar
     })
   } else {
     response.status(400).json({
@@ -128,6 +136,7 @@ const loginOrCreateUserOauth = async (request, response) => {
     const { email, family_name, given_name, sub } = ticket.getPayload()
 
     const user = await User.findOne({ email })
+    await populateAvatar(user)
 
     if (user) {
       response.status(201).json({
@@ -136,7 +145,8 @@ const loginOrCreateUserOauth = async (request, response) => {
         lastName: user.lastName,
         fullName: user.fullName,
         email: user.email,
-        token: generateToken(user.id)
+        token: generateToken(user.id),
+        avatar: user.avatar
       })
     } else {
       const salt = await bcrypt.genSalt(10)
@@ -159,7 +169,8 @@ const loginOrCreateUserOauth = async (request, response) => {
         lastName: newUser.lastName,
         fullName: newUser.fullName,
         email: newUser.email,
-        token: generateToken(newUser.id)
+        token: generateToken(newUser.id),
+        avatar: user.avatar
       })
 
     }
@@ -244,6 +255,55 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
+const updateUser = async (request, response) => {
+  // only user can edit own information
+  if (request.user.id !== request.params.id) {
+    return response.status(401).json({ error: 'unauthorized, please log in and try again' })
+  }
+
+  const userId = request.params.id
+  const { firstName, lastName, fileChanged } = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
+
+  let updateThisUser = await User.findById(userId)
+
+  const previousAvatar = updateThisUser.avatar
+
+  try {
+    updateThisUser = await User.findByIdAndUpdate(userId, { firstName, lastName }, { new: true })
+
+    if (request.file) {
+
+      if (previousAvatar) deleteAvatar(previousAvatar)
+      updateThisUser.avatar = await setAvatar(avatarBuffer, mimetype)
+
+    } else if (fileChanged !== 'false' && previousAvatar) {
+
+      // if group has an avatar but no file is attached, avatar will be deleted
+      deleteAvatar(previousAvatar)
+      updateThisUser.avatar = null
+
+    }
+
+    await updateThisUser.save()
+    await populateAvatar(updateThisUser)
+
+    response.status(200).json({
+      _id: updateThisUser.id,
+      firstName: updateThisUser.firstName,
+      lastName: updateThisUser.lastName,
+      fullName: updateThisUser.fullName,
+      email: updateThisUser.email,
+      token: generateToken(updateThisUser.id),
+      avatar: updateThisUser.avatar
+    })
+
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -252,5 +312,6 @@ module.exports = {
   markNotificationsRead,
   forgotPassword,
   resetPassword,
-  loginOrCreateUserOauth
+  loginOrCreateUserOauth,
+  updateUser
 }

@@ -44,7 +44,6 @@ function useWindowDimensions() {
   return windowDimensions
 }
 
-
 const AvatarStack = ({ peopleList, admin }) => {
   const { width } = useWindowDimensions()
   const numberAvatars = Math.floor(width / 80)
@@ -54,12 +53,19 @@ const AvatarStack = ({ peopleList, admin }) => {
   }
 
   const generateAvatars = () => {
-    return peopleList.map((att) => <Avatar key={att._id}>{att.firstName[0] + att.lastName[0]}</Avatar>)
+    return peopleList.map((att) =>
+      <Avatar key={att._id} src={att.avatar}>
+        {att.firstName[0] + att.lastName[0]}
+      </Avatar>
+
+    )
   }
 
-  return (
+  console.log(peopleList)
+
+  return  (
     <Stack direction="row" spacing={2} mb={3}>
-      <Avatar sx={{ width: 75, height: 75, marginBottom: 3 }}>
+      <Avatar sx={{ width: 75, height: 75, marginBottom: 3 }} src={admin.avatar}>
         {admin.firstName[0] + admin.lastName[0]}
       </Avatar>
       {generateAvatars()}

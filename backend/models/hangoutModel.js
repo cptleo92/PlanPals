@@ -29,7 +29,7 @@ const hangoutSchema = mongoose.Schema(
       required: true,
       ref: 'User',
       autopopulate: {
-        select: 'firstName lastName email',
+        select: 'firstName lastName email avatar',
         maxDepth: 1
       }
     },
@@ -48,7 +48,7 @@ const hangoutSchema = mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         autopopulate: {
-          select: 'firstName lastName email',
+          select: 'firstName lastName email avatar',
           maxDepth: 1
         }
       }

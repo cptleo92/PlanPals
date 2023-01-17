@@ -50,18 +50,32 @@ const userSchema = mongoose.Schema(
         type: Map,
         of: String
       }
-    ]
+    ],
+    avatar: {
+      type: String
+    },
   },
   {
     timestamps: true,
+    virtuals: {
+      fullName: {
+        get() {
+          return this.firstName + ' ' + this.lastName
+        }
+      },
+    },
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
   }
 )
 
-userSchema.virtual('fullName').get(function() {
-  return this.firstName + ' ' + this.lastName
+// properly capitalizes firstName and lastName
+userSchema.pre('save', function (next) {
+  this.firstName = this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1)
+  this.lastName = this.lastName.charAt(0).toUpperCase() + this.lastName.slice(1)
+  next()
 })
 
-// properly capitalizes firstName and lastName
 userSchema.pre('save', function (next) {
   this.firstName = this.firstName.charAt(0).toUpperCase() + this.firstName.slice(1)
   this.lastName = this.lastName.charAt(0).toUpperCase() + this.lastName.slice(1)
@@ -83,6 +97,8 @@ userSchema.methods.notify = function (notification) {
 
   if (this.notifications.length > 50) this.notifications.pop()
 }
+
+
 
 userSchema.plugin(require('mongoose-autopopulate'))
 

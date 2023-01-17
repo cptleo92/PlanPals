@@ -4,6 +4,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const User = require('../models/userModel')
+const { loginTestUser } = require('./seed_db/test_helpers')
 
 const testUser = {
   firstName: 'Test',
@@ -132,6 +133,41 @@ describe('user login', () => {
   })
 })
 
+describe('updating user information', () => {
+  const newUserData = {
+    firstName: 'New',
+    lastName: 'User',
+    email: 'new@user.com'
+  }
+
+  test('fails if user being edited it not logged in', async () => {
+    // create and log in a second user
+    const newUser = {
+      firstName: 'Leo',
+      lastName: 'Cheng',
+      email: 'leo@leo.com',
+      password: 'password'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+
+    let editUser = await User.findOne({ firstName: 'Test' })
+
+    let token = await loginTestUser(newUser)
+
+    const response = await api
+      .patch(`/api/users/${editUser.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send(newUserData)
+      .expect(401)
+
+    expect(response.body.error).toEqual('unauthorized, please log in and try again')
+
+  })
+})
 
 afterAll(done => {
   mongoose.connection.close()

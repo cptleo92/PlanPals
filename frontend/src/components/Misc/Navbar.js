@@ -19,6 +19,8 @@ export default function Navbar({ landing }) {
     navigate(`/${e.target.name}`)
   }
 
+  const handleClickAvatar = () => navigate('/user')
+
   const userButtons = () => {
     if (user) {
       return (
@@ -31,8 +33,16 @@ export default function Navbar({ landing }) {
 
           <NotificationBell />
 
-          <Avatar sx={{ width: 35, height: 35, mr: -1 }}>
-          </Avatar>
+          <Avatar sx={{
+            width: 35,
+            height: 35,
+            mr: -1,
+            cursor: 'pointer',
+          }}
+          alt={user.fullName}
+          src={user.avatar}
+          onClick={handleClickAvatar}
+          />
 
           <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
         </Box>
@@ -48,15 +58,15 @@ export default function Navbar({ landing }) {
 
   return (
     <Box sx={{ flexGrow: 1, minWidth: 300 }}>
-      <AppBar position="static" color={ landing ? 'transparent' : 'primary' } elevation={landing ? 0 : 1}>
+      <AppBar position="static" color={landing ? 'transparent' : 'primary'} elevation={landing ? 0 : 1}>
         <Toolbar>
           <Typography variant="h5" component="div" sx={{ fontFamily: 'Reem Kufi', fontWeight: 500 }}>
             <Link to="/">Plan</Link>
           </Typography>
-          <Typography variant="h5" component="div" color={ landing ? 'secondary' : 'inherit' } sx={{ marginRight: 'auto', fontFamily: 'Reem Kufi', fontWeight: 500 }}>
+          <Typography variant="h5" component="div" color={landing ? 'secondary' : 'inherit'} sx={{ marginRight: 'auto', fontFamily: 'Reem Kufi', fontWeight: 500 }}>
             <Link to="/">Pals</Link>
           </Typography>
-          { userButtons() }
+          {userButtons()}
         </Toolbar>
       </AppBar>
     </Box>

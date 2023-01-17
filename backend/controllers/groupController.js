@@ -29,6 +29,11 @@ const getGroupByIDorPath = async (request, response) => {
 
   await populateAvatar(group)
 
+  for (let member of group.members) {
+    member.avatar = await populateAvatar(member)
+  }
+  group.admin.avatar = await populateAvatar(group.admin)
+
   response.json(group)
 }
 
