@@ -93,6 +93,8 @@ const GroupPage = () => {
     }
   }
 
+  console.log(group)
+
   return (
     <Container sx={{ mt: 3 }}>
       <BackArrow link={'/home'} />

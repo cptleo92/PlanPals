@@ -53,6 +53,8 @@ const populateAvatar = async (modelType) => {
     const command = new GetObjectCommand(params)
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 })
     modelType.avatar = url
+
+    return url
   }
 }
 

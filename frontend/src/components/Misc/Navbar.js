@@ -39,9 +39,10 @@ export default function Navbar({ landing }) {
             mr: -1,
             cursor: 'pointer',
           }}
+          alt={user.fullName}
+          src={user.avatar}
           onClick={handleClickAvatar}
-          >
-          </Avatar>
+          />
 
           <Button name="logout" color="inherit" onClick={logoutUser}>Logout</Button>
         </Box>

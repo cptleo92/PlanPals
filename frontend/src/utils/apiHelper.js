@@ -40,6 +40,15 @@ export const getUser = async (id) => {
   }
 }
 
+export const updateUser = async (id, newUser) => {
+  try {
+    const response = await axios.patch(`/api/users/${id}`, newUser)
+    return response.data
+  } catch (err) {
+    return err.response.data.error
+  }
+}
+
 export const forgotPassword = async (email) => {
   try {
     const response = await axios.post('/api/users/password/forgot', email)

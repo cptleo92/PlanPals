@@ -17,7 +17,7 @@ const groupSchema = mongoose.Schema(
       required: true,
       ref: 'User',
       autopopulate: {
-        select: 'firstName lastName email',
+        select: 'firstName lastName fullName email avatar',
         maxDepth: 1
       }
     },
@@ -26,7 +26,7 @@ const groupSchema = mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         autopopulate: {
-          select: 'firstName lastName email',
+          select: 'firstName lastName fullName email avatar',
           maxDepth: 1
         }
       }
