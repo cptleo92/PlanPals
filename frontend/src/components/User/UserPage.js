@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import AvatarImageCropper from 'react-avatar-image-cropper'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { useCurrentUser } from '../../utils/hooks'
 import { useNavigate } from 'react-router-dom'
+import { updateUser } from '../../utils/apiHelper'
 
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
@@ -10,8 +11,9 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Fab from '@mui/material/Fab'
 import CircularProgress from '@mui/material/CircularProgress'
-import { updateUser } from '../../utils/apiHelper'
 
 
 const UserPage = () => {
@@ -20,10 +22,14 @@ const UserPage = () => {
 
   const [file, setFile] = useState(user?.avatar)
 
-  console.log(file)
+  const generateUrl = () => {
+    return file
+      ? `url(${URL.createObjectURL(file)})`
+      : null
+  }
 
   const avatarStyle = {
-    // backgroundImage: file ? `url(${URL.createObjectURL(file)})` : `url(${user?.avatar})`,
+    backgroundImage: typeof file === 'string' ? `url(${file})` : generateUrl(),
     width: '80%',
     aspectRatio: '1 / 1',
     margin: 'auto',
@@ -161,6 +167,12 @@ const UserPage = () => {
         <Box sx={avatarStyle}>
           <AvatarImageCropper apply={apply} errorHandler={errorHandler} isBack={true} maxsize={1000000}/>
         </Box>
+        <Fab color="error" aria-label="edit" sx={{ top: '-20px' }} onClick={() => {
+          setFile(null)
+          setFileChanged(true)
+        }}>
+          <DeleteIcon />
+        </Fab>
         {
           imgErrors &&
           <Typography variant="subtitle2" color="error" sx={{ marginTop: 1 }}>
