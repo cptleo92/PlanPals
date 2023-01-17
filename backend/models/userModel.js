@@ -50,7 +50,10 @@ const userSchema = mongoose.Schema(
         type: Map,
         of: String
       }
-    ]
+    ],
+    avatar: {
+      type: String
+    }
   },
   {
     timestamps: true,

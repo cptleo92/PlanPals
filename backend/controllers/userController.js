@@ -6,6 +6,7 @@ const { isAlpha } = require('validator')
 const sendEmail = require('../utils/email/sendEmail')
 const { OAuth2Client } = require('google-auth-library')
 const { GOOGLE_CLIENT_ID, JWT_SECRET } = require('../utils/config')
+const { deleteAvatar, setAvatar } = require('../utils/s3')
 
 const getUser = async (request, response) => {
   const user = await User.findById(request.params.id, { password: 0 })
@@ -244,6 +245,46 @@ const generateToken = (id, rememberUser) => {
   )
 }
 
+const updateUser = async (request, response) => {
+  // only user can edit own information
+  if (request.user.id !== request.params.id) {
+    return response.status(401).json({ error: 'unauthorized, please log in and try again' })
+  }
+
+  const userId = request.params.id
+  const { firstName, lastName, email, fileChanged } = request.body
+  const avatarBuffer = request.file?.buffer
+  const mimetype = request.file?.mimetype
+
+  let updateThisUser = await User.findById(userId)
+
+  const previousAvatar = updateThisUser.avatar
+
+  try {
+    updateThisUser = await User.findByIdAndUpdate(userId, { firstName, lastName, email }, { new: true })
+
+    if (request.file) {
+
+      if (previousAvatar) deleteAvatar(previousAvatar)
+      updateThisUser.avatar = await setAvatar(avatarBuffer, mimetype)
+
+    } else if (fileChanged !== 'false' && previousAvatar) {
+
+      // if group has an avatar but no file is attached, avatar will be deleted
+      deleteAvatar(previousAvatar)
+      updateThisUser.avatar = null
+
+    }
+
+    await updateThisUser.save()
+
+    response.status(200).json(updateThisUser)
+
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -252,5 +293,6 @@ module.exports = {
   markNotificationsRead,
   forgotPassword,
   resetPassword,
-  loginOrCreateUserOauth
+  loginOrCreateUserOauth,
+  updateUser
 }
