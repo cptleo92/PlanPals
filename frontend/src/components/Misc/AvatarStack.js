@@ -61,8 +61,6 @@ const AvatarStack = ({ peopleList, admin }) => {
     )
   }
 
-  console.log(peopleList)
-
   return  (
     <Stack direction="row" spacing={2} mb={3}>
       <Avatar sx={{ width: 75, height: 75, marginBottom: 3 }} src={admin.avatar}>

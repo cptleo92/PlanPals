@@ -1,4 +1,4 @@
-import { useCurrentUser } from '../../utils/hooks'
+import { useCurrentUser, useDarkMode } from '../../utils/hooks'
 
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper'
 
 const HangoutPageDateDisplay = ({ dateOptions }) => {
   const { user } = useCurrentUser()
+  const { darkMode } = useDarkMode()
 
   const dates = Object.keys(dateOptions).sort((a, b) => {
     let optionA = new Date(a)
@@ -35,7 +36,7 @@ const HangoutPageDateDisplay = ({ dateOptions }) => {
             <TableRow
               key={date}
               sx={{
-                backgroundColor: dateOptions[date].includes(user._id) ? 'lightgreen' : ''
+                backgroundColor: dateOptions[date].includes(user._id) ? (darkMode ? 'gray' : 'lightgreen') : ''
               }}
             >
               <TableCell component="th" scope="row">
