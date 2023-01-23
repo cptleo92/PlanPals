@@ -1,6 +1,8 @@
 
-import { useCurrentUser } from '../../utils/hooks'
+import { useCurrentUser, useDarkMode } from '../../utils/hooks'
 import { Link, useNavigate } from 'react-router-dom'
+import useMediaQuery from '@mui/material/useMediaQuery'
+
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -9,23 +11,28 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
 import NotificationBell from './NotificationBell'
+import IconButton from '@mui/material/IconButton'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
+import Brightness7Icon from '@mui/icons-material/Brightness7'
 
 export default function Navbar({ landing }) {
   const navigate = useNavigate()
 
   const { user, logoutUser } = useCurrentUser()
+  const { darkMode, toggleDarkMode } = useDarkMode()
 
   const handleUserNav = (e) => {
     navigate(`/${e.target.name}`)
   }
 
   const handleClickAvatar = () => navigate('/user')
+  const isSmall = useMediaQuery('(max-width:600px)')
 
   const userButtons = () => {
     if (user) {
       return (
         <Box sx={{
-          minWidth: 200,
+          minWidth: 180,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
@@ -49,9 +56,13 @@ export default function Navbar({ landing }) {
       )
     }
     return (
-      <Box sx={{ minWidth: 200 }}>
-        <Button sx={{ marginRight: 4 }} name="login" variant="outlined" color="inherit" onClick={handleUserNav}>Log In</Button>
-        <Button name="register" variant="contained" onClick={handleUserNav}>Register</Button>
+      <Box sx={{
+        minWidth: 180,
+        display: 'flex',
+        justifyContent: 'right'
+      }}>
+        <Button size="small" sx={{ marginRight: 3 }} name="login" variant="outlined" color="inherit" onClick={handleUserNav}>Log In</Button>
+        <Button size="small" name="register" variant="contained" onClick={handleUserNav}>Register</Button>
       </Box>
     )
   }
@@ -66,6 +77,9 @@ export default function Navbar({ landing }) {
           <Typography variant="h5" component="div" color={landing ? 'secondary' : 'inherit'} sx={{ marginRight: 'auto', fontFamily: 'Reem Kufi', fontWeight: 500 }}>
             <Link to="/">Pals</Link>
           </Typography>
+          <IconButton sx={{ mx: 1 }} onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
           {userButtons()}
         </Toolbar>
       </AppBar>

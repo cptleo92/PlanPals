@@ -3,8 +3,11 @@ import { Container, Box, Link, Stack, Typography } from '@mui/material'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import EmailIcon from '@mui/icons-material/Email'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import { useDarkMode } from '../../utils/hooks'
 
 const LandingPageFooter = () => {
+  const { darkMode } = useDarkMode()
+
   return (
 
     <Box
@@ -12,7 +15,7 @@ const LandingPageFooter = () => {
       px={10}
       py={5}
       mt={6}
-      sx={{ backgroundColor: 'lightgray' }}
+      sx={{ backgroundColor: darkMode ? 'black' : 'lightgray' }}
     >
       <Container maxWidth="lg">
         <Stack spacing={3} mt={3}>

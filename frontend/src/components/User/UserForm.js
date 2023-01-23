@@ -221,10 +221,9 @@ export default function UserForm() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Navbar landing />
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
@@ -349,6 +348,6 @@ export default function UserForm() {
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
+    </>
   )
 }

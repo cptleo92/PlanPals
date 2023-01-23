@@ -24,6 +24,9 @@ import LandingPage from './components/Landing/LandingPage'
 import NotificationPage from './components/Misc/NotificationPage'
 import UserPage from './components/User/UserPage'
 
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+
 let history = createBrowserHistory()
 
 // axios configs
@@ -54,6 +57,7 @@ axios.interceptors.response.use(
 )
 
 export const UserContext = createContext()
+export const DarkModeContext = createContext()
 
 const queryClient = new QueryClient()
 
@@ -74,45 +78,62 @@ function App() {
     history.push('/')
   }
 
+  const [darkMode, setDarkMode] = useState(window.localStorage.getItem('darkMode'))
+
+  const toggleDarkMode = () => {
+    window.localStorage.setItem('darkMode', !darkMode)
+    setDarkMode(!darkMode)
+  }
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: darkMode ? 'dark' : 'light',
+    },
+  })
+
   return (
     <QueryClientProvider client={queryClient}>
       <UserContext.Provider value={{ user, setUser, logoutUser }}>
-        <HistoryRouter history={history}>
-          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
 
-            <Routes>
-              <Route element={<AuthRoutes loggedIn={loggedIn} />}>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<UserForm />} />
-                <Route path="/register" element={<UserForm />} />
-                <Route path="/login/:groupPath" element={<UserForm />} />
-                <Route path="/register/:groupPath" element={<UserForm />} />
-                <Route path="/passwordReset" element={<UserPasswordReset />} />
-                <Route path="/passwordReset/:token/:id" element={<UserPasswordResetNewForm />} />
-              </Route>
+          <HistoryRouter history={history}>
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+              <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <Routes>
+                  <Route element={<AuthRoutes loggedIn={loggedIn} />}>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<UserForm />} />
+                    <Route path="/register" element={<UserForm />} />
+                    <Route path="/login/:groupPath" element={<UserForm />} />
+                    <Route path="/register/:groupPath" element={<UserForm />} />
+                    <Route path="/passwordReset" element={<UserPasswordReset />} />
+                    <Route path="/passwordReset/:token/:id" element={<UserPasswordResetNewForm />} />
+                  </Route>
 
-              <Route element={<Layout />}>
-                <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/user" element={<UserPage />} />
-                  <Route path="/notifications" element={<NotificationPage />} />
-                  <Route path="/groups/create" element={<GroupForm />} />
-                  <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
-                  <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
-                  <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
-                  <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
-                </Route>
-                <Route path="/groups/:groupPath" element={<GroupPage />} />
+                  <Route element={<Layout />}>
+                    <Route element={<ProtectedRoutes loggedIn={loggedIn} />}>
+                      <Route path="/home" element={<Home />} />
+                      <Route path="/user" element={<UserPage />} />
+                      <Route path="/notifications" element={<NotificationPage />} />
+                      <Route path="/groups/create" element={<GroupForm />} />
+                      <Route path="/groups/:groupPath/edit" element={<GroupForm edit />} />
+                      <Route path="groups/:groupPath/hangouts/create" element={<HangoutForm />} />
+                      <Route path="groups/:groupPath/hangouts/:hangoutPath" element={<HangoutPage />} />
+                      <Route path="groups/:groupPath/hangouts/:hangoutPath/edit" element={<HangoutForm edit />} />
+                    </Route>
+                    <Route path="/groups/:groupPath" element={<GroupPage />} />
 
-              </Route>
-              <Route path="/error" element={<Error />} />
-              <Route path="/logout" element={<Logout />} />
+                  </Route>
+                  <Route path="/error" element={<Error />} />
+                  <Route path="/logout" element={<Logout />} />
 
-              <Route path='*' element={<Error />} />
-            </Routes>
-
-          </GoogleOAuthProvider>
-        </HistoryRouter>
+                  <Route path='*' element={<Error />} />
+                </Routes>
+              </ThemeProvider>
+            </GoogleOAuthProvider>
+          </HistoryRouter>
+        </DarkModeContext.Provider>
       </UserContext.Provider>
     </QueryClientProvider>
   )

@@ -129,7 +129,6 @@ const GroupPage = () => {
     }
   }
 
-  console.log(group)
 
   return (
     <Container sx={{ mt: 3 }}>
