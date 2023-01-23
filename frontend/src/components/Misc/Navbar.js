@@ -1,8 +1,6 @@
 
 import { useCurrentUser, useDarkMode } from '../../utils/hooks'
 import { Link, useNavigate } from 'react-router-dom'
-import useMediaQuery from '@mui/material/useMediaQuery'
-
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -26,7 +24,6 @@ export default function Navbar({ landing }) {
   }
 
   const handleClickAvatar = () => navigate('/user')
-  const isSmall = useMediaQuery('(max-width:600px)')
 
   const userButtons = () => {
     if (user) {

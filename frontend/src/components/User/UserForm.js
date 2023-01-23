@@ -9,7 +9,6 @@ import Navbar from '../Misc/Navbar'
 import Avatar from '@mui/material/Avatar'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
@@ -20,10 +19,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 
-
-const theme = createTheme()
 
 const emptyForm = {
   firstName: '',
