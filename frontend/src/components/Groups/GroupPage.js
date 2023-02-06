@@ -13,9 +13,13 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import BackArrow from '../Misc/BackArrow'
 import Button from '@mui/material/Button'
-import Modal from '@mui/material/Modal'
 import Container from '@mui/material/Container'
 import EditIcon from '@mui/icons-material/Edit'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
@@ -85,34 +89,25 @@ const GroupPage = () => {
           <GroupHangouts hangouts={group.hangouts} />
           <Button variant="contained" onClick={handleOpen} color="error">Leave Group</Button>
 
-          <Modal
+          <Dialog
             open={open}
             onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
           >
-            <Box sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 400,
-              bgcolor: 'background.paper',
-              border: '2px solid #000',
-              boxShadow: 24,
-              p: 4,
-            }}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
+            <DialogTitle id="alert-dialog-title">Leave Group</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
                 Are you sure you want to leave the group?
-              </Typography>
-
-              <Box sx={{
-                display: 'flex',
-                justifyContent: 'right'
-              }}>
-                <Button disabled={leaving} onClick={handleLeave}>Leave Group</Button>
-                <Button sx={{ marginLeft: 1 }} onClick={handleClose}>Cancel</Button>
-              </Box>
-            </Box>
-          </Modal>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleLeave} variant="contained" color="error">
+                Leave
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )
     } else {
