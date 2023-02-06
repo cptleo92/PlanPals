@@ -16,6 +16,11 @@ import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
 
 const errorStyle = {
   fontFamily: 'Roboto',
@@ -28,9 +33,7 @@ const errorStyle = {
 export default function HangoutAttendDatesForm({
   id,
   dateOptions,
-  handleClose,
-  setModalTitle,
-  setModalContents
+
 }) {
   const { user } = useCurrentUser()
   let isAttending = false
@@ -105,31 +108,9 @@ export default function HangoutAttendDatesForm({
     }
   }
 
-  const handleLeaveConfirmation = () => {
-    const confirmation = (
-      <Box
-        mt={3}
-        sx={{
-          display: 'flex',
-          justifyContent: 'right',
-        }}
-      >
-        <Button variant="outlined" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button
-          sx={{ marginLeft: 2 }}
-          variant="contained"
-          onClick={handleLeave}
-        >
-          Yes
-        </Button>
-      </Box>
-    )
-
-    setModalTitle('Are you sure you want to leave this hangout?')
-    setModalContents(confirmation)
-  }
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   return (
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -168,10 +149,29 @@ export default function HangoutAttendDatesForm({
           {isAttending ? 'Edit' : 'Attend'}
         </Button>
         {isAttending && (
-          <Button onClick={handleLeaveConfirmation} color="error">
+          <Button onClick={handleOpen} color="error">
             Leave
           </Button>
         )}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Edit RSVP</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to no longer attend the hangout?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleLeave} variant="contained" color="error">
+              Leave
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
 
       {error && (

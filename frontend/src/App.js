@@ -31,7 +31,7 @@ let history = createBrowserHistory()
 
 // axios configs
 axios.interceptors.request.use(function (config) {
-  const currentUser = JSON.parse(window.localStorage.getItem('currentUser'))
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'))
   if (currentUser?.token)
     config.headers.Authorization = `Bearer ${currentUser.token}`
 
@@ -73,16 +73,16 @@ function App() {
 
   const logoutUser = () => {
     queryClient.removeQueries()
-    window.localStorage.removeItem('currentUser')
+    localStorage.removeItem('currentUser')
     setUser(null)
     history.push('/')
   }
 
-  const [darkMode, setDarkMode] = useState(window.localStorage.getItem('darkMode'))
+  const [darkMode, setDarkMode] = useState(!!JSON.parse(localStorage.getItem('darkMode')) || false)
 
   const toggleDarkMode = () => {
-    window.localStorage.setItem('darkMode', !darkMode)
     setDarkMode(!darkMode)
+    localStorage.setItem('darkMode', !darkMode)
   }
 
   const darkTheme = createTheme({
@@ -94,11 +94,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <UserContext.Provider value={{ user, setUser, logoutUser }}>
-        <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
 
-          <HistoryRouter history={history}>
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-              <ThemeProvider theme={darkTheme}>
+        <HistoryRouter history={history}>
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <ThemeProvider theme={darkTheme}>
+              <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
                 <CssBaseline />
                 <Routes>
                   <Route element={<AuthRoutes loggedIn={loggedIn} />}>
@@ -130,10 +130,10 @@ function App() {
 
                   <Route path='*' element={<Error />} />
                 </Routes>
-              </ThemeProvider>
-            </GoogleOAuthProvider>
-          </HistoryRouter>
-        </DarkModeContext.Provider>
+              </DarkModeContext.Provider>
+            </ThemeProvider>
+          </GoogleOAuthProvider>
+        </HistoryRouter>
       </UserContext.Provider>
     </QueryClientProvider>
   )
