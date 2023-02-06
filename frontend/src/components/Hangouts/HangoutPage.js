@@ -10,13 +10,15 @@ import HangoutAttend from './HangoutAttend'
 import HangoutPageFinalDetails from './HangoutPageFinalDetails'
 import AvatarStack from '../Misc/AvatarStack'
 import HangoutPageDateDisplay from './HangoutPageDateDisplay'
+import PageSkeleton from '../Misc/PageSkeleton'
 
 import Typography from '@mui/material/Typography'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import WarningIcon from '@mui/icons-material/Warning'
-import PageSkeleton from '../Misc/PageSkeleton'
+import Button from '@mui/material/Button'
+import EditIcon from '@mui/icons-material/Edit'
 
 const HangoutPage = () => {
   const { user } = useCurrentUser()
@@ -42,7 +44,7 @@ const HangoutPage = () => {
 
   const renderButtonOrFinalDetails = () => {
     return hangout.finalized ? (
-      <HangoutPageFinalDetails hangout={hangout}/>
+      <HangoutPageFinalDetails hangout={hangout} />
     ) : (
       <HangoutAttend
         hangout={hangout}
@@ -96,7 +98,7 @@ const HangoutPage = () => {
             {parseDate(expirationDate)}
           </Typography>
           <Typography variant="subtitle1">
-          If no action is taken, your hangout will be automatically scheduled for:
+            If no action is taken, your hangout will be automatically scheduled for:
           </Typography>
           <Typography gutterBottom variant="subtitle2" color="secondary">
             {parseDate(dateWithMostVotes)}
@@ -127,20 +129,18 @@ const HangoutPage = () => {
           maxWidth: '100%'
         }}
         alt="hangout avatar"
-        src={ hangout.avatar || placeholder }
+        src={hangout.avatar || placeholder}
       />
       <br />
 
       {user._id === hangout.planner._id && (
         <Link
           to="./edit"
-          style={{
-            color: 'blue',
-            fontWeight: 500,
-            textDecoration: 'underline',
-          }}
         >
-          Edit hangout details
+          <Button variant="contained" size="small">
+            <EditIcon fontSize='sm' sx={{ mr: 1 }} />
+            Edit hangout details
+          </Button>
         </Link>
       )}
 
@@ -160,9 +160,9 @@ const HangoutPage = () => {
         admin={hangout.planner}
       />
 
-      { renderWarning() }
+      {renderWarning()}
 
-      { !hangout.finalized &&
+      {!hangout.finalized &&
         <HangoutPageDateDisplay dateOptions={hangout.dateOptions} />
       }
 

@@ -15,6 +15,7 @@ import BackArrow from '../Misc/BackArrow'
 import Button from '@mui/material/Button'
 import Modal from '@mui/material/Modal'
 import Container from '@mui/material/Container'
+import EditIcon from '@mui/icons-material/Edit'
 
 const GroupPage = () => {
   const { user } = useCurrentUser()
@@ -151,13 +152,11 @@ const GroupPage = () => {
       {user?._id === group.admin._id && (
         <Link
           to="./edit"
-          style={{
-            color: 'blue',
-            fontWeight: 500,
-            textDecoration: 'underline',
-          }}
         >
-          Edit group details
+          <Button variant="contained" size="small">
+            <EditIcon fontSize='sm' sx={{ mr: 1 }} />
+            Edit group details
+          </Button>
         </Link>
       )}
 
