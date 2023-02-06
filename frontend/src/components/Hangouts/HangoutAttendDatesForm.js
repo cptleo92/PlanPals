@@ -98,8 +98,10 @@ export default function HangoutAttendDatesForm({
       }
     }
   }
+  const [leaving, setLeaving] = useState(false)
 
   const handleLeave = async () => {
+    setLeaving(true)
     try {
       await leaveHangout(id)
       navigate(0)
@@ -167,7 +169,7 @@ export default function HangoutAttendDatesForm({
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={handleLeave} variant="contained" color="error">
+            <Button disabled={leaving} onClick={handleLeave} variant="contained" color="error">
               Leave
             </Button>
           </DialogActions>
