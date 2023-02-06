@@ -87,7 +87,9 @@ const GroupPage = () => {
       return (
         <>
           <GroupHangouts hangouts={group.hangouts} />
-          <Button variant="contained" onClick={handleOpen} color="error">Leave Group</Button>
+          {group.admin._id !== user?._id &&
+            <Button variant="contained" onClick={handleOpen} color="error">Leave Group</Button>
+          }
 
           <Dialog
             open={open}
@@ -103,7 +105,7 @@ const GroupPage = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleLeave} variant="contained" color="error">
+              <Button disabled={leaving} onClick={handleLeave} variant="contained" color="error">
                 Leave
               </Button>
             </DialogActions>
