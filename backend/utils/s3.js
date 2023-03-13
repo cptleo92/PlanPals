@@ -44,7 +44,7 @@ const setAvatar = async (avatarBuffer, mimetype) => {
 }
 
 const populateAvatar = async (modelType) => {
-  if (modelType.avatar) {
+  if (modelType?.avatar) {
     const params = {
       Bucket: AWS_BUCKET_NAME,
       Key: modelType.avatar

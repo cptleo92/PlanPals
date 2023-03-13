@@ -15,6 +15,8 @@ try {
 }
 
 const wipeDb = async () => {
+  if (process.env.NODE_ENV === 'production') return
+
   await User.deleteMany()
   await Group.deleteMany()
   await Hangout.deleteMany()

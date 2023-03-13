@@ -136,9 +136,10 @@ const loginOrCreateUserOauth = async (request, response) => {
     const { email, family_name, given_name, sub } = ticket.getPayload()
 
     const user = await User.findOne({ email })
-    await populateAvatar(user)
 
     if (user) {
+      await populateAvatar(user)
+
       response.status(201).json({
         _id: user.id,
         firstName: user.firstName,
@@ -170,7 +171,7 @@ const loginOrCreateUserOauth = async (request, response) => {
         fullName: newUser.fullName,
         email: newUser.email,
         token: generateToken(newUser.id),
-        avatar: user.avatar
+        avatar: newUser.avatar
       })
 
     }

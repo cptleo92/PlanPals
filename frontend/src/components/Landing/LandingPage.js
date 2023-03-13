@@ -1,5 +1,5 @@
 import Navbar from '../Misc/Navbar'
-import hero from '../../assets/mason-dahl--7AxXbZekDE-unsplash.jpg'
+import hero from '../../assets/mason-dahl--7AxXbZekDE-unsplash.webp'
 import LandingPageAccordion from './LandingPageAccordion'
 import LandingPageFooter from './LandingPageFooter'
 
@@ -42,8 +42,8 @@ const LandingPage = () => {
               src={hero}
               alt="friends"
               sx={{
-                height: 650,
-                maxHeight: { xs: 400, sm: 450, md: 450, lg: 650 },
+                aspectRatio: '520 / 650',
+                height: { xs: 400, sm: 450, md: 450, lg: 650 },
               }}
             >
             </Box>
