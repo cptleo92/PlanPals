@@ -33,6 +33,7 @@ const createSeedUser = async (i) => {
     ? `test${i}@test.com`
     : faker.internet.email(firstName, lastName)
 
+
   // generate password hash
   const salt = await bcrypt.genSalt(10)
   const password = await bcrypt.hash('password', salt)
@@ -250,7 +251,9 @@ try {
 const seedDb = async () => {
   // seeding a handful of users first to be group admins
   for (let i = 0; i < GROUPSCOUNT; i++) {
-    await createSeedUser(i)
+    process.env.NODE_ENV === 'production'
+      ? await createSeedUser()
+      : await createSeedUser(i)
   }
 
   for (let i = 0; i < GROUPSCOUNT; i++) {
