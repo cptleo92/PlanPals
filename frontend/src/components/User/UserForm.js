@@ -138,11 +138,11 @@ export default function UserForm() {
 
   const renderSwitchType = () => {
     return pathname.startsWith('/login') ? (
-      <Link variant="body2" onClick={() => navigate(`/register/${groupPath || ''}`)}>
+      <Link component="button" type="button" variant="body2" onClick={() => navigate(`/register/${groupPath || ''}`)}>
         "Don't have an account? Sign Up"
       </Link>
     ) : (
-      <Link variant="body2" onClick={() => navigate(`/login/${groupPath}`)}>
+      <Link component="button" type="button" variant="body2" onClick={() => navigate(`/login/${groupPath || ''}`)}>
         "Already have an account? Sign In"
       </Link>
     )
@@ -339,7 +339,7 @@ export default function UserForm() {
 
             <Grid container mt={2}>
               <Grid item xs>
-                <Link variant="body2" onClick={() => navigate('/passwordReset')}>Forgot password?</Link>
+                <Link component="button" type="button" variant="body2" onClick={() => navigate('/passwordReset')}>Forgot password?</Link>
               </Grid>
               <Grid item>{renderSwitchType()}</Grid>
             </Grid>
