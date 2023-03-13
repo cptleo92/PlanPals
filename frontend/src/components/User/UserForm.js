@@ -138,7 +138,7 @@ export default function UserForm() {
 
   const renderSwitchType = () => {
     return pathname.startsWith('/login') ? (
-      <Link variant="body2" onClick={() => navigate(`/register/${groupPath}`)}>
+      <Link variant="body2" onClick={() => navigate(`/register/${groupPath || ''}`)}>
         "Don't have an account? Sign Up"
       </Link>
     ) : (
@@ -172,7 +172,7 @@ export default function UserForm() {
     return (
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         {submitting ? (
-          <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }}/>
+          <CircularProgress color="inherit" size="1rem" sx={{ margin: '4px' }} />
         ) : pathname.startsWith('/login') ? (
           'Sign In'
         ) : (
@@ -228,7 +228,7 @@ export default function UserForm() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }}  onClick={loginTest}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }} onClick={loginTest}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography gutterBottom component="h1" variant="h5">
@@ -250,6 +250,7 @@ export default function UserForm() {
                   helperText={firstNameError}
                   margin="normal"
                   required
+                  autoFocus
                   id="firstName"
                   label="First Name"
                   name="firstName"
@@ -276,6 +277,7 @@ export default function UserForm() {
               helperText={emailError}
               margin="normal"
               required
+              autoFocus
               fullWidth
               id="email"
               label="Email Address"
